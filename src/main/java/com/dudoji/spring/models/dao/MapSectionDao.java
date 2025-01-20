@@ -65,4 +65,8 @@ public class MapSectionDao {
             throw new RuntimeException(e);
         }
     }
+
+    public void createMapSections(List<MapSection> mapSections){
+        // TODO
+    }
 }
