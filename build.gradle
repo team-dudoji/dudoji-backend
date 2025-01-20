@@ -18,11 +18,11 @@ repositories {
 }
 
 dependencies {
-    implementation('io.github.cdimascio:dotenv-java:5.2.2')
     implementation 'org.springframework.boot:spring-boot-starter'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
     runtimeOnly 'org.postgresql:postgresql'
 }
 
