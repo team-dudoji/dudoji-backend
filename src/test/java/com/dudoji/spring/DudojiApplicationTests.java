@@ -1,7 +1,9 @@
 package com.dudoji.spring;
 
 import com.dudoji.spring.models.DBConnection;
+import com.dudoji.spring.models.dao.UserDao;
 import com.dudoji.spring.models.domain.MapSection;
+import com.dudoji.spring.models.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class DudojiApplicationTests {
@@ -42,5 +44,25 @@ class DudojiApplicationTests {
                 .setBitmap(new byte[] {1, 2, 3})
                 .build();
         assertNotNull(detailMapSection, "DetailMapSection created Successful");
+    }
+
+    @Autowired
+    UserDao userDao;
+    @Test
+    void testUserDao(){
+        String name = "Demo";
+        String email = "demo@demo.com";
+        long uid = userDao.createUser(name, email);
+        assertNotEquals(uid, -1);
+
+
+        User user = userDao.getUserById(uid);
+
+        assertEquals(name, user.getName());
+        assertEquals(email, user.getEmail());
+
+        assertTrue(userDao.removeUserById(uid));
+
+        System.out.println("User Dao is Successfully worked");
     }
 }
