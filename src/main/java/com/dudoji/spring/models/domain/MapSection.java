@@ -1,16 +1,16 @@
 package com.dudoji.spring.models.domain;
 
 public class MapSection {
+    public static final int MAP_SECTION_WIDTH = 11500;
+
     MapSection(Builder builder){
         uid = builder.uid;
-        x = builder.x;
-        y = builder.y;
+        point = new Point(builder.x, builder.y);
         explored = true;
     }
 
     protected long uid;
-    protected int x;
-    protected int y;
+    protected Point point;
     protected boolean explored;
 
     public static class Builder {
