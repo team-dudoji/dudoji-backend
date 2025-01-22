@@ -68,5 +68,6 @@ public class MapSectionDao {
 
     public void createMapSections(List<MapSection> mapSections){
         // TODO
+        // 다른 로직에서 만든 MapSection 들을 저장한다.
     }
 }
