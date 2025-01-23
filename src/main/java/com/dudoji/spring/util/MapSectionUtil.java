@@ -13,6 +13,7 @@ public class MapSectionUtil {
         // TODO
         // GPS 받아온 위도 경도를 MapSection에 적용한다. (Bitmap Util을 활용)
         // return은 적용한 MapSection
+
         return null;
     }
 

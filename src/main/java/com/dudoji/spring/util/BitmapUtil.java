@@ -1,7 +1,15 @@
 package com.dudoji.spring.util;
 
 public class BitmapUtil {
+    /**
+        기준 위도 경도를 기준으로 주어진 위도 경도의 위치를 계산하여 해당 비트맵의 위치를 1로 바꿉니다.
 
+        @param bitmap 변환시킬 비트맵
+        @param baseLng 기본 경도
+        @param baseLat 기본 위도
+        @param lng 경도 변수
+        @param lat 위도 변수
+     */
     public static byte[] setBit(byte[] bitmap, int baseLng, int baseLat, int lng, int lat) {
         // TODO
         // 위도 경도에 맞는 위치의 bit를 1로 바꾸는 함수
