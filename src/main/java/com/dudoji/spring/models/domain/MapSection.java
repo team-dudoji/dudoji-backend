@@ -14,6 +14,7 @@ public class MapSection {
     protected boolean explored;
 
     // TODO: lng, lat 으로 Point Constructor 변경에 따라 수정 필요
+
     public static class Builder {
         protected long uid;
         protected int x;
