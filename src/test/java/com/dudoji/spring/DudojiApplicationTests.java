@@ -65,4 +65,9 @@ class DudojiApplicationTests {
 
         System.out.println("User Dao is Successfully worked");
     }
+
+    @Test
+    void pointClassTest() {
+
+    }
 }
