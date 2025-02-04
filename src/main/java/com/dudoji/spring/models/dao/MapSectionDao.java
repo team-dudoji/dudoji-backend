@@ -35,10 +35,11 @@ public class MapSectionDao {
     }
 
     public List<MapSection> getMapSections(long uid, Point point, int radius){
-        int maxX = point.getX() + radius;
-        int maxY = point.getY() + radius;
-        int minX = point.getX() - radius;
-        int minY = point.getY() - radius;
+        int[] dudojiPosition = point.getDudoji();
+        int maxX = dudojiPosition[0] + radius;
+        int maxY = dudojiPosition[1] + radius;
+        int minX = dudojiPosition[0] - radius;
+        int minY = dudojiPosition[1] - radius;
         try (Connection connection = dbConnection.getConnection()) {
             List<MapSection> mapSections = new ArrayList<>();
             PreparedStatement preparedStatement = connection.prepareStatement(GET_MAP_SECTIONS);
