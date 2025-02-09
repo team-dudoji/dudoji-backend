@@ -3,7 +3,6 @@ package com.dudoji.spring.models.domain;
 import lombok.Getter;
 import lombok.Setter;
 import org.locationtech.proj4j.*;
-import org.yaml.snakeyaml.util.Tuple;
 
 @Getter
 @Setter
@@ -45,9 +44,9 @@ public class Point {
      * @return 해당 값을 lng, lat로 해석해 만든 Point 객체
      */
     public static Point fromUTMK(int northing, int easting) {
-        int[] geographicPosition = transformUtmkToLngLat(northing, easting);
+        Pair<Integer, Integer> geographicPosition = transformUtmkToLngLat(northing, easting);
 
-        Point result = new Point (geographicPosition[0], geographicPosition[1]);
+        Point result = new Point (geographicPosition.getX(), geographicPosition.getY());
         result.setUtmk(northing, easting);
 
         return result;
@@ -60,9 +59,9 @@ public class Point {
      * @return 해당 값을 lng, lat로 해석해 만든 Point 객체
      */
     public static Point fromDUDOJI(int dudojiX, int dudojiY) {
-        int[] geographicPosition = transformDudojiToLngLat(dudojiX, dudojiY);
+        Pair<Integer, Integer> geographicPosition = transformDudojiToLngLat(dudojiX, dudojiY);
 
-        Point result = new Point (geographicPosition[0], geographicPosition[1]);
+        Point result = new Point (geographicPosition.getX(), geographicPosition.getY());
         result.setDudoji(dudojiX, dudojiY);
 
         return result;
@@ -71,34 +70,34 @@ public class Point {
     // Getter Part
     /**
      * Point 객체의 지리좌표계 값을 가져옵니다.
-     * @return (lng, lat)로 되어있는 int 배열
+     * @return (lng, lat)로 되어있는 Pair
      */
-    public int[] getLngLat() {
-        return new int[]{lng, lat};
+    public Pair<Integer, Integer> getLngLat() {
+        return new Pair<>(lng, lat);
     }
 
     /**
      * Point 객체의 UTM-K 좌표계 값을 가져옵니다.
-     * @return (northing, easting)로 되어있는 int 배열
+     * @return (northing, easting)로 되어있는 Pair
      */
-    public int[] getUtmk() {
+    public Pair<Integer, Integer> getUtmk() {
         if (northing == null || easting == null) {
-            int[] utmkPosition = transformLngLatToUtmk(lng, lat);
-            this.setUtmk(utmkPosition[0], utmkPosition[1]);
+            Pair<Integer, Integer> utmkPosition = transformLngLatToUtmk(lng, lat);
+            this.setUtmk(utmkPosition.getX(), utmkPosition.getY());
         }
-        return new int[]{northing, easting};
+        return new Pair<>(northing, easting);
     }
 
     /**
      * Point 객체의 DUDOJI 좌표계 값을 가져옵니다.
-     * @return (dudojiX, dudojiY)로 되어있는 int 배열
+     * @return (dudojiX, dudojiY)로 되어있는 Pair
      */
-    public int[] getDudoji() {
+    public Pair<Integer, Integer> getDudoji() {
         if (dudojiX == null || dudojiY == null) {
-            int[] dudojiPosition = transformLngLatToDudoji(lng, lat);
-            this.setDudoji(dudojiPosition[0], dudojiPosition[1]);
+            Pair<Integer, Integer> dudojiPosition = transformLngLatToDudoji(lng, lat);
+            this.setDudoji(dudojiPosition.getX(), dudojiPosition.getY());
         }
-        return new int[]{dudojiX, dudojiY};
+        return new Pair<>(dudojiX, dudojiY);
     }
 
     // Setter Part
@@ -127,33 +126,33 @@ public class Point {
      * 위도 경도 시스템을 Dudoji 형식으로 바꿉니다.
      * @param lng 경도 * 10^6 한 값
      * @param lat 위도 * 10^6 한 값
-     * @return (dudojiX, dudojiY)로 되어있는 int 배열
+     * @return (dudojiX, dudojiY)로 되어있는 Pair
      */
-    private static int[] transformLngLatToDudoji(int lng, int lat){
+    private static Pair<Integer, Integer> transformLngLatToDudoji(int lng, int lat){
         int dudojiX = Math.floorDiv((lng - BASE_LONGITUDE), MapSection.MAP_SECTION_WIDTH);
         int dudojiY = Math.floorDiv((lat - BASE_LATITUDE), MapSection.MAP_SECTION_WIDTH);
-        return new int[]{dudojiX, dudojiY};
+        return new Pair<>(dudojiX, dudojiY);
     }
 
     /**
      * Dudoji 시스템을 위도 경도 형식으로 바꿉니다.
      * @param dudojiX 두도지 좌표계 x 값
      * @param dudojiY 두도지 좌표계 y 값
-     * @return (lng, lat)로 되어있는 int 배열
+     * @return (lng, lat)로 되어있는 Pair
      */
-    private static int[] transformDudojiToLngLat(int dudojiX, int dudojiY){
+    private static Pair<Integer, Integer> transformDudojiToLngLat(int dudojiX, int dudojiY){
         int longitude = dudojiX * MapSection.MAP_SECTION_WIDTH + BASE_LONGITUDE;
         int latitude  = BASE_LATITUDE + MapSection.MAP_SECTION_WIDTH * dudojiY;
-        return new int[]{longitude, latitude};
+        return new Pair<>(longitude, latitude);
     }
 
     /**
      * 위도 경도 시스템을 UTM-K 형식으로 바꿉니다.
      * @param lng 경도 * 10^6 한 값
      * @param lat 위도 * 10^6 한 값
-     * @return (N,E)로 되어있는 int 배열
+     * @return (N,E)로 되어있는 Pair
      */
-    private static int[] transformLngLatToUtmk(int lng, int lat) {
+    private static Pair<Integer, Integer> transformLngLatToUtmk(int lng, int lat) {
         CoordinateReferenceSystem wgs84System = getWGS84System();
         CoordinateReferenceSystem utmkSystem = getUTMKSystem();
 
@@ -170,16 +169,16 @@ public class Point {
         ProjCoordinate projCoordinate = coordinateTransform.transform(p,p2);
 
         // x가 Easting y가 Northing
-        return new int[]{(int) projCoordinate.y, (int) projCoordinate.x};
+        return new Pair<>((int) projCoordinate.y, (int) projCoordinate.x);
     }
 
     /**
      * UTM-K 좌표계에서 지리좌표계로 치환합니다.
      * @param northing UTM-K 좌표계에서의 N
      * @param easting UTM-K 좌표계에서의 E
-     * @return (lng, lat)로 되어있는 int 배열
+     * @return (lng, lat)로 되어있는 Pair
      */
-    private static int[] transformUtmkToLngLat(int northing, int easting) {
+    private static Pair<Integer, Integer> transformUtmkToLngLat(int northing, int easting) {
         CoordinateReferenceSystem wgs84System = getWGS84System();
         CoordinateReferenceSystem utmkSystem = getUTMKSystem();
 
@@ -196,7 +195,7 @@ public class Point {
         int lng = (int) (p2.x * 10e5);
         int lat = (int) (p2.y * 10e5);
 
-        return new int[]{lng, lat};
+        return new Pair<>(lng, lat);
     }
 
     // Util Part
