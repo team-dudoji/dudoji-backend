@@ -2,6 +2,7 @@ package com.dudoji.spring.models.dao;
 
 import com.dudoji.spring.models.DBConnection;
 import com.dudoji.spring.models.domain.MapSection;
+import com.dudoji.spring.models.domain.Pair;
 import com.dudoji.spring.models.domain.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,11 +37,11 @@ public class MapSectionDao {
 
     public List<MapSection> getMapSections(long uid, Point point, int radius){
 
-        int[] dudojiPosition = point.getDudoji();
-        int maxX = dudojiPosition[0] + radius;
-        int maxY = dudojiPosition[1] + radius;
-        int minX = dudojiPosition[0] - radius;
-        int minY = dudojiPosition[1] - radius;
+        Pair<Integer, Integer> dudojiPosition = point.getDudoji();
+        int maxX = dudojiPosition.getX() + radius;
+        int maxY = dudojiPosition.getY()+ radius;
+        int minX = dudojiPosition.getX() - radius;
+        int minY = dudojiPosition.getY() - radius;
 
         try (Connection connection = dbConnection.getConnection()) {
             List<MapSection> mapSections = new ArrayList<>();
