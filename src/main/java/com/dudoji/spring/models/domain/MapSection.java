@@ -5,13 +5,15 @@ public class MapSection {
 
     MapSection(Builder builder){
         uid = builder.uid;
-        point = new Point(builder.x, builder.y);
+        point = Point.fromGeographic(builder.x, builder.y);
         explored = true;
     }
 
     protected long uid;
     protected Point point;
     protected boolean explored;
+
+    // TODO: lng, lat 으로 Point Constructor 변경에 따라 수정 필요
 
     public static class Builder {
         protected long uid;
