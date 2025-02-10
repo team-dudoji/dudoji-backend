@@ -12,6 +12,7 @@ import java.util.Set;
 
 import static com.dudoji.spring.util.BitmapUtil.*;
 
+
 public class MapSectionUtil {
     // TODO - apply user positions to MapSection
 

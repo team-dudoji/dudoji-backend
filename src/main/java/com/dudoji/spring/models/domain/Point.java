@@ -241,6 +241,7 @@ public class Point {
         else {
             return false;
         }
+
     }
 
     public static void main(String[] args) {
