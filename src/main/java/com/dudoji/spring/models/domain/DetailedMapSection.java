@@ -12,4 +12,12 @@ public class DetailedMapSection extends MapSection {
         explored = false;
         bitmap = builder.bitmap;
     }
+
+    public byte[] getBitmap() {
+        return this.bitmap;
+    }
+
+    public Point getPoint() {
+        return this.point;
+    }
 }
