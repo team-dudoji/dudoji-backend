@@ -228,6 +228,21 @@ public class Point {
         return utmkSystem;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Point) {
+            if (this.getLat() == ((Point) obj).getLat() && this.getLng() == ((Point) obj).getLng()){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
     public static void main(String[] args) {
 //        Point firstPoint = Point.fromGeographic(BASE_LONGITUDE, BASE_LATITUDE);
 //
