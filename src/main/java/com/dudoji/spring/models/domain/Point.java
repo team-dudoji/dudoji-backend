@@ -11,7 +11,8 @@ import static com.dudoji.spring.models.domain.MapSection.TILE_SIZE;
 public class Point {
     // Basic Coordinate System: Geographic
     private double lng, lat;
-    private int googleX, googleY;
+    private Double googleX = null;
+    private Double googleY = null;
 
     // Constructor Part
     private Point(double lng, double lat) {
@@ -29,16 +30,6 @@ public class Point {
         return new Point(lng, lat);
     }
 
-    /**
-     * 구긂 좌표로 부터 Point 객체를 생성합니다.
-     * @param googleX 구글 좌표의 x 값
-     * @param googleY 구글 좌표의 y 값
-     * @return
-     */
-    public static Point fromGoogleMap(int googleX, int googleY) {
-        // TODO: Some Logic For GoogleMap to Lng Lat
-        return new Point(1, 2);
-    }
     // Getter Part
     /**
      * Point 객체의 지리좌표계 값을 가져옵니다.
@@ -52,7 +43,12 @@ public class Point {
      * Point 객체의 구글 타입맵 좌표를 가져옵니다.
      * @return (googleX, googleY)로 되어있는 Pair
      */
-    public Pair<Integer, Integer> getGoogleMap() {
+    public Pair<Double, Double> getGoogleMap() {
+        if (googleX == null || googleY == null) {
+            Pair<Double, Double> googlePoint = convertLatLngToGoogleMercator(lng, lat);
+            googleX = googlePoint.getX();
+            googleY = googlePoint.getY();
+        }
         return new Pair<>(googleX, googleY);
     }
 
