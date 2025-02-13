@@ -37,11 +37,11 @@ public class MapSectionDao {
 
     public List<MapSection> getMapSections(long uid, Point point, int radius){
 
-        Pair<Integer, Integer> dudojiPosition = point.getDudoji();
-        int maxX = dudojiPosition.getX() + radius;
-        int maxY = dudojiPosition.getY()+ radius;
-        int minX = dudojiPosition.getX() - radius;
-        int minY = dudojiPosition.getY() - radius;
+        Pair<Integer, Integer> googleMapPosition = point.getGoogleMap();
+        int maxX = googleMapPosition.getX() + radius;
+        int maxY = googleMapPosition.getY()+ radius;
+        int minX = googleMapPosition.getX() - radius;
+        int minY = googleMapPosition.getY() - radius;
 
         try (Connection connection = dbConnection.getConnection()) {
             List<MapSection> mapSections = new ArrayList<>();
