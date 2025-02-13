@@ -3,15 +3,15 @@ package com.dudoji.spring.models.domain;
 import lombok.Getter;
 import lombok.Setter;
 
+import static com.dudoji.spring.models.domain.MapSection.BASIC_ZOOM_SIZE;
+import static com.dudoji.spring.models.domain.MapSection.TILE_SIZE;
+
 @Getter
 @Setter
 public class Point {
     // Basic Coordinate System: Geographic
     private double lng, lat;
     private int googleX, googleY;
-
-    public static final int TILE_SIZE = 256;
-    public static final int BASIC_ZOOM_SIZE = 15;
 
     // Constructor Part
     private Point(double lng, double lat) {
