@@ -37,7 +37,7 @@ public class MapSectionDao {
 
     public List<MapSection> getMapSections(long uid, Point point, int radius){
 
-        Pair<Integer, Integer> googleMapPosition = point.getGoogleMap();
+        Pair<Integer, Integer> googleMapPosition = Point.convertGoogleMercatorToTile(point.getGoogleX(), point.getGoogleY());
         int maxX = googleMapPosition.getX() + radius;
         int maxY = googleMapPosition.getY()+ radius;
         int minX = googleMapPosition.getX() - radius;
