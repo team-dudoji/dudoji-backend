@@ -122,4 +122,17 @@ public class Point {
                 (int) Math.floor(googleY * scale)
         );
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Point)) return false;
+
+        Point that = (Point) obj;
+        double epsilon = 1e-9;
+
+        return (Math.abs(this.getLat() - that.getLat()) < epsilon)
+                && (Math.abs(this.getLng() - that.getLng()) < epsilon);
+    }
+
 }
