@@ -1,8 +1,6 @@
 package com.dudoji.spring.models.domain;
 
 public class MapSection {
-    public static final int MAP_SECTION_WIDTH = 11500;
-
     MapSection(Builder builder){
         uid = builder.uid;
         point = Point.fromGeographic(builder.x, builder.y);
@@ -12,8 +10,6 @@ public class MapSection {
     protected long uid;
     protected Point point;
     protected boolean explored;
-
-    // TODO: lng, lat 으로 Point Constructor 변경에 따라 수정 필요
 
     public static class Builder {
         protected long uid;
