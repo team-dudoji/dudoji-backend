@@ -1,16 +1,22 @@
 package com.dudoji.spring.models.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+
 public class MapSection {
     public static final int TILE_SIZE = 256;
     public static final int BASIC_ZOOM_SIZE = 15;
     MapSection(Builder builder){
         uid = builder.uid;
-        point = Point.fromGeographic(builder.x, builder.y);
+        point = new Pair<>(builder.x, builder.y);
         explored = true;
     }
 
     protected long uid;
-    protected Point point;
+    protected Pair<Integer, Integer> point;
     protected boolean explored;
 
     public static class Builder {

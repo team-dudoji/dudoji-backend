@@ -1,7 +1,11 @@
 package com.dudoji.spring.models.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.Objects;
+
+@EqualsAndHashCode
 public class Pair<A, B> {
     @Getter
     private A X;
