@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+
 public class MapSection {
     public static final int TILE_SIZE = 256;
     public static final int BASIC_ZOOM_SIZE = 15;

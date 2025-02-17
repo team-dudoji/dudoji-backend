@@ -87,6 +87,7 @@ class DudojiApplicationTests {
 
     @Test
     void testPointClass() {
+
         Pair<Double, Double> googleMercator = Point.convertLatLngToGoogleMercator(41.85, -87.65);
         // 기대값
         double expectedX = 65.67111111111112;
@@ -175,5 +176,6 @@ class DudojiApplicationTests {
         // Test When 100% fill
         fillBits(isExploredbitmap, TILE_SIZE * TILE_SIZE); // 전체 65536bit 켜기
         assertTrue(isExplored(isExploredbitmap));
+
     }
 }
