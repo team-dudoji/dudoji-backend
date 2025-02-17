@@ -11,6 +11,6 @@ public class RevealCircleController {
     @PostMapping("/save")
     public ResponseEntity<String> saveRevealCircles(@RequestBody RevealCirclesRequestDto positionsDto){
         //TODO - have to call MapSectionService().applyRevealCircle()
-        return ResponseEntity.ok("saved Successfully");
+        return ResponseEntity.ok("saved Successfully " + positionsDto.toString());
     }
 }
