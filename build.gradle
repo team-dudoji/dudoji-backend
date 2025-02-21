@@ -25,6 +25,8 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'io.github.cdimascio:java-dotenv:5.2.2'
     implementation 'org.locationtech.proj4j:proj4j:1.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 
     compileOnly 'org.projectlombok:lombok:1.18.30'

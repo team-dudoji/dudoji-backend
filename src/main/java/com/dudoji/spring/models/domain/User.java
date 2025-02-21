@@ -11,15 +11,17 @@ import java.util.Date;
 @Setter
 public class User {
 
-    public User(Long id, String name, String email, Timestamp createAt){
+    public User(Long id, String name, String email, Timestamp createAt, int kakaoUserId){
         this.id = id;
         this.name = name;
         this.email = email;
         this.createAt = createAt;
+        this.kakaoUserId = kakaoUserId;
     }
 
     private Long id;
     private String name;
     private String email;
     private Date createAt;
+    private int kakaoUserId;
 }

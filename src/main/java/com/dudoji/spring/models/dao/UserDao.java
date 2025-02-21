@@ -29,7 +29,8 @@ public class UserDao {
                 String name = resultSet.getString(1);
                 String email = resultSet.getString(2);
                 Timestamp createdAt = resultSet.getTimestamp(3);
-                return new User(uid, name, email, createdAt);
+                int kakaoUserId = resultSet.getInt(4);
+                return new User(uid, name, email, createdAt, kakaoUserId);
             }
             return null;
         } catch (SQLException | ClassNotFoundException e) {
