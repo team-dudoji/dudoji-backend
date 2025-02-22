@@ -71,9 +71,9 @@ class DudojiApplicationTests {
     void testUserDao(){
         String name = "Demo";
         String email = "demo@demo.com";
+        long kakao_id_sample = 1;
         long uid = userDao.createUser(name, email);
         assertNotEquals(uid, -1);
-
 
         User user = userDao.getUserById(uid);
 
@@ -81,6 +81,10 @@ class DudojiApplicationTests {
         assertEquals(email, user.getEmail());
 
         assertTrue(userDao.removeUserById(uid));
+
+        User user2 = userDao.getUserByKakaoId(kakao_id_sample);
+        assertEquals(kakao_id_sample, user2.getKakaoId());
+        assertEquals("dudoji", user2.getName());
 
         System.out.println("User Dao is Successfully worked");
     }
