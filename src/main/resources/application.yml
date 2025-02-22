@@ -11,3 +11,8 @@ spring:
     driver-class-name: org.postgresql.Driver
   application:
     name: dudoji-backend
+
+kakao:
+  auth:
+    client_id: # YOUR CIENT ID ,
+    redirect_uri: http://localhost:8000/callback
