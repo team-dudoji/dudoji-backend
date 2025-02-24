@@ -14,5 +14,5 @@ spring:
 
 kakao:
   auth:
-    client_id: # YOUR CIENT ID ,
-    redirect_uri: http://localhost:8000/callback
+    client_id:
+    redirect_uri: http://localhost:8000/auth/login/kakao/test_make_token
