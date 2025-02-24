@@ -1,6 +1,8 @@
 package com.dudoji.spring;
 
+import com.dudoji.spring.service.MapSectionService;
 import com.dudoji.spring.models.DBConnection;
+import com.dudoji.spring.models.dao.MapSectionDao;
 import com.dudoji.spring.models.dao.UserDao;
 import com.dudoji.spring.models.domain.MapSection;
 import com.dudoji.spring.models.domain.Pair;
@@ -13,6 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static com.dudoji.spring.models.domain.MapSection.BASIC_ZOOM_SIZE;
+import static com.dudoji.spring.models.domain.MapSection.TILE_SIZE;
+import static com.dudoji.spring.util.BitmapUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -20,6 +25,10 @@ class DudojiApplicationTests {
 
     @Autowired
     DBConnection dbConnection;
+    @Autowired
+    MapSectionDao mapSectionDao;
+    @Autowired
+    MapSectionService mapSectionService;
 
     @Test
     void testDBConnection() {
@@ -48,6 +57,14 @@ class DudojiApplicationTests {
         assertNotNull(detailMapSection, "DetailMapSection created Successful");
     }
 
+    @Test
+    void testMapSectionDao() {
+        // 실행시 잘 작동되고 변경이 잘 됨.
+
+        Point centerPoint = Point.fromGeographic(127.189969,37.469509);
+        mapSectionService.applyRevealCircle(1, centerPoint, 1000);
+    }
+
     @Autowired
     UserDao userDao;
     @Test
@@ -69,7 +86,8 @@ class DudojiApplicationTests {
     }
 
     @Test
-    void pointClassTest() {
+    void testPointClass() {
+
         Pair<Double, Double> googleMercator = Point.convertLatLngToGoogleMercator(41.85, -87.65);
         // 기대값
         double expectedX = 65.67111111111112;
@@ -91,5 +109,73 @@ class DudojiApplicationTests {
         int expectedTileY = 12182;
         assertEquals(expectedTileX, tilePoint.getX());
         assertEquals(expectedTileY, tilePoint.getY());
+    }
+
+    @Test
+    void testBitmapUtil() {
+        // Create BitMap
+        byte[] bitmap = new byte[256 * 256 / 8];
+        // Create Test Point
+        Point testPoint = Point.fromGeographic(41.85, -87.65);
+
+        // setBit Test
+        boolean isSet = getBit(bitmap, testPoint);
+        assertFalse(isSet);
+        setBit(bitmap, testPoint);
+        isSet = getBit(bitmap, testPoint);
+        assertTrue(isSet);
+
+        // setCloseBits Test
+        Point centerPoint = Point.fromGeographic(37, 25);
+        double radiusMeters = 30.0;
+        setCloseBits(bitmap, centerPoint, radiusMeters, BASIC_ZOOM_SIZE);
+        {
+            Pair<Double, Double> centerGoogle = centerPoint.getGoogleMap();
+            Pair<Integer, Integer> cpx = Point.convertGoogleMercatorToPixel(centerGoogle.getX(), centerGoogle.getY());
+
+            int cx = cpx.getX() % TILE_SIZE; // center Point 비트맵 값
+            int cy = cpx.getY() % TILE_SIZE; // center Point 비트맵 값
+
+            boolean centerSet = getBit(bitmap, centerPoint);
+            assertTrue(centerSet);
+
+            int testX = cx + 3;
+            int testY = cy + 1;
+
+            if (testX < 0 || testX >= TILE_SIZE || testY < 0 || testY >= TILE_SIZE) {
+                // 범위 체크
+                System.out.println("Test point out of tile range!");
+            }
+            else {
+                boolean nearSet = getBit(bitmap, testX, testY);
+                assertTrue(nearSet);
+            }
+
+            // 3번째 실험
+            int farX = cx + 100;
+            int farY = cy + 1;
+            if (farX < 0 || farX >= TILE_SIZE || farY < 0 || farY >= TILE_SIZE) {
+                System.out.println("Far Point out of tile range");
+            }
+            else {
+                boolean farSet = getBit(bitmap, farX, farY);
+                assertFalse(farSet);
+            }
+        }
+
+        // isExplored Test
+        byte[] isExploredbitmap = new byte[TILE_SIZE * TILE_SIZE / 8];
+
+        // Test When All Zero
+        assertFalse(isExplored(isExploredbitmap));
+
+        // Test When 80% fill
+        fillBits(isExploredbitmap, (TILE_SIZE * TILE_SIZE) * 4 / 5 + 1); // 앞쪽 비트 절반만 켠다
+        assertTrue(isExplored(isExploredbitmap));
+
+        // Test When 100% fill
+        fillBits(isExploredbitmap, TILE_SIZE * TILE_SIZE); // 전체 65536bit 켜기
+        assertTrue(isExplored(isExploredbitmap));
+
     }
 }
