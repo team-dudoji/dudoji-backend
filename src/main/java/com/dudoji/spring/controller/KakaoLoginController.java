@@ -52,7 +52,7 @@ public class KakaoLoginController {
     }
 
     // TODO: TEST CODE
-    @GetMapping("/session-check")
+    @GetMapping("/session_check")
     public ResponseEntity<Map<String, Object>> checkSession(HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         Enumeration<String> attributeNames = session.getAttributeNames();
