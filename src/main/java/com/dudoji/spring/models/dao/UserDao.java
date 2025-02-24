@@ -1,6 +1,7 @@
 package com.dudoji.spring.models.dao;
 
 import com.dudoji.spring.models.DBConnection;
+import com.dudoji.spring.models.domain.KakaoUser;
 import com.dudoji.spring.models.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ public class UserDao {
     private DBConnection dbConnection;
 
     private static String GET_USER_BY_ID =
-            "select name, email, created_at, kakao_id from \"User\" where id=?";
+            "select name, email, created_at from \"User\" where id=?";
     private static String REMOVE_USER_BY_ID =
             "delete from \"User\" where id=?";
     private static String CREATE_USER_BY_ID =
@@ -33,8 +34,7 @@ public class UserDao {
                 String name = resultSet.getString(1);
                 String email = resultSet.getString(2);
                 Timestamp createdAt = resultSet.getTimestamp(3);
-                long kakaoUserId = resultSet.getLong(4);
-                return new User(uid, name, email, createdAt, kakaoUserId);
+                return new User(uid, name, email, createdAt);
             }
             return null;
         } catch (SQLException | ClassNotFoundException e) {
@@ -52,7 +52,7 @@ public class UserDao {
                 String name = resultSet.getString(2);
                 String email = resultSet.getString(3);
                 Timestamp createdAt = resultSet.getTimestamp(4);
-                return new User(uid, name, email, createdAt, kakaoId);
+                return new KakaoUser(uid, name, email, createdAt, kakaoId);
             }
             return null;
         } catch (SQLException | ClassNotFoundException e) {
