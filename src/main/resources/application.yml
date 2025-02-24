@@ -11,3 +11,8 @@ spring:
     driver-class-name: org.postgresql.Driver
   application:
     name: dudoji-backend
+
+kakao:
+  auth:
+    client_id:
+    redirect_uri: http://localhost:8000/auth/login/kakao/test_make_token
