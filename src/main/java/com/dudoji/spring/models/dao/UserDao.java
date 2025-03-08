@@ -15,11 +15,15 @@ public class UserDao {
     private DBConnection dbConnection;
 
     private static String GET_USER_BY_ID =
-            "select name, email, created_at from \"User\" where id=?";
+            "select name, email, created_at, role from \"User\" where id=?";
+    private static String GET_USER_BY_NAME =
+            "SELECT id, email, created_at, role FROM \"User\" WHERE name=?";
     private static String REMOVE_USER_BY_ID =
             "delete from \"User\" where id=?";
     private static String CREATE_USER_BY_ID =
             "insert into \"User\"(name, email) values (?, ?) returning id";
+    private static String CREATE_USER_BY_USER =
+            "insert into \"User\"(name, email, password, role) values (?, ?, ?, ?::user_role) returning id";
     private static String GET_USER_BY_KAKAO_ID =
             "SELECT id, name, email, created_at FROM \"User\" WHERE kakao_id=?";
     private static String CREATE_USER_BY_KAKAO_ID =
@@ -34,7 +38,8 @@ public class UserDao {
                 String name = resultSet.getString(1);
                 String email = resultSet.getString(2);
                 Timestamp createdAt = resultSet.getTimestamp(3);
-                return new User(uid, name, email, createdAt);
+                String role = resultSet.getString(4);
+                return new User(uid, name, email, createdAt, role);
             }
             return null;
         } catch (SQLException | ClassNotFoundException e) {
@@ -42,6 +47,26 @@ public class UserDao {
         }
     }
 
+    public User getUserByName(String name) {
+        try (Connection connection  = dbConnection.getConnection()) {
+            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_NAME);
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                long uid = resultSet.getLong(1);
+                String email = resultSet.getString(2);
+                Timestamp createdAt = resultSet.getTimestamp(3);
+                String role = resultSet.getString(4);
+                return new User(uid, name, email, createdAt, role);
+            }
+            return null;
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Deprecated
+    // 카카오 아이디를 잘 안 쓸 예정
     public User getUserByKakaoId(long kakaoId) {
         try (Connection connection = dbConnection.getConnection()) {
             PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_KAKAO_ID);
@@ -70,6 +95,8 @@ public class UserDao {
         }
     }
 
+    @Deprecated
+    // User로 만들도록 하자. 두 개의 정보만으로는 데베 저장이 버겁다.
     public long createUser(String name, String email) {
         try (Connection connection  = dbConnection.getConnection()) {
             PreparedStatement preparedStatement =  connection.prepareStatement(CREATE_USER_BY_ID);
@@ -86,6 +113,27 @@ public class UserDao {
         }
     }
 
+    public long createUserByUser(User user) {
+        try (Connection connection  = dbConnection.getConnection()) {
+            PreparedStatement preparedStatement =  connection.prepareStatement(CREATE_USER_BY_USER);
+            preparedStatement.setString(1, user.getName());
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setString(3, user.getPassword());
+            preparedStatement.setString(4, user.getRole());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                long uid = resultSet.getLong("id");
+                return uid;
+            }
+            return -1;
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Deprecated
+    // 카카오 아이디를 안쓸 듯
     public long createUserWithKakaoId(String name, String email, long kakaoId) {
         try (Connection connection  = dbConnection.getConnection()) {
             PreparedStatement preparedStatement =  connection.prepareStatement(CREATE_USER_BY_KAKAO_ID);
