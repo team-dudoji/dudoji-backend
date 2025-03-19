@@ -17,7 +17,7 @@ public class UserDao {
     private static String GET_USER_BY_ID =
             "select name, email, created_at, role from \"User\" where id=?";
     private static String GET_USER_BY_NAME =
-            "SELECT id, email, created_at, role FROM \"User\" WHERE name=?";
+            "SELECT id, email, created_at, role, password FROM \"User\" WHERE name=?";
     private static String REMOVE_USER_BY_ID =
             "delete from \"User\" where id=?";
     private static String CREATE_USER_BY_ID =
@@ -39,7 +39,12 @@ public class UserDao {
                 String email = resultSet.getString(2);
                 Timestamp createdAt = resultSet.getTimestamp(3);
                 String role = resultSet.getString(4);
-                return new User(uid, name, email, createdAt, role);
+                return User.builder()
+                        .id(uid)
+                        .name(name)
+                        .email(email)
+                        .createAt(createdAt)
+                        .role(role).build();
             }
             return null;
         } catch (SQLException | ClassNotFoundException e) {
@@ -57,7 +62,14 @@ public class UserDao {
                 String email = resultSet.getString(2);
                 Timestamp createdAt = resultSet.getTimestamp(3);
                 String role = resultSet.getString(4);
-                return new User(uid, name, email, createdAt, role);
+                String password = resultSet.getString(5);
+                return User.builder()
+                        .id(uid)
+                        .email(email)
+                        .createAt(createdAt)
+                        .role(role)
+                        .password(password)
+                        .build();
             }
             return null;
         } catch (SQLException | ClassNotFoundException e) {
@@ -65,25 +77,31 @@ public class UserDao {
         }
     }
 
-    @Deprecated
-    // 카카오 아이디를 잘 안 쓸 예정
-    public User getUserByKakaoId(long kakaoId) {
-        try (Connection connection = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_KAKAO_ID);
-            preparedStatement.setLong(1, kakaoId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                long uid = resultSet.getLong(1);
-                String name = resultSet.getString(2);
-                String email = resultSet.getString(3);
-                Timestamp createdAt = resultSet.getTimestamp(4);
-                return new KakaoUser(uid, name, email, createdAt, kakaoId);
-            }
-            return null;
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @Deprecated
+//    // 카카오 아이디를 잘 안 쓸 예정
+//    // 수정 바람
+//    public User getUserByKakaoId(long kakaoId) {
+//        try (Connection connection = dbConnection.getConnection()) {
+//            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_KAKAO_ID);
+//            preparedStatement.setLong(1, kakaoId);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//            if (resultSet.next()){
+//                long uid = resultSet.getLong(1);
+//                String name = resultSet.getString(2);
+//                String email = resultSet.getString(3);
+//                Timestamp createdAt = resultSet.getTimestamp(4);
+//                return User.builder()
+//                        .id(uid)
+//                        .name(name)
+//                        .email(email)
+//                        .createAt(createdAt)
+//                        .build();
+//            }
+//            return null;
+//        } catch (SQLException | ClassNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public boolean removeUserById(long uid) {
         try (Connection connection  = dbConnection.getConnection()) {
