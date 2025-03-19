@@ -1,25 +1,24 @@
 package com.dudoji.spring.models.domain;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.Date;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User {
 
-    public User(Long id, String name, String email, Timestamp createAt){
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.createAt = createAt;
-    }
-
     private Long id;
+    private String password;
+    private String role;
     private String name;
     private String email;
     private Date createAt;
+    private String provider;
+    private String providerId;
 }
