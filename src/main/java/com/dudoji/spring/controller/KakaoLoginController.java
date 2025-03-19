@@ -33,25 +33,27 @@ public class KakaoLoginController {
     private final UserSessionService userSessionService;
     private String accessToken;
 
+    @Deprecated
     @GetMapping("/callback")
     public ResponseEntity<String> callback() {
-
-        KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
-
-        User user = userDao.getUserByKakaoId(userInfo.getId());
-        if (user == null) {
-            userDao.createUserWithKakaoId(userInfo.kakaoAccount.profile.getNickName(), userInfo.kakaoAccount.getEmail(), userInfo.getId());
-        }
-        else {
-            // 기존 사용자 업데이트
-        }
-
-        userSessionService.setUser(user);
-        log.info("세션에 사용자 정보 저장: {}", user);
+//        KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
+//
+//        User user = userDao.getUserByName(userInfo.kakaoAccount.getName());
+//        if (user == null) {
+//            userDao.createUserWithKakaoId(userInfo.kakaoAccount.profile.getNickName(), userInfo.kakaoAccount.getEmail(), userInfo.getId());
+//        }
+//        else {
+//            // 기존 사용자 업데이트
+//        }
+//
+//        userSessionService.setUser(user);
+//        log.info("세션에 사용자 정보 저장: {}", user);
+        log.info("=== callback entry ===");
 
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
+    @Deprecated
     @GetMapping("/get_token")
     public ResponseEntity<Void> getToken(@RequestParam("token") String token) {
         this.accessToken = token;
@@ -63,6 +65,7 @@ public class KakaoLoginController {
                 .build();
     }
 
+    @Deprecated
     @GetMapping("/test_make_token")
     public ResponseEntity<Void> makeToken(@RequestParam("code") String code) {
         String token = kakaoService.getAccessTokenFromKakao(code);
