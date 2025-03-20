@@ -152,6 +152,7 @@ public class UserDao {
 
     @Deprecated
     // 카카오 아이디를 안쓸 듯
+
     public long createUserWithKakaoId(String name, String email, long kakaoId) {
         try (Connection connection  = dbConnection.getConnection()) {
             PreparedStatement preparedStatement =  connection.prepareStatement(CREATE_USER_BY_KAKAO_ID);

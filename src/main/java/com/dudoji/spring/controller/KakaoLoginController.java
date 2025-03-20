@@ -50,6 +50,7 @@ public class KakaoLoginController {
 //        log.info("세션에 사용자 정보 저장: {}", user);
         log.info("=== callback entry ===");
 
+
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 

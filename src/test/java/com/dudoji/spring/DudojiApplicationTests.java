@@ -80,6 +80,7 @@ class DudojiApplicationTests {
         assertTrue(userDao.removeUserById(uid));
 
         KakaoUser user2 = (KakaoUser) userDao.getUserByKakaoId(kakao_id_sample);
+
         assertEquals(kakao_id_sample, user2.getKakaoId());
         assertEquals("dudoji", user2.getName());
 
