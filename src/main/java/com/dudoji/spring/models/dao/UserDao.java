@@ -65,6 +65,7 @@ public class UserDao {
                 String password = resultSet.getString(5);
                 return User.builder()
                         .id(uid)
+                        .name(name)
                         .email(email)
                         .createAt(createdAt)
                         .role(role)
