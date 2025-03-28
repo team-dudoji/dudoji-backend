@@ -2,25 +2,27 @@ package com.dudoji.spring.controller;
 
 import com.dudoji.spring.dto.KakaoUserInfoResponseDto;
 import com.dudoji.spring.models.dao.UserDao;
+import com.dudoji.spring.models.domain.JwtTokenProvider;
+import com.dudoji.spring.models.domain.PrincipalDetails;
+import com.dudoji.spring.models.domain.TokenInfo;
 import com.dudoji.spring.models.domain.User;
 import com.dudoji.spring.service.KakaoService;
 import com.dudoji.spring.service.UserSessionService;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -28,10 +30,46 @@ import java.util.Objects;
 @RequestMapping("/auth/login/kakao")
 public class KakaoLoginController {
 
-//    private final KakaoService kakaoService;
+    private final KakaoService kakaoService;
     private final UserDao userDao;
     private final UserSessionService userSessionService;
+    private final JwtTokenProvider jwtTokenProvider;
     private String accessToken;
+    private final PasswordEncoder passwordEncoder;
+
+    @PostMapping("/app-login")
+    public ResponseEntity<?> applicationKakaoLogin(@RequestHeader("Authorization") String token) {
+        // TODO:
+        // access token 이 어떤 식으로 날라오는 지 고밍
+
+        log.info("Kakao login token: " + token);
+        KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(token);
+        User user = userDao.getUserByName(userInfo.getKakaoAccount().getProfile().getNickName());
+
+        if (user == null) {
+            String password = passwordEncoder.encode(UUID.randomUUID().toString());
+            user = User.builder()
+                    .name(userInfo.getKakaoAccount().getProfile().getNickName())
+                    .password(password)
+                    .email(userInfo.kakaoAccount.email)
+                    .role("user")
+                    .build();
+            userDao.createUserByUser(user);
+        }
+        else {
+            log.info("Kakao account already exists");
+        }
+
+        PrincipalDetails principal = new PrincipalDetails(user);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                principal,
+                null,
+                principal.getAuthorities());
+
+        TokenInfo tokenInfo = jwtTokenProvider.createToken(authentication);
+        return ResponseEntity.ok(Map.of("token", tokenInfo));
+    }
 
     @Deprecated
     @GetMapping("/callback")
@@ -69,8 +107,7 @@ public class KakaoLoginController {
     @Deprecated
     @GetMapping("/test_make_token")
     public ResponseEntity<Void> makeToken(@RequestParam("code") String code) {
-//        String token = kakaoService.getAccessTokenFromKakao(code);
-        String token = "Trash";
+        String token = kakaoService.getAccessTokenFromKakao(code);
         URI uri = URI.create("http://localhost:8000/auth/login/kakao/get_token?token=" + token);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(uri)
