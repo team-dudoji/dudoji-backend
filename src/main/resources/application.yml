@@ -16,8 +16,8 @@ spring:
       client:
         registration:
           kakao:
-            client-id:
-            redirect-uri:
+            client-id: ${KAKAO_CLIENT_ID}
+            redirect-uri: ${KAKAO_REDIRECT_URI}
             authorization-grant-type: authorization_code
             scope:
               - profile_nickname
@@ -29,6 +29,8 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+jwt:
+  secret: ${JWT_SECRET_KEY}
 
 #logging:
 #  level:
