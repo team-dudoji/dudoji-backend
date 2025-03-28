@@ -30,7 +30,7 @@ import java.util.*;
 @RequestMapping("/auth/login/kakao")
 public class KakaoLoginController {
 
-    private final KakaoService kakaoService;
+//    private final KakaoService kakaoService;
     private final UserDao userDao;
     private final UserSessionService userSessionService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -88,7 +88,6 @@ public class KakaoLoginController {
 //        log.info("세션에 사용자 정보 저장: {}", user);
         log.info("=== callback entry ===");
 
-
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
@@ -107,7 +106,8 @@ public class KakaoLoginController {
     @Deprecated
     @GetMapping("/test_make_token")
     public ResponseEntity<Void> makeToken(@RequestParam("code") String code) {
-        String token = kakaoService.getAccessTokenFromKakao(code);
+//        String token = kakaoService.getAccessTokenFromKakao(code);
+        String token = "Trash";
         URI uri = URI.create("http://localhost:8000/auth/login/kakao/get_token?token=" + token);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(uri)

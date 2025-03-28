@@ -16,6 +16,8 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 @Service
+@Deprecated
+
 public class KakaoService{
     private String clientId;
     private final String KAUTH_TOKEN_URL_HOST;
