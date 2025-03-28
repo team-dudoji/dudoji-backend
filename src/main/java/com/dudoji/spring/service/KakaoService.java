@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Service
 @Deprecated
+
 public class KakaoService{
 
     private String clientId;

@@ -28,7 +28,7 @@ import java.util.Objects;
 @RequestMapping("/auth/login/kakao")
 public class KakaoLoginController {
 
-    private final KakaoService kakaoService;
+//    private final KakaoService kakaoService;
     private final UserDao userDao;
     private final UserSessionService userSessionService;
     private String accessToken;
@@ -69,7 +69,8 @@ public class KakaoLoginController {
     @Deprecated
     @GetMapping("/test_make_token")
     public ResponseEntity<Void> makeToken(@RequestParam("code") String code) {
-        String token = kakaoService.getAccessTokenFromKakao(code);
+//        String token = kakaoService.getAccessTokenFromKakao(code);
+        String token = "Trash";
         URI uri = URI.create("http://localhost:8000/auth/login/kakao/get_token?token=" + token);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(uri)

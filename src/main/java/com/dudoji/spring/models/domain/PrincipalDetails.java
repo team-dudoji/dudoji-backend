@@ -37,6 +37,10 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         return authorities;
     }
 
+    public Long getUid() {
+        return user.getId();
+    }
+
     @Override
     public String getPassword() {
         return user.getPassword();
@@ -44,6 +48,23 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     @Override
     public String getUsername() {
+        return user.getName();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+
+    @Override
+    public boolean isEnabled() { return true; }
+
+    public String getEmail() {
+
         return user.getEmail();
     }
 
