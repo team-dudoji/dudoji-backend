@@ -1,13 +1,10 @@
 package com.dudoji.spring;
 
+import com.dudoji.spring.models.domain.*;
 import com.dudoji.spring.service.MapSectionService;
 import com.dudoji.spring.models.DBConnection;
 import com.dudoji.spring.models.dao.MapSectionDao;
 import com.dudoji.spring.models.dao.UserDao;
-import com.dudoji.spring.models.domain.MapSection;
-import com.dudoji.spring.models.domain.Pair;
-import com.dudoji.spring.models.domain.User;
-import com.dudoji.spring.models.domain.Point;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -82,7 +79,8 @@ class DudojiApplicationTests {
 
         assertTrue(userDao.removeUserById(uid));
 
-        User user2 = userDao.getUserByKakaoId(kakao_id_sample);
+        KakaoUser user2 = (KakaoUser) userDao.getUserByKakaoId(kakao_id_sample);
+
         assertEquals(kakao_id_sample, user2.getKakaoId());
         assertEquals("dudoji", user2.getName());
 
