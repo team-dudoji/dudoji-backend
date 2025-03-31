@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * TokenInfo Class
+ * A data class used for generating JWT.
+ * Contains grantType and accessToken fields.
+ */
 @Data
 @Builder
 @AllArgsConstructor
