@@ -34,11 +34,17 @@ public class MainController {
         return "main";
     }
 
+    /**
+     * JWT Test Code
+     * @param principal JWT which user has.
+     * @param sexyguy Body of Request
+     * @return ok with result value
+     */
     @GetMapping("/api1")
     public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal PrincipalDetails principal,
     @RequestBody String sexyguy) {
         if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증정보 x");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
         }
         Map<String, Object> result = Map.of(
                 "username", principal.getName(),
