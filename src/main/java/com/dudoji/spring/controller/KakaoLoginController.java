@@ -2,22 +2,19 @@ package com.dudoji.spring.controller;
 
 import com.dudoji.spring.dto.KakaoUserInfoResponseDto;
 import com.dudoji.spring.models.dao.UserDao;
-import com.dudoji.spring.models.domain.JwtTokenProvider;
+import com.dudoji.spring.models.domain.JwtProvider;
 import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.models.domain.TokenInfo;
 import com.dudoji.spring.models.domain.User;
 import com.dudoji.spring.service.KakaoService;
 import com.dudoji.spring.service.UserSessionService;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +27,10 @@ import java.util.*;
 @RequestMapping("/auth/login/kakao")
 public class KakaoLoginController {
 
-//    private final KakaoService kakaoService;
+    private final KakaoService kakaoService;
     private final UserDao userDao;
     private final UserSessionService userSessionService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
     private String accessToken;
     private final PasswordEncoder passwordEncoder;
 
@@ -67,7 +64,7 @@ public class KakaoLoginController {
                 null,
                 principal.getAuthorities());
 
-        TokenInfo tokenInfo = jwtTokenProvider.createToken(authentication);
+        TokenInfo tokenInfo = jwtProvider.createToken(authentication);
         return ResponseEntity.ok(Map.of("token", tokenInfo));
     }
 
