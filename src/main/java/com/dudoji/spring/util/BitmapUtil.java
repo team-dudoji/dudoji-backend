@@ -23,7 +23,7 @@ public class BitmapUtil {
         int targetY = targetPixelPoint.getY() % TILE_SIZE;
         Pair<Integer, Integer> targetByte = convertByteToBitIndex(targetX, targetY);
 
-        bitmap[targetByte.getX()] |= (byte) (1 << targetByte.getY());
+        bitmap[targetByte.getX()] |= (byte) (1 << (7 - targetByte.getY()));
     }
 
     /**
@@ -42,7 +42,7 @@ public class BitmapUtil {
      */
     public static void setBitWithBitIndex(byte[] bitmap, int bitX, int bitY) {
         Pair<Integer, Integer> targetByte = convertByteToBitIndex(bitX, bitY);
-        bitmap[targetByte.getX()] |= (byte) (1 << targetByte.getY());
+        bitmap[targetByte.getX()] |= (byte) (1 << (7 - targetByte.getY()));
     }
 
     public static void setCloseBits(byte[] bitmap, Point centerPoint, double radiusMeters, int zoom) {
@@ -69,7 +69,7 @@ public class BitmapUtil {
                 int distSq = dx*dx + dy*dy;
                 if (distSq <= pixelRadius * pixelRadius) {
                     Pair<Integer, Integer> targetByte = convertByteToBitIndex(px, py);
-                    bitmap[targetByte.getX()] |= (byte) (1 << targetByte.getY());
+                    bitmap[targetByte.getX()] |= (byte) (1 << (7 - targetByte.getY()));
                 }
             }
         }
@@ -105,7 +105,7 @@ public class BitmapUtil {
         for (int i = 0; i < count; i++) {
             int byteIndex = i >> 3;        // i / 8
             int bitOffset = i & 0x07;      // i % 8
-            bitmap[byteIndex] |= (1 << bitOffset);
+            bitmap[byteIndex] |= (1 << (7 - bitOffset)); // TODO: 얘도 바꿔야 하나?
         }
     }
 
@@ -138,7 +138,7 @@ public class BitmapUtil {
         Pair<Integer, Integer> targetByte = convertByteToBitIndex(targetX, targetY);
 
         byte tempByte = bitmap[targetByte.getX()];
-        return (tempByte & (1 << targetByte.getY())) != 0;
+        return (tempByte & (1 << (7 - targetByte.getY()))) != 0;
     }
     /**
      * 비트맵에서 해당 위치의 값을 가져옵니다.
@@ -152,7 +152,7 @@ public class BitmapUtil {
         int byteIndex = idx.getX();
         int bitOffset = idx.getY();
 
-        return (bitmap[byteIndex] & (1 << bitOffset)) != 0;
+        return (bitmap[byteIndex] & (1 << (7 - bitOffset))) != 0;
     }
 
     public static double getPixelRadius(Point centerPoint, int zoom, double radiusMeters) {
