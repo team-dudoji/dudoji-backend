@@ -1,6 +1,6 @@
 package com.dudoji.spring.config;
 
-import com.dudoji.spring.models.domain.JwtTokenProvider;
+import com.dudoji.spring.models.domain.JwtProvider;
 import com.dudoji.spring.security.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,23 +21,23 @@ public class WebSecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final PrincipalOauth2UserService principalOauth2UserService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtProvider jwtProvider) throws Exception {
 
         http
                 .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
 //                        .requestMatchers("/user/**").authenticated()
-                        .requestMatchers("/login/**", "/oauth2/**").permitAll()
+                        .requestMatchers("/auth/login/kakao/**", "/oauth2/**").permitAll()
 //                        .requestMatchers("/api1/**").hasRole("user")
 //                        .requestMatchers("/api2/**").hasRole("admin")
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
         )
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtTokenProvider),
+                        new JwtAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class
                 )
                 // For Login Part
