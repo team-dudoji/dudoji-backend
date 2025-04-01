@@ -1,7 +1,6 @@
 package com.dudoji.spring.config;
 
-import com.dudoji.spring.models.domain.JwtTokenProvider;
-import io.jsonwebtoken.JwtException;
+import com.dudoji.spring.models.domain.JwtProvider;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,15 +13,15 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String token = resolveToken((HttpServletRequest) servletRequest);
 
         if (token != null) {
-            if (jwtTokenProvider.validateToken(token)) {
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            if (jwtProvider.validateToken(token)) {
+                Authentication authentication = jwtProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
                 // Not Valid Token
