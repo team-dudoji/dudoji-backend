@@ -2,20 +2,15 @@ package com.dudoji.spring.models.domain;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Arrays;
@@ -24,14 +19,19 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * JwtTokenProvider
+ * This class make JWT with user Info.
+ * And check JWT is validate.
+ */
 @Slf4j
 @Component
-public class JwtTokenProvider {
+public class JwtProvider {
 
     private final String secretKey;
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
-    public JwtTokenProvider() {
+    public JwtProvider() {
         Dotenv dotenv = Dotenv.load();
         this.secretKey = dotenv.get("JWT_SECRET_KEY");
 
@@ -44,6 +44,11 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
+    /**
+     * Create JWT with authentication
+     * @param authentication Check user have authorization
+     * @return TokenInfo Object with grant type "Bearer ", access token jwt
+     */
     public TokenInfo createToken(Authentication authentication) {
 
         // authentication.getAuthorities() -> Get Authorities of User
@@ -70,6 +75,11 @@ public class JwtTokenProvider {
         return new TokenInfo("Bearer ", jwt);
     }
 
+    /**
+     * Transform JWT String to Claims Object
+     * @param jwt String jwt.
+     * @return Claims Object made by jwt String
+     */
     private Claims getClaims(String jwt) {
         return Jwts.parser()
                 .verifyWith(getSecretKey())
@@ -78,6 +88,11 @@ public class JwtTokenProvider {
                 .getPayload();
     }
 
+    /**
+     * Check jwt validation. And Return Authentication Token
+     * @param jwt jwt of user
+     * @return Authentication Object
+     */
     public Authentication getAuthentication(String jwt) {
         Claims claims = getClaims(jwt);
 
@@ -102,6 +117,11 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
+    /**
+     * Check String is JWT.
+     * @param token String jwt
+     * @return true when token is jwt
+     */
     public boolean validateToken(String token) {
         try {
             getClaims(token);
