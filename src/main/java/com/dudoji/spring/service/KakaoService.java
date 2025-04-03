@@ -19,13 +19,12 @@ import reactor.core.publisher.Mono;
 @Deprecated
 
 public class KakaoService{
-
     private String clientId;
     private final String KAUTH_TOKEN_URL_HOST;
     private final String KAUTH_USER_URL_HOST;
 
     @Autowired
-    public KakaoService(@Value("${kakao.auth.client_id}") String clientId) {
+    public KakaoService(@Value("${spring.security.oauth2.client.registration.kakao.client-id}") String clientId) {
         this.clientId = clientId;
         KAUTH_TOKEN_URL_HOST = "https://kauth.kakao.com";
         KAUTH_USER_URL_HOST = "https://kapi.kakao.com";

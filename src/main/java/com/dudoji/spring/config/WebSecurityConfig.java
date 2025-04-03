@@ -1,20 +1,18 @@
-package com.dudoji.spring.security;
+package com.dudoji.spring.config;
 
+import com.dudoji.spring.models.domain.JwtProvider;
+import com.dudoji.spring.security.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.SpringCglibInfo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -23,20 +21,25 @@ public class WebSecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final PrincipalOauth2UserService principalOauth2UserService;
+    private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtProvider jwtProvider) throws Exception {
 
         http
                 .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
 //                        .requestMatchers("/user/**").authenticated()
-                        .requestMatchers("/login/**", "/oauth2/**").permitAll()
-                        .requestMatchers("/api1/**").hasRole("user")
-                        .requestMatchers("/api2/**").hasRole("admin")
-                        .anyRequest().permitAll()
+                        .requestMatchers("/auth/login/kakao/**", "/oauth2/**").permitAll()
+//                        .requestMatchers("/api1/**").hasRole("user")
+//                        .requestMatchers("/api2/**").hasRole("admin")
+                        .anyRequest().authenticated()
         )
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(jwtProvider),
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 // For Login Part
                 .formLogin((formLogin) ->
                         formLogin

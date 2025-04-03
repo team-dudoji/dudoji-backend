@@ -1,4 +1,4 @@
-package com.dudoji.spring.security;
+package com.dudoji.spring.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
