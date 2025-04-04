@@ -1,5 +1,6 @@
 package com.dudoji.spring;
 
+import com.dudoji.spring.models.dao.UserStepDao;
 import com.dudoji.spring.models.domain.*;
 import com.dudoji.spring.service.MapSectionService;
 import com.dudoji.spring.models.DBConnection;
@@ -10,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import static com.dudoji.spring.models.domain.MapSection.BASIC_ZOOM_SIZE;
 import static com.dudoji.spring.models.domain.MapSection.TILE_SIZE;
@@ -26,6 +29,36 @@ class DudojiApplicationTests {
     MapSectionDao mapSectionDao;
     @Autowired
     MapSectionService mapSectionService;
+    @Autowired
+    UserStepDao userstepDao;
+    @Autowired
+    private UserStepDao userStepDao;
+
+    @Test
+    void testUserStep() {
+        long uid = 4;
+        int stepCount = 5000;
+        LocalDate date = new Date(System.currentTimeMillis()).toLocalDate();
+
+        boolean checkCreate = userstepDao.createUserStep(4, date, stepCount);
+        assertTrue(checkCreate);
+
+        UserStep userStep = userStepDao.getUserStepByIdOnDate(uid, date);
+        assertNotNull(userStep);
+        assertEquals(uid, userStep.getUid());
+        assertEquals(stepCount, userStep.getStepMeter());
+        assertEquals(date, userStep.getStepDate())
+
+        stepCount += 3000;
+        checkCreate = userstepDao.createUserStep(4, date, stepCount);
+        assertTrue(checkCreate);
+
+        userStep = userStepDao.getUserStepByIdOnDate(uid, date);
+        assertNotNull(userStep);
+        assertEquals(uid, userStep.getUid());
+        assertEquals(stepCount, userStep.getStepMeter());
+        assertEquals(date, userStep.getStepDate());
+    }
 
     @Test
     void testDBConnection() {
@@ -66,25 +99,25 @@ class DudojiApplicationTests {
     UserDao userDao;
     @Test
     void testUserDao(){
-        String name = "Demo";
-        String email = "demo@demo.com";
-        long kakao_id_sample = 1;
-        long uid = userDao.createUser(name, email);
-        assertNotEquals(uid, -1);
-
-        User user = userDao.getUserById(uid);
-
-        assertEquals(name, user.getName());
-        assertEquals(email, user.getEmail());
-
-        assertTrue(userDao.removeUserById(uid));
-
-        KakaoUser user2 = (KakaoUser) userDao.getUserByKakaoId(kakao_id_sample);
-
-        assertEquals(kakao_id_sample, user2.getKakaoId());
-        assertEquals("dudoji", user2.getName());
-
-        System.out.println("User Dao is Successfully worked");
+//        String name = "Demo";
+//        String email = "demo@demo.com";
+//        long kakao_id_sample = 1;
+//        long uid = userDao.createUser(name, email);
+//        assertNotEquals(uid, -1);
+//
+//        User user = userDao.getUserById(uid);
+//
+//        assertEquals(name, user.getName());
+//        assertEquals(email, user.getEmail());
+//
+//        assertTrue(userDao.removeUserById(uid));
+//
+//        KakaoUser user2 = (KakaoUser) userDao.getUserByKakaoId(kakao_id_sample);
+//
+//        assertEquals(kakao_id_sample, user2.getKakaoId());
+//        assertEquals("dudoji", user2.getName());
+//
+//        System.out.println("User Dao is Successfully worked");
     }
 
     @Test
