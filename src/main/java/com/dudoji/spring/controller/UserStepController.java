@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users/steps")
+@RequestMapping("/api/user/steps")
 public class UserStepController {
 
     @Autowired

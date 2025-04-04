@@ -88,7 +88,7 @@ public class UserStepDao {
 
             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_STEP_BY_ID_AND_DATE);
             preparedStatement.setLong(1, uid);
-            preparedStatement.setString(2, date.toString());
+            preparedStatement.setDate(2, java.sql.Date.valueOf(date));
             preparedStatement.setInt(3, stepCount);
             preparedStatement.setInt(4, stepCount);
             preparedStatement.executeUpdate();
