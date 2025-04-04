@@ -11,8 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.LocalDate;
 
 import static com.dudoji.spring.models.domain.MapSection.BASIC_ZOOM_SIZE;
 import static com.dudoji.spring.models.domain.MapSection.TILE_SIZE;
@@ -37,7 +38,7 @@ class DudojiApplicationTests {
     void testUserStep() {
         long uid = 4;
         int stepCount = 5000;
-        Date date = new java.sql.Date(System.currentTimeMillis());
+        LocalDate date = new Date(System.currentTimeMillis()).toLocalDate();
 
         boolean checkCreate = userstepDao.createUserStep(4, date, stepCount);
         assertTrue(checkCreate);
@@ -45,8 +46,8 @@ class DudojiApplicationTests {
         UserStep userStep = userStepDao.getUserStepByIdOnDate(uid, date);
         assertNotNull(userStep);
         assertEquals(uid, userStep.getUid());
-        assertEquals(stepCount, userStep.getStepCount());
-        assertEquals(date, userStep.getStepDate());
+        assertEquals(stepCount, userStep.getStepMeter());
+        assertEquals(date, userStep.getStepDate())
 
         stepCount += 3000;
         checkCreate = userstepDao.createUserStep(4, date, stepCount);
@@ -55,7 +56,7 @@ class DudojiApplicationTests {
         userStep = userStepDao.getUserStepByIdOnDate(uid, date);
         assertNotNull(userStep);
         assertEquals(uid, userStep.getUid());
-        assertEquals(stepCount, userStep.getStepCount());
+        assertEquals(stepCount, userStep.getStepMeter());
         assertEquals(date, userStep.getStepDate());
     }
 
