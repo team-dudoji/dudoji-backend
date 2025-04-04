@@ -3,7 +3,7 @@ package com.dudoji.spring.models.domain;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -14,6 +14,6 @@ public class UserStep {
 
     private Long stepId;
     private Long uid;
-    private Date stepDate;
-    private int stepCount;
+    private LocalDate stepDate;
+    private int stepMeter;
 }
