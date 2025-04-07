@@ -1,7 +1,5 @@
 package com.dudoji.spring.models;
 
-import io.github.cdimascio.dotenv.Dotenv;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,9 +9,6 @@ import java.sql.SQLException;
 
 @Component
 public class DBConnection {
-
-    @Autowired
-    private Dotenv dotenv;
 
     @Value("${spring.datasource.username}")
     private String username;
@@ -25,8 +20,6 @@ public class DBConnection {
     private String driverClassName;
 
     public Connection getConnection() throws ClassNotFoundException, SQLException {
-        dotenv.load();
-
         Connection con = null;
 
         Class.forName(driverClassName);
