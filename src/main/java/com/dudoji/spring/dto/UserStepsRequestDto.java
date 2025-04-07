@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -13,7 +12,7 @@ import java.util.List;
   This class is used to transfer user step from Front to Back
   Multiple user step entries are allowed for flexibility and future scalability.
  */
-public class UserStepsRequestsDto {
+public class UserStepsRequestDto {
     List<UserStepDto> userSteps;
 
     @Override

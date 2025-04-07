@@ -2,19 +2,16 @@ package com.dudoji.spring.controller;
 
 import com.dudoji.spring.dto.DateRangeRequestDto;
 import com.dudoji.spring.dto.DateRequestDto;
-import com.dudoji.spring.dto.UserStepsRequestsDto;
+import com.dudoji.spring.dto.UserStepsRequestDto;
 import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.models.domain.UserStep;
 import com.dudoji.spring.service.UserStepService;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -33,7 +30,7 @@ public class UserStepController {
     @PostMapping("/save")
     public ResponseEntity<String> saveUserStep(
             @AuthenticationPrincipal PrincipalDetails principal,
-            @RequestBody UserStepsRequestsDto userStepDto) {
+            @RequestBody UserStepsRequestDto userStepDto) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
         }
