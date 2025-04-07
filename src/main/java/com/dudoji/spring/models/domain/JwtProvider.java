@@ -1,11 +1,11 @@
 package com.dudoji.spring.models.domain;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,17 +28,10 @@ import java.util.stream.Collectors;
 @Component
 public class JwtProvider {
 
-    private final String secretKey;
+    @Value("${jwt.secret}")
+    private String secretKey;
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
-    public JwtProvider() {
-        Dotenv dotenv = Dotenv.load();
-        this.secretKey = dotenv.get("JWT_SECRET_KEY");
-
-        if (this.secretKey == null) {
-            throw new RuntimeException("JWT_SECRET not set");
-        }
-    }
 
     public SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));

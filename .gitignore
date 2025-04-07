@@ -28,3 +28,4 @@ replay_pid*
 build/reports/problems/problems-report.html
 .idea/compiler.xml
 .idea/compiler.xml
+src/main/resources/application.yml
