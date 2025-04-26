@@ -19,6 +19,14 @@ public class UserInfoService {
     UserDao userDao;
 
     public String getProfileImage(long uid) {
-        return userDao.getProfileImageUrl(uid);
+        return userDao.getUserById(uid).getProfileImageUrl();
+    }
+
+    public String getUsername(long uid) {
+        return userDao.getUserById(uid).getName();
+    }
+
+    public String getEmail(long uid) {
+        return userDao.getUserById(uid).getEmail();
     }
 }
