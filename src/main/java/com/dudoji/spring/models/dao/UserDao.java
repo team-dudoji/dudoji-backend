@@ -18,16 +18,21 @@ public class UserDao {
             "select name, email, created_at, role from \"User\" where id=?";
     private static String GET_USER_BY_NAME =
             "SELECT id, email, created_at, role, password FROM \"User\" WHERE name=?";
+    private static String GET_USER_BY_NAME_AND_EMAIL =
+            "SELECT id, email, created_at, role, password FROM \"User\" WHERE name=? AND email=?";
     private static String REMOVE_USER_BY_ID =
             "delete from \"User\" where id=?";
     private static String CREATE_USER_BY_ID =
             "insert into \"User\"(name, email) values (?, ?) returning id";
     private static String CREATE_USER_BY_USER =
-            "insert into \"User\"(name, email, password, role) values (?, ?, ?, ?::user_role) returning id";
+            "insert into \"User\"(name, email, password, role, profile_image) values (?, ?, ?, ?::user_role, ?) returning id";
     private static String GET_USER_BY_KAKAO_ID =
             "SELECT id, name, email, created_at FROM \"User\" WHERE kakao_id=?";
     private static String CREATE_USER_BY_KAKAO_ID =
             "insert into \"User\"(name, email, kakao_id) values (?, ?, ?) returning id";
+    private static String GET_PROFILE_IMAGE_BY_ID =
+            "SELECT profile_image FROM \"User\" WHERE id=?";
+
 
     public User getUserById(long uid) {
         try (Connection connection  = dbConnection.getConnection()) {
@@ -52,6 +57,7 @@ public class UserDao {
         }
     }
 
+    @Deprecated
     public User getUserByName(String name) {
         try (Connection connection  = dbConnection.getConnection()) {
             PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_NAME);
@@ -78,6 +84,32 @@ public class UserDao {
         }
     }
 
+    public User getUserByNameAndEmail(String name, String email) {
+        try (Connection connection  = dbConnection.getConnection()) {
+            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_NAME_AND_EMAIL);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                long uid = resultSet.getLong(1);
+                //String email = resultSet.getString(2);
+                Timestamp createdAt = resultSet.getTimestamp(3);
+                String role = resultSet.getString(4);
+                String password = resultSet.getString(5);
+                return User.builder()
+                        .id(uid)
+                        .name(name)
+                        .email(email)
+                        .createAt(createdAt)
+                        .role(role)
+                        .password(password)
+                        .build();
+            }
+            return null;
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 //    @Deprecated
 //    // 카카오 아이디를 잘 안 쓸 예정
 //    // 수정 바람
@@ -139,6 +171,7 @@ public class UserDao {
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getPassword());
             preparedStatement.setString(4, user.getRole());
+            preparedStatement.setString(5, user.getProfileImageUrl());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
                 long uid = resultSet.getLong("id");
@@ -169,5 +202,19 @@ public class UserDao {
             throw new RuntimeException(e);
         }
         return -1;
+    }
+
+    public String getProfileImageUrl(long uid) {
+        try (Connection connection = dbConnection.getConnection()) {
+            PreparedStatement preparedStatement =  connection.prepareStatement(GET_PROFILE_IMAGE_BY_ID);
+            preparedStatement.setLong(1, uid);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString(1);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 }
