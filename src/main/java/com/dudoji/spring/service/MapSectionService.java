@@ -1,6 +1,8 @@
 package com.dudoji.spring.service;
 
+import com.dudoji.spring.dto.MapSectionResponseDto;
 import com.dudoji.spring.models.dao.MapSectionDao;
+import com.dudoji.spring.models.dao.UserDao;
 import com.dudoji.spring.models.domain.DetailedMapSection;
 import com.dudoji.spring.models.domain.MapSection;
 import com.dudoji.spring.models.domain.Pair;
@@ -20,6 +22,8 @@ public class MapSectionService {
     public static final int BYTE_SIZE = 8;
     @Autowired
     private MapSectionDao mapSectionDao;
+    @Autowired
+    private UserDao userDao;
 
     public void applyRevealCircle(long uid, Point centerPoint, double radiusMeters) {
         Pair<Double, Double> googleMapPosition = centerPoint.getGoogleMap();
@@ -156,5 +160,10 @@ public class MapSectionService {
         mapSectionDao.createMapSection(mapSection);
         return mapSection;
 
+    }
+
+    // Using MapSectionController
+    public MapSectionResponseDto getUserMapSections(long uid) {
+        return mapSectionDao.getUserMapSections(uid);
     }
 }
