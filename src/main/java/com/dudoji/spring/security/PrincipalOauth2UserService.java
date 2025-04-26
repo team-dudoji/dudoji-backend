@@ -62,7 +62,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationException(new OAuth2Error("invalid_token"), "ProviderId not found");
         }
 
-        User user = userDao.getUserByNameAndEmail(name, email);
+        User user = userDao.getUserByEmail(email);
 
         if (user == null) {
             user = User.builder()
