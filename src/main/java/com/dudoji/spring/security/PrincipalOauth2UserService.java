@@ -37,7 +37,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         // Get Information from Outside Server
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String provider = userRequest.getClientRegistration().getRegistrationId();
-        String provider_id = null, email = null, name = null;
+        String provider_id = null, email = null, name = null, profileImageUrl = null;
         switch (provider) {
             // TODO: Change
             case "google":
@@ -47,6 +47,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                 Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
                 email = (String) kakaoAccount.get("email");
                 Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+                profileImageUrl = (String) profile.get("profile_image_url");
                 if (profile != null) { name = (String) profile.get("nickname"); }
                 break;
             case "naver":
@@ -62,6 +63,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         }
 
         User user = userDao.getUserByName(name);
+
         if (user == null) {
             user = User.builder()
                     .name(name)
@@ -69,6 +71,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                     .password(password)
                     // provider는 조정 후
                     .role(role)
+                    .profileImageUrl(profileImageUrl)
                     .build();
             userDao.createUserByUser(user);
         }
