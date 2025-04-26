@@ -1,5 +1,6 @@
 package com.dudoji.spring.models.dao;
 
+import com.dudoji.spring.dto.MapSectionResponseDto;
 import com.dudoji.spring.models.DBConnection;
 import com.dudoji.spring.models.domain.DetailedMapSection;
 import com.dudoji.spring.models.domain.MapSection;
@@ -14,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +60,24 @@ public class MapSectionDao {
             "UPDATE MapSection " +
                     "SET explored=TRUE " +
                     "WHERE uid=? and X=? and Y=?;";
+
+    // Using in MapSectionController
+    private static final String GET_USER_MAP_SECTIONS =
+            ""
+                    + "SELECT m.x, m.y, m.explored, "
+                    + "CASE "
+                    + "  WHEN m.explored = TRUE THEN null "
+                    + "  ELSE mb.bitmap "
+                    + "END AS bitmap "
+                    + "FROM MapSectionStateBitmap AS mb "
+                    + "RIGHT JOIN ( "
+                    + "  SELECT uid, x, y, explored "
+                    + "  FROM MapSection "
+                    + "  WHERE uid = ? "
+                    + ") AS m "
+                    + "  ON mb.uid = m.uid "
+                    + "  AND mb.x   = m.x "
+                    + "  AND mb.y   = m.y;";
 
     public List<MapSection> getMapSections(long uid, Point point) {
         return getMapSections(uid, point, 2);
@@ -218,13 +238,35 @@ public class MapSectionDao {
         }
 
     }
-    public void createMapSections(List<MapSection> mapSections){
-        // TODO
-        // 다른 로직에서 만든 MapSection 들을 저장한다.
-        // 굳이 있어야 하나?
-        // 구두디 있어야 하나?
-        for (MapSection temp : mapSections) {
 
+    // Using In MapSectionController
+    public MapSectionResponseDto getUserMapSections(long uid) {
+        MapSectionResponseDto mapSectionResponseDto = new MapSectionResponseDto();
+
+        try (Connection connection = dbConnection.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_MAP_SECTIONS);
+            preparedStatement.setLong(1, uid);
+            preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.getResultSet();
+            while (resultSet.next()) {
+                int x = resultSet.getInt("x");
+                int y = resultSet.getInt("y");
+                boolean explored = resultSet.getBoolean("explored");
+                byte[] bitmap = resultSet.getBytes("bitmap");
+
+                String bitmapBase64 = (bitmap != null && bitmap.length > 0) ? Base64.getEncoder().encodeToString(bitmap) : "";
+                mapSectionResponseDto.mapSections.add(
+                        MapSectionResponseDto.MapSectionDto.builder()
+                                .x(x)
+                                .y(y)
+                                .explored(explored)
+                                .base64Encoded(bitmapBase64)
+                        .build()
+                );
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
+        return mapSectionResponseDto;
     }
 }
