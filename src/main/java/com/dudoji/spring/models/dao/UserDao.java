@@ -15,11 +15,11 @@ public class UserDao {
     private DBConnection dbConnection;
 
     private static String GET_USER_BY_ID =
-            "select name, email, created_at, role from \"User\" where id=?";
+            "select name, email, created_at, role, profile_image from \"User\" where id=?";
     private static String GET_USER_BY_NAME =
             "SELECT id, email, created_at, role, password FROM \"User\" WHERE name=?";
-    private static String GET_USER_BY_NAME_AND_EMAIL =
-            "SELECT id, email, created_at, role, password FROM \"User\" WHERE name=? AND email=?";
+    private static String GET_USER_BY_EMAIL =
+            "SELECT id, name, created_at, role, password FROM \"User\" WHERE email=?";
     private static String REMOVE_USER_BY_ID =
             "delete from \"User\" where id=?";
     private static String CREATE_USER_BY_ID =
@@ -44,11 +44,13 @@ public class UserDao {
                 String email = resultSet.getString(2);
                 Timestamp createdAt = resultSet.getTimestamp(3);
                 String role = resultSet.getString(4);
+                String profileImageUrl = resultSet.getString(5);
                 return User.builder()
                         .id(uid)
                         .name(name)
                         .email(email)
                         .createAt(createdAt)
+                        .profileImageUrl(profileImageUrl)
                         .role(role).build();
             }
             return null;
@@ -84,15 +86,14 @@ public class UserDao {
         }
     }
 
-    public User getUserByNameAndEmail(String name, String email) {
+    public User getUserByEmail(String email) {
         try (Connection connection  = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_NAME_AND_EMAIL);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, email);
+            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_EMAIL);
+            preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
                 long uid = resultSet.getLong(1);
-                //String email = resultSet.getString(2);
+                String name = resultSet.getString(2);
                 Timestamp createdAt = resultSet.getTimestamp(3);
                 String role = resultSet.getString(4);
                 String password = resultSet.getString(5);
