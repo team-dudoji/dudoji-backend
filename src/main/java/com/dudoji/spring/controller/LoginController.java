@@ -14,7 +14,7 @@ public class LoginController {
 
     @GetMapping("/loginForm")
     public String loginForm() {
-        log.info("=== loginFOrm ===");
+        log.info("=== loginForm ===");
         return "loginForm";
     }
 }
