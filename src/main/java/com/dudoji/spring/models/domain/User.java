@@ -21,4 +21,5 @@ public class User {
     private Date createAt;
     private String provider;
     private String providerId;
+    private String profileImageUrl;
 }
