@@ -31,7 +31,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
 //                        .requestMatchers("/user/**").authenticated()
-                        .requestMatchers("/auth/login/kakao/**", "/oauth2/**").permitAll()
+                        .requestMatchers("/auth/login/kakao/**",
+                                "/oauth2/**",
+                               "/**" ).permitAll()
 //                        .requestMatchers("/api1/**").hasRole("user")
 //                        .requestMatchers("/api2/**").hasRole("admin")
                         .anyRequest().authenticated()
