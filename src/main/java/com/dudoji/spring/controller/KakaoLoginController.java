@@ -41,7 +41,7 @@ public class KakaoLoginController {
 
         log.info("Kakao login token: " + token);
         KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(token);
-        User user = userDao.getUserByName(userInfo.getKakaoAccount().getProfile().getNickName());
+        User user = userDao.getUserByEmail(userInfo.kakaoAccount.email);
 
         if (user == null) {
             String password = passwordEncoder.encode(UUID.randomUUID().toString());
@@ -50,13 +50,14 @@ public class KakaoLoginController {
                     .password(password)
                     .email(userInfo.kakaoAccount.email)
                     .role("user")
+                    .profileImageUrl(userInfo.kakaoAccount.profile.profileImageUrl)
                     .build();
             userDao.createUserByUser(user);
         }
         else {
             log.info("Kakao account already exists");
         }
-
+        user = userDao.getUserByEmail(userInfo.kakaoAccount.email);
         PrincipalDetails principal = new PrincipalDetails(user);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
