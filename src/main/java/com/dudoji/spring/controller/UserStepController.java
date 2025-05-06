@@ -49,7 +49,7 @@ public class UserStepController {
      * @return String That Contains Value of UserStep
      */
     @GetMapping("/get/step")
-    public ResponseEntity<String> getUserStep(
+    public ResponseEntity<?> getUserStep(
             @AuthenticationPrincipal PrincipalDetails principal,
             @RequestBody DateRequestDto targetDate
     ) {
@@ -59,7 +59,8 @@ public class UserStepController {
 
         UserStep result = userStepService.getUserStepByIdAndDate(principal.getUid(), targetDate.getStep_date());
 
-        return ResponseEntity.status(HttpStatus.OK).body(result.toString());
+        //return ResponseEntity.status(HttpStatus.OK).body(result.toString());
+        return ResponseEntity.ok(result);
     }
 
     /**
@@ -69,7 +70,7 @@ public class UserStepController {
      * @return String That Contains Value Of UserSteps
      */
     @GetMapping("/get/steps")
-    public ResponseEntity<String> getUserSteps(
+    public ResponseEntity<?> getUserSteps(
             @AuthenticationPrincipal PrincipalDetails principal,
             @RequestBody DateRangeRequestDto targetDuration
     ) {
@@ -78,6 +79,6 @@ public class UserStepController {
         }
 
         List<UserStep> result = userStepService.getUserStepsByIdAndDuration(principal.getUid(), targetDuration.getStartDate().getStep_date(), targetDuration.getEndDate().getStep_date());
-        return ResponseEntity.status(HttpStatus.OK).body(result.toString());
+        return ResponseEntity.ok(result);
     }
 }
