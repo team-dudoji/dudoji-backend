@@ -127,8 +127,10 @@ public class KakaoLoginController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
     // TODO: 테스트 코드, 지울 것
     @GetMapping("/give-me-JWT")
+
     public ResponseEntity<String> getJWT(
         @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
