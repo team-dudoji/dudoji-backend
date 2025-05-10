@@ -31,15 +31,15 @@ public class PinController {
         return ResponseEntity.status(HttpStatus.CREATED).body("PIN created");
     }
 
-    @GetMapping("/get/pins_by_radius")
-    public ResponseEntity<?> getPinsByRadius(
+    @GetMapping("/get/pins-by-radius")
+    public ResponseEntity<List<Pin>> getPinsByRadius(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam double radius,
             @RequestParam double lat,
             @RequestParam double lng
     ) {
         if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         List<Pin> pins = pinService.getClosePins(radius, lat, lng);
         return ResponseEntity.status(HttpStatus.OK).body(pins);
