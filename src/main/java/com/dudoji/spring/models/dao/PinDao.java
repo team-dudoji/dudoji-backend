@@ -6,10 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,9 +20,9 @@ public class PinDao {
     @Autowired
     private DBConnection dbConnection;
 
-    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (userId, lat, lng, title, content) VALUES (?, ?, ?, ?, ?)";
+    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (userId, lat, lng, title, content, createdDate) VALUES (?, ?, ?, ?, ?, ?)";
 
-    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT pinId, userId, lat, lng, title, content, createDate " +
+    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT pinId, userId, lat, lng, title, content, createdDate " +
             "FROM pin " +
             "WHERE lat BETWEEN ? AND ? " +
             "AND lng BETWEEN ? AND ?";
@@ -43,8 +42,8 @@ public class PinDao {
             statement.setDouble(3, pin.getLng());
             statement.setString(4, pin.getTitle());
             statement.setString(5, pin.getContent());
+            statement.setObject(6, pin.getCreatedDate());
             statement.execute();
-            log.info("Pin created");
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -78,7 +77,7 @@ public class PinDao {
                 double lng = resultSet.getDouble("lng");
                 String title = resultSet.getString("title");
                 String content = resultSet.getString("content");
-                Date createDate = resultSet.getDate("createDate");
+                LocalDateTime createdDate = resultSet.getTimestamp("createdDate").toLocalDateTime();
 
                 Pin temp = Pin.builder()
                         .pinId(pinId)
@@ -87,7 +86,7 @@ public class PinDao {
                         .lng(lng)
                         .title(title)
                         .content(content)
-                        .createdDate(createDate)
+                        .createdDate(createdDate)
                         .build();
 
                 pins.add(temp);

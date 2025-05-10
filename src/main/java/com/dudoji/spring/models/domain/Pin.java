@@ -2,8 +2,7 @@ package com.dudoji.spring.models.domain;
 
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -13,7 +12,7 @@ public class Pin {
     private double lng;
     private Long pinId;
     private Long userId;
-    private Date createdDate;
+    private LocalDateTime createdDate;
     private String title;
     private String content;
 }
