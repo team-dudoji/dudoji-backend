@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -124,5 +125,20 @@ public class KakaoLoginController {
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // TODO: 테스트 코드, 지울 것
+    @GetMapping("/give-me-JWT")
+    public ResponseEntity<String> getJWT(
+        @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                principalDetails,
+                null,
+                principalDetails.getAuthorities()
+        );
+        TokenInfo tokenInfo = jwtProvider.createToken(authentication);
+        String accessToken = tokenInfo.getAccessToken();
+        return ResponseEntity.ok(accessToken);
     }
 }
