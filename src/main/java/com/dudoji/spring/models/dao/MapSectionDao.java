@@ -7,6 +7,7 @@ import com.dudoji.spring.models.domain.MapSection;
 import com.dudoji.spring.models.domain.Pair;
 import com.dudoji.spring.models.domain.Point;
 import com.dudoji.spring.util.BitmapUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class MapSectionDao {
 
     @Autowired
@@ -144,7 +146,7 @@ public class MapSectionDao {
                 return Optional.of(mapSection);
             }
             else {
-                System.out.println("There is no MapSection");
+                log.error("There is no such map section");
                 return Optional.empty();
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -175,7 +177,7 @@ public class MapSectionDao {
                 return Optional.of(mapSection);
             }
             else {
-                System.out.println("There is no MapSection");
+                log.error("There is no such map section");
                 return Optional.empty();
             }
         } catch (SQLException | ClassNotFoundException e) {
