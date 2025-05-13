@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
+@Deprecated
 @Slf4j // For logging
 @Controller// Spring MVC Controller
 @RequiredArgsConstructor // Make field constructor
