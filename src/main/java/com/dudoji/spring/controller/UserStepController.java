@@ -27,7 +27,7 @@ public class UserStepController {
      * @param userStepDto It Contains User Step
      * @return Success - Send Ok
      */
-    @PostMapping("/save")
+    @PostMapping("/")
     public ResponseEntity<String> saveUserStep(
             @AuthenticationPrincipal PrincipalDetails principal,
             @RequestBody UserStepsRequestDto userStepDto) {
@@ -48,7 +48,7 @@ public class UserStepController {
      * @param targetDate It Contains Date
      * @return String That Contains Value of UserStep
      */
-    @GetMapping("/get/step")
+    @GetMapping("/")
     public ResponseEntity<?> getUserStep(
             @AuthenticationPrincipal PrincipalDetails principal,
             @RequestBody DateRequestDto targetDate
@@ -69,7 +69,7 @@ public class UserStepController {
      * @param targetDuration It Contains StarDate EndDate
      * @return String That Contains Value Of UserSteps
      */
-    @GetMapping("/get/steps")
+    @GetMapping("/range")
     public ResponseEntity<?> getUserSteps(
             @AuthenticationPrincipal PrincipalDetails principal,
             @RequestBody DateRangeRequestDto targetDuration
