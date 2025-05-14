@@ -27,6 +27,7 @@ public class FriendDao {
     private static String UPDATE_FRIEND_REQUEST_BY_SENDER_RECEIVER = "UPDATE friend_request SET status = CAST(? AS friend_request_status) WHERE sender_id = ? AND receiver_id = ? AND status = CAST('PENDING' AS friend_request_status)";
     private static String GET_FRIEND_REQUEST_BY_ID = "SELECT sender_id FROM friend_request WHERE receiver_id = ? AND status = CAST('PENDING' AS friend_request_status)";
     private static String CREATE_FRIEND_REQUEST_BY_SENDER_RECEIVER = "INSERT INTO friend_request (sender_id, receiver_id) VALUES (?, ?)";
+    private static String DELETE_FRIEND_REQUEST_BY_SENDER_RECEIVER = "DELETE friend_request WHERE sender_id = ? AND receiver_id = ? AND status = CAST('PENDING' AS friend_request_status)";
 
     @Autowired
     private DBConnection dbConnection;
@@ -123,10 +124,10 @@ public class FriendDao {
 
     public boolean requestFriend(long senderId, long receiverId) {
         try (Connection connection = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(CREATE_FRIEND_REQUEST_BY_SENDER_RECEIVER);
-            preparedStatement.setLong(1, senderId);
-            preparedStatement.setLong(2, receiverId);
-            int updated = preparedStatement.executeUpdate();
+            PreparedStatement preparedStatementDelete = connection.prepareStatement(DELETE_FRIEND_REQUEST_BY_SENDER_RECEIVER);
+            preparedStatementDelete.setLong(1, senderId);
+            preparedStatementDelete.setLong(2, receiverId);
+            int updated = preparedStatementDelete.executeUpdate();
             return updated > 0;
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);

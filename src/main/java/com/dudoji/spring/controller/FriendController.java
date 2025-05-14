@@ -37,10 +37,10 @@ public class FriendController {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("/{friendId}")
     public ResponseEntity<String> deleteFriend(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam long friendId
+            @PathVariable Long friendId
     ) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -53,15 +53,16 @@ public class FriendController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping("/{friendId}")
     public ResponseEntity<String> createFriend(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam long friendId
+            @PathVariable Long friendId
     ) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        if (friendService.createFriendById(principalDetails.getUid(), friendId)) {
+        if (friendService.createFriendById(principalDetails.getUid(), friendId)
+            && friendService.rejectFriend(principalDetails.getUid(), friendId)) {
             return ResponseEntity.status(HttpStatus.OK).body("Create Success");
         }
         else {
@@ -84,7 +85,7 @@ public class FriendController {
     /*
     FRIEND REQUEST END POINT
      */
-    @GetMapping("/friend-request")
+    @GetMapping("/requests")
     public ResponseEntity<List<User>> getRequestFriends(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
@@ -96,33 +97,16 @@ public class FriendController {
         return ResponseEntity.ok(friendRequestList);
     }
 
-    @PostMapping("/friend-request/{sender_id}/accept")
-    public ResponseEntity<Boolean> acceptFriend(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PathVariable Long sender_id
-    ) {
-        if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-
-        if (friendService.acceptFriend(sender_id, principalDetails.getUid())) {
-            return ResponseEntity.status(HttpStatus.OK).body(true);
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
-        }
-    }
-
-    @PostMapping("/friend-request/{sender_id}/reject")
+    @DeleteMapping("/requests/{senderId}")
     public ResponseEntity<Boolean> rejectFriend(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PathVariable Long sender_id
+            @PathVariable Long senderId
     ) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        if (friendService.rejectFriend(sender_id, principalDetails.getUid())) {
+        if (friendService.rejectFriend(senderId, principalDetails.getUid())) {
             return ResponseEntity.status(HttpStatus.OK).body(true);
         }
         else {
@@ -130,16 +114,16 @@ public class FriendController {
         }
     }
 
-    @PostMapping("friend-request/{receiver_id}")
+    @PostMapping("/requests/{receiverId}")
     public ResponseEntity<Boolean> requestFriend(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PathVariable Long receiver_id
+            @PathVariable Long receiverId
     ){
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        if (friendService.requestFriend(principalDetails.getUid(), receiver_id)) {
+        if (friendService.requestFriend(principalDetails.getUid(), receiverId)) {
             return ResponseEntity.status(HttpStatus.OK).body(true);
         }
         else {
