@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/user/reveal-circle")
+@RequestMapping("/api/user/reveal-circles")
 public class RevealCircleController {
 
     @Autowired
