@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/user/map-section")
+@RequestMapping("/api/user/map-sections")
 public class MapSectionController {
 
     @Autowired
