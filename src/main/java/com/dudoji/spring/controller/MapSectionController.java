@@ -21,23 +21,21 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/user/map_section")
+@RequestMapping("/api/user/map-sections")
 public class MapSectionController {
 
     @Autowired
     private MapSectionService mapSectionService;
     // 아니지 모든 맵섹션을 나눠준다고 생각하면, 그냥 principal 만 있어도 되잖아
-    @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/")
     public ResponseEntity<MapSectionResponseDto> getMapSection(
-            @AuthenticationPrincipal PrincipalDetails principal
+            @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
-        if (principal == null) {
-            log.info("=== Error In MapSectionController ===");
-            log.info("=== Not Auth ===");
+        if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         // Service 만들고 오기
-        MapSectionResponseDto result = mapSectionService.getUserMapSections(principal.getUid());
+        MapSectionResponseDto result = mapSectionService.getUserMapSections(principalDetails.getUid());
 
         return ResponseEntity.ok(result);
     }

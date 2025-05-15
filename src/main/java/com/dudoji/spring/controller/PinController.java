@@ -19,7 +19,7 @@ public class PinController {
     @Autowired
     private PinService pinService;
 
-    @PostMapping("/save")
+    @PostMapping("/")
     public ResponseEntity<String> savePin(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody PinRequestDto pinRequestDto) {
@@ -31,10 +31,10 @@ public class PinController {
         return ResponseEntity.status(HttpStatus.CREATED).body("PIN created");
     }
 
-    @GetMapping("/get/pins-by-radius")
+    @GetMapping("/")
     public ResponseEntity<List<Pin>> getPinsByRadius(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam double radius,
+            @RequestParam double radius, // TODO: PARAM? OR PATH VARIABLE?
             @RequestParam double lat,
             @RequestParam double lng
     ) {

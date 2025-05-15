@@ -46,7 +46,7 @@ public class UserInfoController {
      * @param principal JWT token
      * @return User's profile image url
      */
-    @GetMapping("/get/profile-image")
+    @GetMapping("/profile-image")
     public ResponseEntity<String> getProfileImage(
         @AuthenticationPrincipal PrincipalDetails principal
     ) {
@@ -58,7 +58,7 @@ public class UserInfoController {
      * @param principal JWT token
      * @return Username as String
      */
-    @GetMapping("/get/name")
+    @GetMapping("/name")
     public ResponseEntity<String> getName(
             @AuthenticationPrincipal PrincipalDetails principal
     ) {
@@ -70,7 +70,7 @@ public class UserInfoController {
      * @param principal JWT Token
      * @return Email as String
      */
-    @GetMapping("/get/email")
+    @GetMapping("/email")
     public ResponseEntity<String> getEmail(
             @AuthenticationPrincipal PrincipalDetails principal
     ) {

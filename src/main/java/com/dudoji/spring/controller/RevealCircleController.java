@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/user/reveal_circles")
+@RequestMapping("/api/user/reveal-circles")
 public class RevealCircleController {
 
     @Autowired
     private MapSectionService mapSectionService;
 
-    @PostMapping("/save")
+    @PostMapping("/")
     public ResponseEntity<String> saveRevealCircles(
             @AuthenticationPrincipal PrincipalDetails principal,
             @RequestBody RevealCirclesRequestDto positionsDto){
