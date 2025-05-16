@@ -20,9 +20,9 @@ public class PinDao {
     @Autowired
     private DBConnection dbConnection;
 
-    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (userId, lat, lng, title, content, createdDate) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (user_id, lat, lng, title, content, created_at) VALUES (?, ?, ?, ?, ?, ?)";
 
-    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT pinId, userId, lat, lng, title, content, createdDate " +
+    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, user_id, lat, lng, title, content, created_at " +
             "FROM pin " +
             "WHERE lat BETWEEN ? AND ? " +
             "AND lng BETWEEN ? AND ?";
@@ -71,13 +71,13 @@ public class PinDao {
             statement.setDouble(4, maxLng);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                Long pinId = resultSet.getLong("pinId");
-                Long userId = resultSet.getLong("userId");
+                Long pinId = resultSet.getLong("id");
+                Long userId = resultSet.getLong("user_id");
                 double lat = resultSet.getDouble("lat");
                 double lng = resultSet.getDouble("lng");
                 String title = resultSet.getString("title");
                 String content = resultSet.getString("content");
-                LocalDateTime createdDate = resultSet.getTimestamp("createdDate").toLocalDateTime();
+                LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
 
                 Pin temp = Pin.builder()
                         .pinId(pinId)
