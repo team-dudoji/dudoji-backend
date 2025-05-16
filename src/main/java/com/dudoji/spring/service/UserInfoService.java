@@ -1,6 +1,7 @@
 package com.dudoji.spring.service;
 
 import com.dudoji.spring.models.dao.UserDao;
+import com.dudoji.spring.models.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,4 +30,6 @@ public class UserInfoService {
     public String getEmail(long uid) {
         return userDao.getUserById(uid).getEmail();
     }
+
+    public User getUserById(long uid) { return userDao.getUserById(uid); }
 }

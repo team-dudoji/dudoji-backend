@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class UserDao {
@@ -32,6 +34,8 @@ public class UserDao {
             "insert into \"User\"(name, email, kakao_id) values (?, ?, ?) returning id";
     private static String GET_PROFILE_IMAGE_BY_ID =
             "SELECT profile_image FROM \"User\" WHERE id=?";
+    private static String GET_USERS_BY_EMAIL_LIKE =
+            "SELECT id, name, created_at, role, email FROM \"User\" WHERE email LIKE '%' || ? || '%'";
 
 
     public User getUserById(long uid) {
@@ -217,5 +221,35 @@ public class UserDao {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    public List<User> getRecommendedUsers(String email) {
+        List<User> friendList = new ArrayList<>();
+        int count = 5;
+        try (Connection connection  = dbConnection.getConnection()) {
+            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USERS_BY_EMAIL_LIKE);
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                if (count <= 0) break;
+                long uid = resultSet.getLong(1);
+                String name = resultSet.getString(2);
+                Timestamp createdAt = resultSet.getTimestamp(3);
+                String role = resultSet.getString(4);
+                String emailTrue = resultSet.getString(5);
+                friendList.add(User.builder()
+                        .id(uid)
+                        .name(name)
+                        .email(email)
+                        .createAt(createdAt)
+                        .role(role)
+                        .email(emailTrue)
+                        .build());
+                count--; // TODO; 임시로 5개로 제한합니다. 필요시 count 변수 수정
+            }
+            return friendList;
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
