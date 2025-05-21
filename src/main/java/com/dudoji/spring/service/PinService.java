@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -55,25 +56,36 @@ public class PinService {
         double maxLng = centerLng + deltaLng;
 
         List<Pin> pinList = pinDao.getClosePins(minLat, maxLat, minLng, maxLng);
-        List<PinDto> pinDtoList = new ArrayList<>();
+        List<PinDto> pinDtoList = pinList.stream()
+                .map(pin -> {
+                    PinDto dto = new PinDto(pin);
+                    long pinUserId = pin.getUserId();
 
-        for (Pin pin : pinList) {
-            // 3가지로 분류.
-            PinDto temp = new PinDto(pin);
-            long pinUserId = pin.getUserId();
-            if (pinUserId == userId) {
-                temp.setMaster(PinDto.Who.MINE);
-            }
-            else {
-                if (followDao.isFollowing(userId, pinUserId)) {
-                    temp.setMaster(PinDto.Who.FOLLOWING);
-                }
-                else {
-                    temp.setMaster(PinDto.Who.UNKNOWN);
-                }
-            }
-            pinDtoList.add(temp);
-        }
+                    PinDto.Who who = (pinUserId == userId)                     ? PinDto.Who.MINE
+                                    : followDao.isFollowing(userId, pinUserId) ? PinDto.Who.FOLLOWING
+                                                                               : PinDto.Who.UNKNOWN;
+                    dto.setMaster(who);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+//        for (Pin pin : pinList) {
+//            // 3가지로 분류.
+//            PinDto temp = new PinDto(pin);
+//            long pinUserId = pin.getUserId();
+//            if (pinUserId == userId) {
+//                temp.setMaster(PinDto.Who.MINE);
+//            }
+//            else {
+//                if (followDao.isFollowing(userId, pinUserId)) {
+//                    temp.setMaster(PinDto.Who.FOLLOWING);
+//                }
+//                else {
+//                    temp.setMaster(PinDto.Who.UNKNOWN);
+//                }
+//            }
+//            pinDtoList.add(temp);
+//        }
 
         return pinDtoList;
     }
