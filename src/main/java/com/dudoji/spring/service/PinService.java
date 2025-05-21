@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.dudoji.spring.dto.PinDto.Who.MINE;
-
 @Service
 @Slf4j
 public class PinService {
@@ -68,7 +66,7 @@ public class PinService {
             }
             else {
                 if (followDao.isFollowing(userId, pinUserId)) {
-                    temp.setMaster(PinDto.Who.FOLLOWER); // FOLLOWING 이 맞지 않노?
+                    temp.setMaster(PinDto.Who.FOLLOWING);
                 }
                 else {
                     temp.setMaster(PinDto.Who.UNKNOWN);

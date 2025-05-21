@@ -20,7 +20,7 @@ public class PinDto {
 
     public enum Who {
         MINE,
-        FOLLOWER,
+        FOLLOWING,
         UNKNOWN;
     }
 
