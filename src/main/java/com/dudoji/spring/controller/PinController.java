@@ -1,8 +1,7 @@
 package com.dudoji.spring.controller;
 
-import com.dudoji.spring.dto.PinDto;
+import com.dudoji.spring.dto.PinResponseDto;
 import com.dudoji.spring.dto.PinRequestDto;
-import com.dudoji.spring.models.domain.Pin;
 import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.service.PinService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,8 @@ public class PinController {
         return ResponseEntity.status(HttpStatus.CREATED).body("PIN created");
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<PinDto>> getPinsByRadius(
+    @GetMapping("")
+    public ResponseEntity<List<PinResponseDto>> getPinsByRadius(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam double radius, // TODO: PARAM? OR PATH VARIABLE?
             @RequestParam double lat,
@@ -42,7 +41,7 @@ public class PinController {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        List<PinDto> pins = pinService.getClosePins(radius, lat, lng, principalDetails.getUid());
+        List<PinResponseDto> pins = pinService.getClosePins(radius, lat, lng, principalDetails.getUid());
         return ResponseEntity.status(HttpStatus.OK).body(pins);
     }
 }
