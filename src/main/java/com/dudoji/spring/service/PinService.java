@@ -1,5 +1,7 @@
 package com.dudoji.spring.service;
 
+import com.dudoji.spring.dto.PinDto;
+import com.dudoji.spring.models.dao.FollowDao;
 import com.dudoji.spring.models.dao.PinDao;
 import com.dudoji.spring.models.domain.Pin;
 import com.dudoji.spring.util.BitmapUtil;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -17,6 +20,8 @@ public class PinService {
 
     @Autowired
     private PinDao pinDao;
+    @Autowired
+    private FollowDao followDao;
 
     public void createPin (Pin pin) {
         Objects.requireNonNull(pin, "Pin cannot be null");
@@ -30,8 +35,17 @@ public class PinService {
         log.info("User {} create a new pin with title {}", pin.getUserId(), pin.getTitle());
     }
 
-    public List<Pin> getClosePins (
-            double radius, double centerLat, double centerLng
+    /**
+     * Get List of PinDto with square range.
+     *
+     * @param radius    radius
+     * @param centerLat lat value of center
+     * @param centerLng lng value of center
+     * @param userId Id of who want to get pin list.
+     * @return List of PinDto
+     */
+    public List<PinDto> getClosePins (
+            double radius, double centerLat, double centerLng, long userId
     ) {
         double deltaLat = Math.toDegrees(radius / BitmapUtil.EARTH_RADIUS);
         double deltaLng = Math.toDegrees(radius / BitmapUtil.EARTH_RADIUS / Math.cos(Math.toRadians(centerLat)));
@@ -41,6 +55,38 @@ public class PinService {
         double minLng = centerLng - deltaLng;
         double maxLng = centerLng + deltaLng;
 
-        return pinDao.getClosePins(minLat, maxLat, minLng, maxLng);
+        List<Pin> pinList = pinDao.getClosePins(minLat, maxLat, minLng, maxLng);
+        List<PinDto> pinDtoList = pinList.stream()
+                .map(pin -> {
+                    PinDto dto = new PinDto(pin);
+                    long pinUserId = pin.getUserId();
+
+                    PinDto.Who who = (pinUserId == userId)                     ? PinDto.Who.MINE
+                                    : followDao.isFollowing(userId, pinUserId) ? PinDto.Who.FOLLOWING
+                                                                               : PinDto.Who.UNKNOWN;
+                    dto.setMaster(who);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+//        for (Pin pin : pinList) {
+//            // 3가지로 분류.
+//            PinDto temp = new PinDto(pin);
+//            long pinUserId = pin.getUserId();
+//            if (pinUserId == userId) {
+//                temp.setMaster(PinDto.Who.MINE);
+//            }
+//            else {
+//                if (followDao.isFollowing(userId, pinUserId)) {
+//                    temp.setMaster(PinDto.Who.FOLLOWING);
+//                }
+//                else {
+//                    temp.setMaster(PinDto.Who.UNKNOWN);
+//                }
+//            }
+//            pinDtoList.add(temp);
+//        }
+
+        return pinDtoList;
     }
 }

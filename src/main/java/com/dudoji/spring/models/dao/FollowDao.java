@@ -19,6 +19,7 @@ public class FollowDao {
     private static String GET_FOLLOW_LIST_BY_ID = "SELECT (followee_id) FROM follow WHERE follower_id = ?";
     private static String CREATE_FOLLOW_BY_ID = "INSERT INTO follow (follower_id, followee_id) VALUES (?, ?)";
     private static String DELETE_FOLLOW_BY_ID = "DELETE FROM follow WHERE follower_id = ? AND followee_id = ?";
+    private static String IS_FOLLOW_EXIST = "SELECT 1 FROM follow WHERE follower_id = ? AND followee_id = ?";
 
     /**
      * &#064;Deprecated
@@ -44,6 +45,19 @@ public class FollowDao {
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean isFollowing(long userId, long followeeId) {
+        try (Connection connection = dbConnection.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(IS_FOLLOW_EXIST);
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, followeeId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public boolean createFollowByUser(long userId, long followeeId) {
