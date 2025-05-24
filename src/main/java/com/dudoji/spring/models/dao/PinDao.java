@@ -22,7 +22,7 @@ public class PinDao {
 
     private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (user_id, lat, lng, content, created_at, image_url) VALUES (?, ?, ?, ?, ?, ?)";
 
-    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, user_id, lat, lng, content, created_at " +
+    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, user_id, lat, lng, content, created_at, image_url " +
             "FROM pin " +
             "WHERE lat BETWEEN ? AND ? " +
             "AND lng BETWEEN ? AND ?";
@@ -76,6 +76,7 @@ public class PinDao {
                 double lat = resultSet.getDouble("lat");
                 double lng = resultSet.getDouble("lng");
                 String content = resultSet.getString("content");
+                String imageUrl = resultSet.getString("image_url");
                 LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
 
                 Pin temp = Pin.builder()
@@ -85,6 +86,7 @@ public class PinDao {
                         .lng(lng)
                         .content(content)
                         .createdDate(createdDate)
+                        .imageUrl(imageUrl)
                         .build();
 
                 pins.add(temp);

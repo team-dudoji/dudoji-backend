@@ -26,6 +26,7 @@ public class PinRequestDto {
                 .lng(lng)
                 .content(content)
                 .createdDate(createdDate)
+                .imageUrl(imageUrl)
                 .build();
     }
 }
