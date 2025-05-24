@@ -21,15 +21,15 @@ public class PinController {
     private PinService pinService;
 
     @PostMapping("/")
-    public ResponseEntity<String> savePin(
+    public ResponseEntity<PinDto> savePin(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody PinRequestDto pinRequestDto) {
         if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        pinService.createPin(pinRequestDto.toDomain(principalDetails.getUid()));
-        return ResponseEntity.status(HttpStatus.CREATED).body("PIN created");
+        PinDto pinDto = pinService.createPin(pinRequestDto.toDomain(principalDetails.getUid()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(pinDto);
     }
 
     @GetMapping("/")
@@ -43,6 +43,7 @@ public class PinController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         List<PinDto> pins = pinService.getClosePins(radius, lat, lng, principalDetails.getUid());
+        pinService.refreshLikes(); // TODO: CHANGE
         return ResponseEntity.status(HttpStatus.OK).body(pins);
     }
 
@@ -56,7 +57,6 @@ public class PinController {
         }
 
         boolean result = pinService.likePin(principalDetails.getUid(), pinId);
-        pinService.refreshLikes(); // TODO: CHANGE
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -70,7 +70,6 @@ public class PinController {
         }
 
         boolean result = pinService.unlikePin(principalDetails.getUid(), pinId);
-        pinService.refreshLikes(); // TODO: CHANGE
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

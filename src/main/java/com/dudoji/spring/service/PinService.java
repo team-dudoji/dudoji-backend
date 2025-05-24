@@ -26,12 +26,21 @@ public class PinService {
     @Autowired
     private LikesDao likesDao;
 
-    public void createPin (Pin pin) {
+    public PinDto createPin (Pin pin) {
         Objects.requireNonNull(pin, "Pin cannot be null");
         // TODO: 하루에 개수 제한 넣으려면 여기에 넣어야 합니다.
 
-        pinDao.createPin(pin);
-        log.info("User {} create a new pin with title", pin.getUserId());
+        long id = pinDao.createPin(pin);
+        if (id > 0) {
+            PinDto pinDto = new PinDto(pin);
+            pinDto.setPinId(id);
+            pinDto.setMaster(PinDto.Who.MINE);
+            pinDto.setLikeCount(0);
+            pinDto.setLiked(false);
+
+            return pinDto;
+        }
+        return null; // TODO: ERROR
     }
 
     /**

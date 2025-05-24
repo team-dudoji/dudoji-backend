@@ -20,12 +20,13 @@ public class PinDao {
     @Autowired
     private DBConnection dbConnection;
 
-    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (user_id, lat, lng, content, created_at, image_url) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (user_id, lat, lng, content, created_at, image_url) VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
 
-    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, user_id, lat, lng, content, created_at " +
+    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, user_id, lat, lng, content, created_at, image_url " +
             "FROM pin " +
             "WHERE lat BETWEEN ? AND ? " +
             "AND lng BETWEEN ? AND ?";
+
 
 
     /**
@@ -33,7 +34,7 @@ public class PinDao {
      *
      * @param pin Pin Object which wants create
      */
-    public void createPin(Pin pin) {
+    public long createPin(Pin pin) {
         try (Connection connection = dbConnection.getConnection()) {
 
             PreparedStatement statement = connection.prepareStatement(CREATE_PIN_BY_REQUEST);
@@ -43,10 +44,16 @@ public class PinDao {
             statement.setString(4, pin.getContent());
             statement.setObject(5, pin.getCreatedDate());
             statement.setString(6, pin.getImageUrl());
-            statement.execute();
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt("id");
+            }
+
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+        return 0;
     }
 
     /**
@@ -76,6 +83,7 @@ public class PinDao {
                 double lat = resultSet.getDouble("lat");
                 double lng = resultSet.getDouble("lng");
                 String content = resultSet.getString("content");
+                String imageUrl = resultSet.getString("image_url");
                 LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
 
                 Pin temp = Pin.builder()
@@ -85,6 +93,7 @@ public class PinDao {
                         .lng(lng)
                         .content(content)
                         .createdDate(createdDate)
+                        .imageUrl(imageUrl)
                         .build();
 
                 pins.add(temp);
