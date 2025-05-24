@@ -15,16 +15,15 @@ public class PinRequestDto {
 
     private double lat;
     private double lng;
-    private String title;
     private String content;
     private LocalDateTime createdDate;
+    private String imageUrl;
 
     public Pin toDomain(Long userId) {
         return Pin.builder()
                 .userId(userId)
                 .lat(lat)
                 .lng(lng)
-                .title(title)
                 .content(content)
                 .createdDate(createdDate)
                 .build();

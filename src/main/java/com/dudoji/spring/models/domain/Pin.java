@@ -13,6 +13,6 @@ public class Pin {
     private Long pinId;
     private Long userId;
     private LocalDateTime createdDate;
-    private String title;
     private String content;
+    private String imageUrl;
 }
