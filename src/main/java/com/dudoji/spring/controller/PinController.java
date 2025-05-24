@@ -43,6 +43,7 @@ public class PinController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         List<PinDto> pins = pinService.getClosePins(radius, lat, lng, principalDetails.getUid());
+        pinService.refreshLikes(); // TODO: CHANGE
         return ResponseEntity.status(HttpStatus.OK).body(pins);
     }
 
@@ -56,7 +57,6 @@ public class PinController {
         }
 
         boolean result = pinService.likePin(principalDetails.getUid(), pinId);
-        pinService.refreshLikes(); // TODO: CHANGE
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -70,7 +70,6 @@ public class PinController {
         }
 
         boolean result = pinService.unlikePin(principalDetails.getUid(), pinId);
-        pinService.refreshLikes(); // TODO: CHANGE
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }
