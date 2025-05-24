@@ -22,7 +22,7 @@ public class ImageStorageController {
     @PostMapping("")
     public ResponseEntity<String> uploadImage(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam("file") MultipartFile image
+            @RequestParam("image") MultipartFile image
     ) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
