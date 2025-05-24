@@ -39,23 +39,25 @@ public class UserDao {
 
 
     public User getUserById(long uid) {
-        try (Connection connection  = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_ID);
+        try (Connection connection  = dbConnection.getConnection();
+             PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_ID);
+        ) {
             preparedStatement.setLong(1, uid);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                String name = resultSet.getString(1);
-                String email = resultSet.getString(2);
-                Timestamp createdAt = resultSet.getTimestamp(3);
-                String role = resultSet.getString(4);
-                String profileImageUrl = resultSet.getString(5);
-                return User.builder()
-                        .id(uid)
-                        .name(name)
-                        .email(email)
-                        .createAt(createdAt)
-                        .profileImageUrl(profileImageUrl)
-                        .role(role).build();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()){
+                    String name = resultSet.getString(1);
+                    String email = resultSet.getString(2);
+                    Timestamp createdAt = resultSet.getTimestamp(3);
+                    String role = resultSet.getString(4);
+                    String profileImageUrl = resultSet.getString(5);
+                    return User.builder()
+                            .id(uid)
+                            .name(name)
+                            .email(email)
+                            .createAt(createdAt)
+                            .profileImageUrl(profileImageUrl)
+                            .role(role).build();
+                }
             }
             return null;
         } catch (SQLException | ClassNotFoundException e) {
@@ -65,24 +67,26 @@ public class UserDao {
 
     @Deprecated
     public User getUserByName(String name) {
-        try (Connection connection  = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_NAME);
+        try (Connection connection  = dbConnection.getConnection();
+             PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_NAME);
+        ) {
             preparedStatement.setString(1, name);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                long uid = resultSet.getLong(1);
-                String email = resultSet.getString(2);
-                Timestamp createdAt = resultSet.getTimestamp(3);
-                String role = resultSet.getString(4);
-                String password = resultSet.getString(5);
-                return User.builder()
-                        .id(uid)
-                        .name(name)
-                        .email(email)
-                        .createAt(createdAt)
-                        .role(role)
-                        .password(password)
-                        .build();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()){
+                    long uid = resultSet.getLong(1);
+                    String email = resultSet.getString(2);
+                    Timestamp createdAt = resultSet.getTimestamp(3);
+                    String role = resultSet.getString(4);
+                    String password = resultSet.getString(5);
+                    return User.builder()
+                            .id(uid)
+                            .name(name)
+                            .email(email)
+                            .createAt(createdAt)
+                            .role(role)
+                            .password(password)
+                            .build();
+                }
             }
             return null;
         } catch (SQLException | ClassNotFoundException e) {
@@ -91,24 +95,26 @@ public class UserDao {
     }
 
     public User getUserByEmail(String email) {
-        try (Connection connection  = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_EMAIL);
+        try (Connection connection  = dbConnection.getConnection();
+             PreparedStatement preparedStatement =  connection.prepareStatement(GET_USER_BY_EMAIL);
+        ) {
             preparedStatement.setString(1, email);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                long uid = resultSet.getLong(1);
-                String name = resultSet.getString(2);
-                Timestamp createdAt = resultSet.getTimestamp(3);
-                String role = resultSet.getString(4);
-                String password = resultSet.getString(5);
-                return User.builder()
-                        .id(uid)
-                        .name(name)
-                        .email(email)
-                        .createAt(createdAt)
-                        .role(role)
-                        .password(password)
-                        .build();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()){
+                    long uid = resultSet.getLong(1);
+                    String name = resultSet.getString(2);
+                    Timestamp createdAt = resultSet.getTimestamp(3);
+                    String role = resultSet.getString(4);
+                    String password = resultSet.getString(5);
+                    return User.builder()
+                            .id(uid)
+                            .name(name)
+                            .email(email)
+                            .createAt(createdAt)
+                            .role(role)
+                            .password(password)
+                            .build();
+                }
             }
             return null;
         } catch (SQLException | ClassNotFoundException e) {
@@ -142,8 +148,9 @@ public class UserDao {
 //    }
 
     public boolean removeUserById(long uid) {
-        try (Connection connection  = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(REMOVE_USER_BY_ID);
+        try (Connection connection  = dbConnection.getConnection();
+             PreparedStatement preparedStatement =  connection.prepareStatement(REMOVE_USER_BY_ID);
+        ) {
             preparedStatement.setLong(1, uid);
             return preparedStatement.executeUpdate() == 1;
         } catch (SQLException | ClassNotFoundException e) {
@@ -154,14 +161,16 @@ public class UserDao {
     @Deprecated
     // User로 만들도록 하자. 두 개의 정보만으로는 데베 저장이 버겁다.
     public long createUser(String name, String email) {
-        try (Connection connection  = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(CREATE_USER_BY_ID);
+        try (Connection connection  = dbConnection.getConnection();
+             PreparedStatement preparedStatement =  connection.prepareStatement(CREATE_USER_BY_ID);
+        ) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, email);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                long uid = resultSet.getLong("id");
-                return uid;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()){
+                    long uid = resultSet.getLong("id");
+                    return uid;
+                }
             }
             return -1;
         } catch (SQLException | ClassNotFoundException e) {
@@ -170,17 +179,19 @@ public class UserDao {
     }
 
     public long createUserByUser(User user) {
-        try (Connection connection  = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(CREATE_USER_BY_USER);
+        try (Connection connection  = dbConnection.getConnection();
+             PreparedStatement preparedStatement =  connection.prepareStatement(CREATE_USER_BY_USER);
+        ) {
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getPassword());
             preparedStatement.setString(4, user.getRole());
             preparedStatement.setString(5, user.getProfileImageUrl());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                long uid = resultSet.getLong("id");
-                return uid;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()){
+                    long uid = resultSet.getLong("id");
+                    return uid;
+                }
             }
             return -1;
         } catch (SQLException | ClassNotFoundException e) {
@@ -193,15 +204,17 @@ public class UserDao {
     // 카카오 아이디를 안쓸 듯
 
     public long createUserWithKakaoId(String name, String email, long kakaoId) {
-        try (Connection connection  = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(CREATE_USER_BY_KAKAO_ID);
+        try (Connection connection  = dbConnection.getConnection();
+             PreparedStatement preparedStatement =  connection.prepareStatement(CREATE_USER_BY_KAKAO_ID);
+        ) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, email);
             preparedStatement.setLong(3, kakaoId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
-                long uid = resultSet.getLong("id");
-                return uid;
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()){
+                    long uid = resultSet.getLong("id");
+                    return uid;
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -210,12 +223,14 @@ public class UserDao {
     }
 
     public String getProfileImageUrl(long uid) {
-        try (Connection connection = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(GET_PROFILE_IMAGE_BY_ID);
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement preparedStatement =  connection.prepareStatement(GET_PROFILE_IMAGE_BY_ID);
+        ) {
             preparedStatement.setLong(1, uid);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getString(1);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString(1);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -226,26 +241,28 @@ public class UserDao {
     public List<User> getRecommendedUsers(String email) {
         List<User> friendList = new ArrayList<>();
         int count = 5;
-        try (Connection connection  = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement =  connection.prepareStatement(GET_USERS_BY_EMAIL_LIKE);
+        try (Connection connection  = dbConnection.getConnection();
+             PreparedStatement preparedStatement =  connection.prepareStatement(GET_USERS_BY_EMAIL_LIKE);
+        ) {
             preparedStatement.setString(1, email);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
-                if (count <= 0) break;
-                long uid = resultSet.getLong(1);
-                String name = resultSet.getString(2);
-                Timestamp createdAt = resultSet.getTimestamp(3);
-                String role = resultSet.getString(4);
-                String emailTrue = resultSet.getString(5);
-                friendList.add(User.builder()
-                        .id(uid)
-                        .name(name)
-                        .email(email)
-                        .createAt(createdAt)
-                        .role(role)
-                        .email(emailTrue)
-                        .build());
-                count--; // TODO; 임시로 5개로 제한합니다. 필요시 count 변수 수정
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()){
+                    if (count <= 0) break;
+                    long uid = resultSet.getLong(1);
+                    String name = resultSet.getString(2);
+                    Timestamp createdAt = resultSet.getTimestamp(3);
+                    String role = resultSet.getString(4);
+                    String emailTrue = resultSet.getString(5);
+                    friendList.add(User.builder()
+                            .id(uid)
+                            .name(name)
+                            .email(email)
+                            .createAt(createdAt)
+                            .role(role)
+                            .email(emailTrue)
+                            .build());
+                    count--; // TODO; 임시로 5개로 제한합니다. 필요시 count 변수 수정
+                }
             }
             return friendList;
         } catch (SQLException | ClassNotFoundException e) {

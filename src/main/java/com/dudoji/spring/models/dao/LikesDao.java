@@ -26,8 +26,9 @@ public class LikesDao {
     private DBConnection dbConnection;
 
     public boolean likePin(long userId, long pinId) {
-        try (Connection connection = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(LIKE_PIN_BY_ID);
+        try (Connection connection = dbConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(LIKE_PIN_BY_ID)
+        ) {
             preparedStatement.setLong(1, userId);
             preparedStatement.setLong(2, pinId);
 
@@ -39,8 +40,9 @@ public class LikesDao {
     }
 
     public boolean unlikePin(long userId, long pinId) {
-        try (Connection connection = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(UNLIKE_PIN_BY_ID);
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UNLIKE_PIN_BY_ID)
+        ) {
             preparedStatement.setLong(1, userId);
             preparedStatement.setLong(2, pinId);
 
@@ -52,27 +54,32 @@ public class LikesDao {
     }
 
     public int getLikesCount(long pinId) {
-        try (Connection connection = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_LIKE_COUNT_BY_ID);
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_LIKE_COUNT_BY_ID)
+        ) {
             preparedStatement.setLong(1, pinId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getInt(1);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                }
+                else return 0;
             }
-            else return 0;
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
     public boolean isLiked(long userId, long pinId) {
-        try (Connection connection = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_IS_LIKED_BY_ID);
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_IS_LIKED_BY_ID)
+        ) {
             preparedStatement.setLong(1, pinId);
             preparedStatement.setLong(2, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getBoolean(1);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -82,10 +89,10 @@ public class LikesDao {
     }
 
     public void refreshViews() {
-        try (Connection connection = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(REFRESH_LIKES);
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(REFRESH_LIKES);
+        ) {
             preparedStatement.execute();
-
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

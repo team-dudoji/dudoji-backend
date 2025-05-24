@@ -34,26 +34,30 @@ public class FollowDao {
 
     public List<Long> getFollowerListByUser(long userId) {
         List<Long> followerList = new ArrayList<>();
-        try (Connection connection = dbConnection.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_FOLLOW_LIST_BY_ID);
+        try (Connection connection = dbConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_FOLLOW_LIST_BY_ID)
+        ) {
             preparedStatement.setLong(1, userId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                followerList.add(resultSet.getLong(1));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    followerList.add(resultSet.getLong(1));
+                }
+                return followerList;
             }
-            return followerList;
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
     public boolean isFollowing(long userId, long followeeId) {
-        try (Connection connection = dbConnection.getConnection()) {
+        try (Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(IS_FOLLOW_EXIST);
+        ) {
             preparedStatement.setLong(1, userId);
             preparedStatement.setLong(2, followeeId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -61,8 +65,9 @@ public class FollowDao {
     }
 
     public boolean createFollowByUser(long userId, long followeeId) {
-        try (Connection connection = dbConnection.getConnection()) {
+        try (Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_FOLLOW_BY_ID);
+        ) {
             preparedStatement.setLong(1, userId);
             preparedStatement.setLong(2, followeeId);
             int result = preparedStatement.executeUpdate();
@@ -73,8 +78,9 @@ public class FollowDao {
     }
 
     public boolean deleteFollowByUser(long userId, long followeeId) {
-        try (Connection connection = dbConnection.getConnection()) {
+        try (Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FOLLOW_BY_ID);
+        ) {
             preparedStatement.setLong(1, userId);
             preparedStatement.setLong(2, followeeId);
             preparedStatement.setLong(2, followeeId);
@@ -94,15 +100,18 @@ public class FollowDao {
     @Deprecated
     // If We Use Secret Account. Using it
     public List<Long> getFollowRequestList(long userId) {
-        try (Connection connection = dbConnection.getConnection()) {
-            List<Long> friendRequestList = new ArrayList<>();
+        try (Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(GET_FRIEND_REQUEST_BY_ID);
+        ) {
+            List<Long> friendRequestList = new ArrayList<>();
             preparedStatement.setLong(1, userId);
-            ResultSet resultSet =  preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                friendRequestList.add(resultSet.getLong(1));
+
+            try (ResultSet resultSet =  preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    friendRequestList.add(resultSet.getLong(1));
+                }
+                return friendRequestList;
             }
-            return friendRequestList;
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -110,8 +119,9 @@ public class FollowDao {
 
     @Deprecated
     public boolean acceptFollow(long senderId, long receiverId) {
-        try (Connection connection = dbConnection.getConnection()) {
+        try (Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FRIEND_REQUEST_BY_SENDER_RECEIVER);
+        ) {
             preparedStatement.setString(1, "ACCEPTED");
             preparedStatement.setLong(2, senderId);
             preparedStatement.setLong(3, receiverId);
@@ -124,8 +134,9 @@ public class FollowDao {
 
     @Deprecated
     public boolean rejectFollow(long senderId, long receiverId) {
-        try (Connection connection = dbConnection.getConnection()) {
+        try (Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FRIEND_REQUEST_BY_SENDER_RECEIVER);
+        ) {
             preparedStatement.setString(1, "REJECTED");
             preparedStatement.setLong(2, senderId);
             preparedStatement.setLong(3, receiverId);
@@ -138,8 +149,9 @@ public class FollowDao {
 
     @Deprecated
     public boolean requestFollow(long senderId, long receiverId) {
-        try (Connection connection = dbConnection.getConnection()) {
+        try (Connection connection = dbConnection.getConnection();
             PreparedStatement preparedStatementDelete = connection.prepareStatement(DELETE_FRIEND_REQUEST_BY_SENDER_RECEIVER);
+        ) {
             preparedStatementDelete.setLong(1, senderId);
             preparedStatementDelete.setLong(2, receiverId);
             int updated = preparedStatementDelete.executeUpdate();
