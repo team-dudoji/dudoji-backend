@@ -20,9 +20,9 @@ public class PinDao {
     @Autowired
     private DBConnection dbConnection;
 
-    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (user_id, lat, lng, title, content, created_at) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (user_id, lat, lng, content, created_at, image_url) VALUES (?, ?, ?, ?, ?, ?)";
 
-    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, user_id, lat, lng, title, content, created_at " +
+    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, user_id, lat, lng, content, created_at " +
             "FROM pin " +
             "WHERE lat BETWEEN ? AND ? " +
             "AND lng BETWEEN ? AND ?";
@@ -40,9 +40,9 @@ public class PinDao {
             statement.setLong(1, pin.getUserId());
             statement.setDouble(2, pin.getLat());
             statement.setDouble(3, pin.getLng());
-            statement.setString(4, pin.getTitle());
-            statement.setString(5, pin.getContent());
-            statement.setObject(6, pin.getCreatedDate());
+            statement.setString(4, pin.getContent());
+            statement.setObject(5, pin.getCreatedDate());
+            statement.setString(6, pin.getImageUrl());
             statement.execute();
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -75,7 +75,6 @@ public class PinDao {
                 Long userId = resultSet.getLong("user_id");
                 double lat = resultSet.getDouble("lat");
                 double lng = resultSet.getDouble("lng");
-                String title = resultSet.getString("title");
                 String content = resultSet.getString("content");
                 LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
 
@@ -84,7 +83,6 @@ public class PinDao {
                         .userId(userId)
                         .lat(lat)
                         .lng(lng)
-                        .title(title)
                         .content(content)
                         .createdDate(createdDate)
                         .build();

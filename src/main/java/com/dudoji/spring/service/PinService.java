@@ -2,6 +2,7 @@ package com.dudoji.spring.service;
 
 import com.dudoji.spring.dto.PinDto;
 import com.dudoji.spring.models.dao.FollowDao;
+import com.dudoji.spring.models.dao.LikesDao;
 import com.dudoji.spring.models.dao.PinDao;
 import com.dudoji.spring.models.domain.Pin;
 import com.dudoji.spring.util.BitmapUtil;
@@ -22,17 +23,15 @@ public class PinService {
     private PinDao pinDao;
     @Autowired
     private FollowDao followDao;
+    @Autowired
+    private LikesDao likesDao;
 
     public void createPin (Pin pin) {
         Objects.requireNonNull(pin, "Pin cannot be null");
-        if (pin.getTitle().isBlank()) {
-            throw new IllegalArgumentException("Title cannot be blank");
-        }
-
         // TODO: 하루에 개수 제한 넣으려면 여기에 넣어야 합니다.
 
         pinDao.createPin(pin);
-        log.info("User {} create a new pin with title {}", pin.getUserId(), pin.getTitle());
+        log.info("User {} create a new pin with title", pin.getUserId());
     }
 
     /**
@@ -65,6 +64,14 @@ public class PinService {
                                     : followDao.isFollowing(userId, pinUserId) ? PinDto.Who.FOLLOWING
                                                                                : PinDto.Who.UNKNOWN;
                     dto.setMaster(who);
+                    // set likes
+                    dto.setLikeCount(
+                            getLikesCount(pin.getPinId())
+                    );
+
+                    dto.setLiked(
+                            isLiked(userId, pin.getPinId())
+                    );
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -88,5 +95,25 @@ public class PinService {
 //        }
 
         return pinDtoList;
+    }
+
+    public boolean likePin(long userId, long pinId) {
+        return likesDao.likePin(userId, pinId);
+    }
+
+    public boolean unlikePin(long userId, long pinId) {
+        return likesDao.unlikePin(userId, pinId);
+    }
+
+    public int getLikesCount(long pinId) {
+        return likesDao.getLikesCount(pinId);
+    }
+
+    public boolean isLiked(long userId, long pinId) {
+        return likesDao.isLiked(userId, pinId);
+    }
+
+    public void refreshLikes() {
+        likesDao.refreshViews();
     }
 }

@@ -45,4 +45,32 @@ public class PinController {
         List<PinDto> pins = pinService.getClosePins(radius, lat, lng, principalDetails.getUid());
         return ResponseEntity.status(HttpStatus.OK).body(pins);
     }
+
+    @PostMapping("/{pinId}/like")
+    public ResponseEntity<Boolean> likePin(
+        @AuthenticationPrincipal PrincipalDetails principalDetails,
+        @PathVariable long pinId
+    ) {
+        if (principalDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        boolean result = pinService.likePin(principalDetails.getUid(), pinId);
+        pinService.refreshLikes(); // TODO: CHANGE
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @DeleteMapping("/{pinId}/like")
+    public ResponseEntity<Boolean> unlikePin(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable long pinId
+    ) {
+        if (principalDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        boolean result = pinService.unlikePin(principalDetails.getUid(), pinId);
+        pinService.refreshLikes(); // TODO: CHANGE
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 }
