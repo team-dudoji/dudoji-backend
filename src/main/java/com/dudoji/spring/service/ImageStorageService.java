@@ -40,6 +40,7 @@ public class ImageStorageService {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return "uploads/" + fileName;
+
         } catch (IOException e) {
             throw new RuntimeException("Could not store file!", e);
         }

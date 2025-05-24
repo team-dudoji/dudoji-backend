@@ -49,6 +49,7 @@ public class PinDao {
             if (resultSet.next()) {
                 return resultSet.getInt("id");
             }
+
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

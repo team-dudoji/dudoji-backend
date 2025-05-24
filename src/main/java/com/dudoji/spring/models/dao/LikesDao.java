@@ -85,6 +85,7 @@ public class LikesDao {
         try (Connection connection = dbConnection.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(REFRESH_LIKES);
             preparedStatement.execute();
+
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
