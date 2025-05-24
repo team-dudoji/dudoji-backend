@@ -35,21 +35,20 @@ public class PinDao {
      * @param pin Pin Object which wants create
      */
     public long createPin(Pin pin) {
-        try (Connection connection = dbConnection.getConnection()) {
-
-            PreparedStatement statement = connection.prepareStatement(CREATE_PIN_BY_REQUEST);
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(CREATE_PIN_BY_REQUEST);
+        ) {
             statement.setLong(1, pin.getUserId());
             statement.setDouble(2, pin.getLat());
             statement.setDouble(3, pin.getLng());
             statement.setString(4, pin.getContent());
             statement.setObject(5, pin.getCreatedDate());
             statement.setString(6, pin.getImageUrl());
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                return resultSet.getInt("id");
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("id");
+                }
             }
-
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -69,39 +68,39 @@ public class PinDao {
             double maxLat, double maxLng) {
         List<Pin> pins = new ArrayList<>();
 
-        try (Connection connection = dbConnection.getConnection()) {
-
-            PreparedStatement statement = connection.prepareStatement(GET_CLOSE_PIN_BY_MIN_MAX);
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(GET_CLOSE_PIN_BY_MIN_MAX);
+        ) {
             statement.setDouble(1, minLat);
             statement.setDouble(2, maxLat);
             statement.setDouble(3, minLng);
             statement.setDouble(4, maxLng);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Long pinId = resultSet.getLong("id");
-                Long userId = resultSet.getLong("user_id");
-                double lat = resultSet.getDouble("lat");
-                double lng = resultSet.getDouble("lng");
-                String content = resultSet.getString("content");
-                String imageUrl = resultSet.getString("image_url");
-                LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Long pinId = resultSet.getLong("id");
+                    Long userId = resultSet.getLong("user_id");
+                    double lat = resultSet.getDouble("lat");
+                    double lng = resultSet.getDouble("lng");
+                    String content = resultSet.getString("content");
+                    String imageUrl = resultSet.getString("image_url");
+                    LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
 
-                Pin temp = Pin.builder()
-                        .pinId(pinId)
-                        .userId(userId)
-                        .lat(lat)
-                        .lng(lng)
-                        .content(content)
-                        .createdDate(createdDate)
-                        .imageUrl(imageUrl)
-                        .build();
+                    Pin temp = Pin.builder()
+                            .pinId(pinId)
+                            .userId(userId)
+                            .lat(lat)
+                            .lng(lng)
+                            .content(content)
+                            .createdDate(createdDate)
+                            .imageUrl(imageUrl)
+                            .build();
 
-                pins.add(temp);
+                    pins.add(temp);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
         return pins;
     }
 }

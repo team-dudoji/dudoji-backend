@@ -35,16 +35,18 @@ public class UserStepDao {
      * @return UserStep Object Created with uid, date
      */
     public UserStep getUserStepByIdOnDate(long uid, LocalDate date) {
-        try (Connection connection = dbConnection.getConnection()) {
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_STEP_BY_ID_AND_DATE);
+        ) {
 
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_STEP_BY_ID_AND_DATE);
             preparedStatement.setLong(1, uid);
             preparedStatement.setDate(2, java.sql.Date.valueOf(date));
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                Long stepId = resultSet.getLong("id");
-                int step = resultSet.getInt("step_count");
-                return UserStep.builder().uid(uid).stepId(stepId).stepMeter(step).stepDate(date).build();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Long stepId = resultSet.getLong("id");
+                    int step = resultSet.getInt("step_count");
+                    return UserStep.builder().uid(uid).stepId(stepId).stepMeter(step).stepDate(date).build();
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
@@ -55,19 +57,20 @@ public class UserStepDao {
     public List<UserStep> getUserStepByIdOnDuration(long uid, LocalDate startDate, LocalDate endDate) {
         List<UserStep> result = new ArrayList<>();
 
-        try (Connection connection = dbConnection.getConnection()) {
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_STEP_BY_ID_AND_DURATION);
+        ) {
 
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_STEP_BY_ID_AND_DURATION);
             preparedStatement.setLong(1, uid);
             preparedStatement.setDate(2, java.sql.Date.valueOf(startDate));
             preparedStatement.setDate(3, java.sql.Date.valueOf(endDate));
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                Long stepId = resultSet.getLong("id");
-                int step = resultSet.getInt("step_count");
-                LocalDate stepDate = resultSet.getDate("step_date").toLocalDate();
-                result.add(UserStep.builder().uid(uid).stepId(stepId).stepMeter(step).stepDate(stepDate).build());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Long stepId = resultSet.getLong("id");
+                    int step = resultSet.getInt("step_count");
+                    LocalDate stepDate = resultSet.getDate("step_date").toLocalDate();
+                    result.add(UserStep.builder().uid(uid).stepId(stepId).stepMeter(step).stepDate(stepDate).build());
+                }
             }
 
             return result;
@@ -84,9 +87,10 @@ public class UserStepDao {
      * @return True when query exactly play.
      */
     public boolean createUserStep(long uid, LocalDate date, int stepCount) {
-        try (Connection connection = dbConnection.getConnection()) {
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_STEP_BY_ID_AND_DATE);
+        ) {
 
-            PreparedStatement preparedStatement = connection.prepareStatement(CREATE_STEP_BY_ID_AND_DATE);
             preparedStatement.setLong(1, uid);
             preparedStatement.setDate(2, java.sql.Date.valueOf(date));
             preparedStatement.setInt(3, stepCount);
