@@ -1,6 +1,6 @@
 package com.dudoji.spring.service;
 
-import com.dudoji.spring.dto.PinDto;
+import com.dudoji.spring.dto.PinResponseDto;
 import com.dudoji.spring.models.dao.FollowDao;
 import com.dudoji.spring.models.dao.PinDao;
 import com.dudoji.spring.models.domain.Pin;
@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -44,7 +43,7 @@ public class PinService {
      * @param userId Id of who want to get pin list.
      * @return List of PinDto
      */
-    public List<PinDto> getClosePins (
+    public List<PinResponseDto> getClosePins (
             double radius, double centerLat, double centerLng, long userId
     ) {
         double deltaLat = Math.toDegrees(radius / BitmapUtil.EARTH_RADIUS);
@@ -56,14 +55,14 @@ public class PinService {
         double maxLng = centerLng + deltaLng;
 
         List<Pin> pinList = pinDao.getClosePins(minLat, maxLat, minLng, maxLng);
-        List<PinDto> pinDtoList = pinList.stream()
+        List<PinResponseDto> pinResponseDtoList = pinList.stream()
                 .map(pin -> {
-                    PinDto dto = new PinDto(pin);
+                    PinResponseDto dto = new PinResponseDto(pin);
                     long pinUserId = pin.getUserId();
 
-                    PinDto.Who who = (pinUserId == userId)                     ? PinDto.Who.MINE
-                                    : followDao.isFollowing(userId, pinUserId) ? PinDto.Who.FOLLOWING
-                                                                               : PinDto.Who.UNKNOWN;
+                    PinResponseDto.Who who = (pinUserId == userId)                     ? PinResponseDto.Who.MINE
+                                    : followDao.isFollowing(userId, pinUserId) ? PinResponseDto.Who.FOLLOWING
+                                                                               : PinResponseDto.Who.UNKNOWN;
                     dto.setMaster(who);
                     return dto;
                 })
@@ -87,6 +86,6 @@ public class PinService {
 //            pinDtoList.add(temp);
 //        }
 
-        return pinDtoList;
+        return pinResponseDtoList;
     }
 }

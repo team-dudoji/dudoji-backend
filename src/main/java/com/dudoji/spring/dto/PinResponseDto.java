@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class PinDto {
+public class PinResponseDto {
 
     // SAME WITH PIN
     private double lat;
@@ -24,7 +24,7 @@ public class PinDto {
         UNKNOWN;
     }
 
-    public PinDto(Pin pin) {
+    public PinResponseDto(Pin pin) {
         this.lat = pin.getLat();
         this.lng = pin.getLng();
         this.userId = pin.getUserId();
