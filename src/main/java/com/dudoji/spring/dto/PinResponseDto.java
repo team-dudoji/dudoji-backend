@@ -21,7 +21,7 @@ public class PinResponseDto {
     public enum Who {
         MINE,
         FOLLOWING,
-        UNKNOWN;
+        UNKNOWN
     }
 
     public PinResponseDto(Pin pin) {

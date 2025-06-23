@@ -34,7 +34,7 @@ public class PinController {
     @GetMapping("")
     public ResponseEntity<List<PinResponseDto>> getPinsByRadius(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam double radius, // TODO: PARAM? OR PATH VARIABLE?
+            @RequestParam double radius,
             @RequestParam double lat,
             @RequestParam double lng
     ) {
