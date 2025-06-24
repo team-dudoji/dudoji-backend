@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class Pin {
-
     private double lat;
     private double lng;
     private Long pinId;
@@ -15,4 +14,6 @@ public class Pin {
     private LocalDateTime createdDate;
     private String content;
     private String imageUrl;
+    private String placeName;
+    private String address;
 }
