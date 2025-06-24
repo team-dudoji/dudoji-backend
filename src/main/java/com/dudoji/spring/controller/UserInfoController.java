@@ -21,7 +21,7 @@ import java.security.Principal;
  * </ul>
  */
 @RestController
-@RequestMapping("api/user/info")
+@RequestMapping("api/user/infos")
 @PreAuthorize("isAuthenticated()")
 public class UserInfoController {
 

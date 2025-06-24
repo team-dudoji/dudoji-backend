@@ -22,7 +22,7 @@ public class RevealCircleController {
     @Autowired
     private MapSectionService mapSectionService;
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<String> saveRevealCircles(
             @AuthenticationPrincipal PrincipalDetails principal,
             @RequestBody RevealCirclesRequestDto positionsDto){

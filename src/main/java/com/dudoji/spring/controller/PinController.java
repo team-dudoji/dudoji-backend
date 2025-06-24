@@ -1,8 +1,7 @@
 package com.dudoji.spring.controller;
 
-import com.dudoji.spring.dto.PinDto;
+import com.dudoji.spring.dto.PinResponseDto;
 import com.dudoji.spring.dto.PinRequestDto;
-import com.dudoji.spring.models.domain.Pin;
 import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.service.PinService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,26 +13,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user/pin")
+@RequestMapping("/api/user/pins")
 public class PinController {
 
     @Autowired
     private PinService pinService;
 
-    @PostMapping("/")
-    public ResponseEntity<PinDto> savePin(
+    @PostMapping("")
+    public ResponseEntity<PinResponseDto> savePin(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody PinRequestDto pinRequestDto) {
         if (principalDetails == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        PinDto pinDto = pinService.createPin(pinRequestDto.toDomain(principalDetails.getUid()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(pinDto);
+        PinResponseDto pinResponseDto = pinService.createPin(pinRequestDto.toDomain(principalDetails.getUid()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(pinResponseDto);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<PinDto>> getPinsByRadius(
+    @GetMapping("")
+    public ResponseEntity<List<PinResponseDto>> getPinsByRadius(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam double radius, // TODO: PARAM? OR PATH VARIABLE?
             @RequestParam double lat,
@@ -42,7 +41,7 @@ public class PinController {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        List<PinDto> pins = pinService.getClosePins(radius, lat, lng, principalDetails.getUid());
+        List<PinResponseDto> pins = pinService.getClosePins(radius, lat, lng, principalDetails.getUid());
         pinService.refreshLikes(); // TODO: CHANGE
         return ResponseEntity.status(HttpStatus.OK).body(pins);
     }

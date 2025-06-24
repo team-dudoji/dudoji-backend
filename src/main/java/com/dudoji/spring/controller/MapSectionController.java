@@ -27,7 +27,7 @@ public class MapSectionController {
     @Autowired
     private MapSectionService mapSectionService;
     // 아니지 모든 맵섹션을 나눠준다고 생각하면, 그냥 principal 만 있어도 되잖아
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<MapSectionResponseDto> getMapSection(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ){

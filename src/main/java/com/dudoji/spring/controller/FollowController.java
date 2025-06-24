@@ -20,7 +20,7 @@ public class FollowController {
     @Autowired
     private FollowService followService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<User>> getFollow(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
