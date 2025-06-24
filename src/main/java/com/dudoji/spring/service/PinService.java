@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -106,6 +107,25 @@ public class PinService {
 //            }
 //            pinResponseDtoList.add(temp);
 //        }
+
+        return pinResponseDtoList;
+    }
+
+    public List<PinResponseDto> getMyPins(long userId) {
+        List<Pin> pins = pinDao.getALlPinsByUserId(userId);
+        List<PinResponseDto> pinResponseDtoList = pins.stream()
+                .map(pin -> {
+                    PinResponseDto dto = new PinResponseDto(pin);
+                    long pinUserId = pin.getUserId();
+
+                    dto.setMaster(PinResponseDto.Who.MINE);
+                    dto.setLikeCount(getLikesCount(pin.getPinId()));
+                    dto.setLiked(isLiked(pin.getUserId(), pin.getPinId()));
+                    dto.setAddress(pin.getAddress());
+                    dto.setPlaceName(pin.getPlaceName());
+                    return dto;
+                })
+                .collect(Collectors.toList());
 
         return pinResponseDtoList;
     }
