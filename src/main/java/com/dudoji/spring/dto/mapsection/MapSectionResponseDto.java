@@ -1,4 +1,4 @@
-package com.dudoji.spring.dto;
+package com.dudoji.spring.dto.mapsection;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

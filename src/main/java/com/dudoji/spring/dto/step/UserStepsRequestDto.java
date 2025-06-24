@@ -1,4 +1,4 @@
-package com.dudoji.spring.dto;
+package com.dudoji.spring.dto.step;
 
 import lombok.Getter;
 import lombok.Setter;

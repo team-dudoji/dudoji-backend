@@ -1,7 +1,7 @@
 package com.dudoji.spring.service;
 
-import com.dudoji.spring.dto.KakaoTokenResponseDto;
-import com.dudoji.spring.dto.KakaoUserInfoResponseDto;
+import com.dudoji.spring.dto.kakao.KakaoTokenResponseDto;
+import com.dudoji.spring.dto.kakao.KakaoUserInfoResponseDto;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

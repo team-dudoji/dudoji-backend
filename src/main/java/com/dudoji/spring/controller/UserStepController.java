@@ -1,8 +1,8 @@
 package com.dudoji.spring.controller;
 
-import com.dudoji.spring.dto.DateRangeRequestDto;
-import com.dudoji.spring.dto.DateRequestDto;
-import com.dudoji.spring.dto.UserStepsRequestDto;
+import com.dudoji.spring.dto.date.DateRangeRequestDto;
+import com.dudoji.spring.dto.date.DateRequestDto;
+import com.dudoji.spring.dto.step.UserStepsRequestDto;
 import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.models.domain.UserStep;
 import com.dudoji.spring.service.UserStepService;

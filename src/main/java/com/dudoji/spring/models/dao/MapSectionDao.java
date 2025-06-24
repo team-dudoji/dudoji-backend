@@ -1,6 +1,6 @@
 package com.dudoji.spring.models.dao;
 
-import com.dudoji.spring.dto.MapSectionResponseDto;
+import com.dudoji.spring.dto.mapsection.MapSectionResponseDto;
 import com.dudoji.spring.models.DBConnection;
 import com.dudoji.spring.models.domain.DetailedMapSection;
 import com.dudoji.spring.models.domain.MapSection;

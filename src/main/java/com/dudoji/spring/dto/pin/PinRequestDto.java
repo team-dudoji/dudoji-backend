@@ -1,13 +1,10 @@
-package com.dudoji.spring.dto;
+package com.dudoji.spring.dto.pin;
 
 import com.dudoji.spring.models.domain.Pin;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Builder
