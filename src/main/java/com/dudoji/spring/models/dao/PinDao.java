@@ -27,6 +27,10 @@ public class PinDao {
             "WHERE lat BETWEEN ? AND ? " +
             "AND lng BETWEEN ? AND ?";
 
+    private static final String GET_ALL_PIN_BY_USER_ID = "SELECT id, lat, lng, content, created_at, image_url, placeName, address " +
+            "FROM pin " +
+            "WHERE user_id = ?";
+
 
 
     /**
@@ -81,6 +85,45 @@ public class PinDao {
                 while (resultSet.next()) {
                     Long pinId = resultSet.getLong("id");
                     Long userId = resultSet.getLong("user_id");
+                    double lat = resultSet.getDouble("lat");
+                    double lng = resultSet.getDouble("lng");
+                    String content = resultSet.getString("content");
+                    String imageUrl = resultSet.getString("image_url");
+                    LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
+                    String placeName = resultSet.getString("placeName");
+                    String address = resultSet.getString("address");
+
+                    Pin temp = Pin.builder()
+                            .pinId(pinId)
+                            .userId(userId)
+                            .lat(lat)
+                            .lng(lng)
+                            .content(content)
+                            .createdDate(createdDate)
+                            .imageUrl(imageUrl)
+                            .placeName(placeName)
+                            .address(address)
+                            .build();
+
+                    pins.add(temp);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return pins;
+    }
+
+    public List<Pin> getALlPinsByUserId(long userId) {
+        List<Pin> pins = new ArrayList<>();
+
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(GET_ALL_PIN_BY_USER_ID);
+        ) {
+            statement.setLong(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Long pinId = resultSet.getLong("id");
                     double lat = resultSet.getDouble("lat");
                     double lng = resultSet.getDouble("lng");
                     String content = resultSet.getString("content");

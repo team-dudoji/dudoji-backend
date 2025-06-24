@@ -71,4 +71,16 @@ public class PinController {
         boolean result = pinService.unlikePin(principalDetails.getUid(), pinId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    @GetMapping("/mine")
+    public ResponseEntity<List<PinResponseDto>> getMyPins(
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        if (principalDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        List<PinResponseDto> pins = pinService.getMyPins(principalDetails.getUid());
+        return ResponseEntity.status(HttpStatus.OK).body(pins);
+    }
 }
