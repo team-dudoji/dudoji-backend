@@ -19,6 +19,8 @@ public class PinResponseDto {
     private int likeCount;
     private boolean isLiked;
     private String imageUrl;
+    private String placeName;
+    private String address;
 
     public enum Who {
         MINE,
@@ -34,5 +36,7 @@ public class PinResponseDto {
         this.createdDate = pin.getCreatedDate();
         this.content = pin.getContent();
         this.imageUrl = pin.getImageUrl();
+        this.placeName = pin.getPlaceName();
+        this.address = pin.getAddress();
     }
 }

@@ -36,6 +36,8 @@ public class PinService {
             pinResponseDto.setMaster(PinResponseDto.Who.MINE);
             pinResponseDto.setLikeCount(0);
             pinResponseDto.setLiked(false);
+            pinResponseDto.setAddress(pin.getAddress());
+            pinResponseDto.setPlaceName(pin.getPlaceName());
 
             return pinResponseDto;
         }
@@ -80,6 +82,9 @@ public class PinService {
                     dto.setLiked(
                             isLiked(userId, pin.getPinId())
                     );
+
+                    dto.setAddress(pin.getAddress());
+                    dto.setPlaceName(pin.getPlaceName());
                     return dto;
                 })
                 .collect(Collectors.toList());

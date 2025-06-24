@@ -20,9 +20,9 @@ public class PinDao {
     @Autowired
     private DBConnection dbConnection;
 
-    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (user_id, lat, lng, content, created_at, image_url) VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
+    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (user_id, lat, lng, content, created_at, image_url, placeName, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
 
-    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, user_id, lat, lng, content, created_at, image_url " +
+    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, user_id, lat, lng, content, created_at, image_url, placeName, address " +
             "FROM pin " +
             "WHERE lat BETWEEN ? AND ? " +
             "AND lng BETWEEN ? AND ?";
@@ -44,6 +44,8 @@ public class PinDao {
             statement.setString(4, pin.getContent());
             statement.setObject(5, pin.getCreatedDate());
             statement.setString(6, pin.getImageUrl());
+            statement.setString(7, pin.getPlaceName());
+            statement.setString(8, pin.getAddress());
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt("id");
@@ -84,6 +86,8 @@ public class PinDao {
                     String content = resultSet.getString("content");
                     String imageUrl = resultSet.getString("image_url");
                     LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
+                    String placeName = resultSet.getString("placeName");
+                    String address = resultSet.getString("address");
 
                     Pin temp = Pin.builder()
                             .pinId(pinId)
@@ -93,6 +97,8 @@ public class PinDao {
                             .content(content)
                             .createdDate(createdDate)
                             .imageUrl(imageUrl)
+                            .placeName(placeName)
+                            .address(address)
                             .build();
 
                     pins.add(temp);

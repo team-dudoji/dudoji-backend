@@ -18,6 +18,8 @@ public class PinRequestDto {
     private String content;
     private LocalDateTime createdDate;
     private String imageUrl;
+    private String placeName;
+    private String address;
 
     public Pin toDomain(Long userId) {
         return Pin.builder()
@@ -27,6 +29,8 @@ public class PinRequestDto {
                 .content(content)
                 .createdDate(createdDate)
                 .imageUrl(imageUrl)
+                .placeName(placeName)
+                .address(address)
                 .build();
     }
 }
