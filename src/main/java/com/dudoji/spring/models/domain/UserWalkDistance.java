@@ -14,6 +14,6 @@ public class UserWalkDistance {
 
     private Long stepId;
     private Long uid;
-    private LocalDate distance_date;
-    private int distance_meter;
+    private LocalDate date;
+    private int meters;
 }

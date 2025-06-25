@@ -41,7 +41,7 @@ public class UserWalkDistancesDto {
 
         @Override
         public String toString() {
-            return String.format(date.toString(), distance);
+            return String.format("%s: %d ", date.toString(), distance);
         }
     }
 }

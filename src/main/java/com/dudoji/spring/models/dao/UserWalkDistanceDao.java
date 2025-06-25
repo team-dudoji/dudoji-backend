@@ -48,7 +48,7 @@ public class UserWalkDistanceDao {
                 if (resultSet.next()) {
                     Long stepId = resultSet.getLong("id");
                     int distanceMeter = resultSet.getInt("distance_meter");
-                    return UserWalkDistance.builder().uid(uid).stepId(stepId).distance_meter(distanceMeter).distance_date(distanceDate).build();
+                    return UserWalkDistance.builder().uid(uid).stepId(stepId).meters(distanceMeter).date(distanceDate).build();
                 }
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -66,8 +66,8 @@ public class UserWalkDistanceDao {
 
 
             preparedStatement.setLong(1, uid);
-            preparedStatement.setDate(2, java.sql.Date.valueOf(String.valueOf(startDate)));
-            preparedStatement.setDate(3, java.sql.Date.valueOf(String.valueOf(endDate)));
+            preparedStatement.setDate(2, java.sql.Date.valueOf(startDate));
+            preparedStatement.setDate(3, java.sql.Date.valueOf(endDate));
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     int distanceMeter = resultSet.getInt("distance_meter");
