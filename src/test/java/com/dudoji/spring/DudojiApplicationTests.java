@@ -1,6 +1,6 @@
 package com.dudoji.spring;
 
-import com.dudoji.spring.models.dao.UserStepDao;
+import com.dudoji.spring.models.dao.UserWalkDistanceDao;
 import com.dudoji.spring.models.domain.*;
 import com.dudoji.spring.service.MapSectionService;
 import com.dudoji.spring.models.DBConnection;
@@ -30,9 +30,9 @@ class DudojiApplicationTests {
     @Autowired
     MapSectionService mapSectionService;
     @Autowired
-    UserStepDao userstepDao;
+    UserWalkDistanceDao userstepDao;
     @Autowired
-    private UserStepDao userStepDao;
+    private UserWalkDistanceDao userWalkDistanceDao;
 
     @Test
     void testUserStep() {
@@ -40,24 +40,24 @@ class DudojiApplicationTests {
         int stepCount = 5000;
         LocalDate date = new Date(System.currentTimeMillis()).toLocalDate();
 
-        boolean checkCreate = userstepDao.createUserStep(4, date, stepCount);
+        boolean checkCreate = userstepDao.createUserWalkDistance(4, date, stepCount);
         assertTrue(checkCreate);
 
-        UserStep userStep = userStepDao.getUserStepByIdOnDate(uid, date);
-        assertNotNull(userStep);
-        assertEquals(uid, userStep.getUid());
-        assertEquals(stepCount, userStep.getStepMeter());
-        assertEquals(date, userStep.getStepDate())
+        UserWalkDistance userWalkDistance = userWalkDistanceDao.getUserWalkDistanceByIdOnDate(uid, date);
+        assertNotNull(userWalkDistance);
+        assertEquals(uid, userWalkDistance.getUid());
+        assertEquals(stepCount, userWalkDistance.getStepMeter());
+        assertEquals(date, userWalkDistance.getDate())
 
         stepCount += 3000;
-        checkCreate = userstepDao.createUserStep(4, date, stepCount);
+        checkCreate = userstepDao.createUserWalkDistance(4, date, stepCount);
         assertTrue(checkCreate);
 
-        userStep = userStepDao.getUserStepByIdOnDate(uid, date);
-        assertNotNull(userStep);
-        assertEquals(uid, userStep.getUid());
-        assertEquals(stepCount, userStep.getStepMeter());
-        assertEquals(date, userStep.getStepDate());
+        userWalkDistance = userWalkDistanceDao.getUserWalkDistanceByIdOnDate(uid, date);
+        assertNotNull(userWalkDistance);
+        assertEquals(uid, userWalkDistance.getUid());
+        assertEquals(stepCount, userWalkDistance.getStepMeter());
+        assertEquals(date, userWalkDistance.getDate());
     }
 
     @Test
