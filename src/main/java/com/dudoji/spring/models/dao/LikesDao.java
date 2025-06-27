@@ -3,15 +3,17 @@ package com.dudoji.spring.models.dao;
 import com.dudoji.spring.models.DBConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Component
 @Slf4j
+@Repository("LikesDao")
 public class LikesDao {
 
     private static String LIKE_PIN_BY_ID = "INSERT INTO likes (user_id, pin_id) VALUES (?, ?)";
@@ -22,79 +24,46 @@ public class LikesDao {
             ")";
     private static String REFRESH_LIKES = "REFRESH MATERIALIZED VIEW like_counts";
 
+    @Deprecated
     @Autowired
     private DBConnection dbConnection;
 
-    public boolean likePin(long userId, long pinId) {
-        try (Connection connection = dbConnection.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(LIKE_PIN_BY_ID)
-        ) {
-            preparedStatement.setLong(1, userId);
-            preparedStatement.setLong(2, pinId);
+    @Autowired
+    private JdbcClient jdbcClient;
 
-            int affectedRows = preparedStatement.executeUpdate();
-            return affectedRows > 0;
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public boolean likePin(long userId, long pinId) {
+        return jdbcClient.sql(LIKE_PIN_BY_ID)
+                .param(userId)
+                .param(pinId)
+                .update() > 0;
     }
 
     public boolean unlikePin(long userId, long pinId) {
-        try (Connection connection = dbConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UNLIKE_PIN_BY_ID)
-        ) {
-            preparedStatement.setLong(1, userId);
-            preparedStatement.setLong(2, pinId);
-
-            int affectedRows = preparedStatement.executeUpdate();
-            return affectedRows > 0;
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcClient.sql(UNLIKE_PIN_BY_ID)
+                .param(userId)
+                .param(pinId)
+                .update() > 0;
     }
 
     public int getLikesCount(long pinId) {
-        try (Connection connection = dbConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_LIKE_COUNT_BY_ID)
-        ) {
-            preparedStatement.setLong(1, pinId);
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getInt(1);
-                }
-                else return 0;
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcClient.sql(GET_LIKE_COUNT_BY_ID)
+                .param(pinId)
+                .query(Integer.class)
+                .optional()
+                .orElse(0);
     }
 
     public boolean isLiked(long userId, long pinId) {
-        try (Connection connection = dbConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_IS_LIKED_BY_ID)
-        ) {
-            preparedStatement.setLong(1, pinId);
-            preparedStatement.setLong(2, userId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getBoolean(1);
-                }
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return false;
+        return jdbcClient.sql(GET_IS_LIKED_BY_ID)
+                .param(pinId)
+                .param(userId)
+                .query(Boolean.class)
+                .optional()
+                .orElse(false);
     }
 
     public void refreshViews() {
-        try (Connection connection = dbConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(REFRESH_LIKES);
-        ) {
-            preparedStatement.execute();
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        jdbcClient.sql(REFRESH_LIKES)
+                .update();
     }
 }

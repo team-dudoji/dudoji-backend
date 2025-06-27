@@ -11,6 +11,7 @@ import java.sql.SQLException;
 
 @Component
 @Slf4j
+@Deprecated
 public class DBConnection {
 
     private final DataSource dataSource;
