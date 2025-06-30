@@ -1,6 +1,6 @@
 package com.dudoji.spring.service;
 
-import com.dudoji.spring.dto.PinResponseDto;
+import com.dudoji.spring.dto.pin.PinResponseDto;
 import com.dudoji.spring.models.dao.FollowDao;
 import com.dudoji.spring.models.dao.LikesDao;
 import com.dudoji.spring.models.dao.PinDao;
@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -116,7 +115,6 @@ public class PinService {
         List<PinResponseDto> pinResponseDtoList = pins.stream()
                 .map(pin -> {
                     PinResponseDto dto = new PinResponseDto(pin);
-                    long pinUserId = pin.getUserId();
 
                     dto.setMaster(PinResponseDto.Who.MINE);
                     dto.setLikeCount(getLikesCount(pin.getPinId()));

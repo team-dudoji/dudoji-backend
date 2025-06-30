@@ -1,7 +1,7 @@
 package com.dudoji.spring.controller;
 
-import com.dudoji.spring.dto.PinResponseDto;
-import com.dudoji.spring.dto.PinRequestDto;
+import com.dudoji.spring.dto.pin.PinResponseDto;
+import com.dudoji.spring.dto.pin.PinRequestDto;
 import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.service.PinService;
 import org.springframework.beans.factory.annotation.Autowired;

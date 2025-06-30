@@ -1,6 +1,6 @@
 package com.dudoji.spring.controller;
 
-import com.dudoji.spring.dto.KakaoUserInfoResponseDto;
+import com.dudoji.spring.dto.kakao.KakaoUserInfoResponseDto;
 import com.dudoji.spring.models.dao.UserDao;
 import com.dudoji.spring.models.domain.JwtProvider;
 import com.dudoji.spring.models.domain.PrincipalDetails;

@@ -1,4 +1,4 @@
-package com.dudoji.spring.dto;
+package com.dudoji.spring.dto.pin;
 
 import com.dudoji.spring.models.domain.Pin;
 import lombok.Data;

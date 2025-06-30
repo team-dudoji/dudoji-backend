@@ -1,4 +1,4 @@
-package com.dudoji.spring.dto;
+package com.dudoji.spring.dto.date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

@@ -1,10 +1,8 @@
 package com.dudoji.spring.controller;
 
-import com.dudoji.spring.dto.DateRangeRequestDto;
-import com.dudoji.spring.dto.DateRequestDto;
+import com.dudoji.spring.dto.date.DateRangeRequestDto;
 import com.dudoji.spring.dto.UserWalkDistancesDto;
 import com.dudoji.spring.models.domain.PrincipalDetails;
-import com.dudoji.spring.models.domain.UserWalkDistance;
 import com.dudoji.spring.service.UserWalkDistanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
