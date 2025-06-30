@@ -82,6 +82,7 @@ public class FollowController {
      * &#064;Deprecated
      */
 
+    /*
     @Deprecated
     @GetMapping("/requests")
     public ResponseEntity<List<User>> getRequestFriends(
@@ -130,4 +131,5 @@ public class FollowController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(false);
         }
     }
+    */
 }
