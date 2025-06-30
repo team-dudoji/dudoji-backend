@@ -1,5 +1,6 @@
 package com.dudoji.spring.models.domain;
 
+import com.dudoji.spring.dto.landmark.LandmarkRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,4 +15,16 @@ public class Landmark {
     private String placeName;
     private String address;
     private boolean isDetected;
+
+    public Landmark(Long landmarkId, LandmarkRequestDto landmarkRequestDto) {
+        this(landmarkId,
+                landmarkRequestDto.lat(),
+                landmarkRequestDto.lng(),
+                landmarkRequestDto.content(),
+                landmarkRequestDto.imageUrl(),
+                landmarkRequestDto.placeName(),
+                landmarkRequestDto.address(),
+                false
+        );
+    }
 }

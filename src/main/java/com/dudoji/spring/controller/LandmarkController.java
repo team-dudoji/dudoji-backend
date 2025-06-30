@@ -40,6 +40,27 @@ public class LandmarkController {
     }
 
     @PreAuthorize("hasRole('admin')")
+    @ResponseBody
+    @DeleteMapping("/api/admin/landmarks/{landmarkId}")
+    public ResponseEntity<String> deleteLandmark(
+            @PathVariable Long landmarkId
+    ) {
+        landmarkService.deleteLandmark(landmarkId);
+        return ResponseEntity.ok("successfully saved");
+    }
+
+    @PreAuthorize("hasRole('admin')")
+    @ResponseBody
+    @PutMapping("/api/admin/landmarks/{landmarkId}")
+    public ResponseEntity<String> putLandmark(
+            @PathVariable Long landmarkId,
+            @RequestBody LandmarkRequestDto landmarkRequestDto
+    ) {
+        landmarkService.putLandmark(landmarkId, landmarkRequestDto);
+        return ResponseEntity.ok("successfully saved");
+    }
+
+    @PreAuthorize("hasRole('admin')")
     @GetMapping("/admin/landmarks")
     public String getAdminLandmarkPage(
             Model model

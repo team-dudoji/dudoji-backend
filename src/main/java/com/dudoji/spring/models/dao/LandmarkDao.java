@@ -38,6 +38,16 @@ public class LandmarkDao {
             (:landmarkId, :userId);
             """;
 
+    private static final String DELETE_LANDMARK = """
+            DELETE FROM Landmark WHERE landmarkId = :landmarkId;
+            """;
+
+    private static final String UPDATE_LANDMARK = """
+            UPDATE Landmark
+            SET lat = :lat, lng = :lng, placeName = :placeName, content = :content, imageUrl = :imageUrl, address = :address
+            WHERE landmarkId = :landmarkId;
+            """;
+
     public List<Landmark> getLandmarks(long userId) {
         return jdbcClient.sql(GET_LANDMARKS)
                 .param("userId", userId)
@@ -70,6 +80,24 @@ public class LandmarkDao {
         jdbcClient.sql(SAVE_LANDMARK_DETECTION)
                 .param("userId", userId)
                 .param("landmarkId", landmarkId)
+                .update();
+    }
+
+    public void deleteLandmark(Long landmarkId) {
+        jdbcClient.sql(DELETE_LANDMARK)
+                .param("landmarkId", landmarkId)
+                .update();
+    }
+
+    public void putLandmark(Landmark landmark) {
+        jdbcClient.sql(UPDATE_LANDMARK)
+                .param("landmarkId", landmark.getLandmarkId())
+                .param("lat", landmark.getLat())
+                .param("lng", landmark.getLng())
+                .param("content", landmark.getContent())
+                .param("imageUrl", landmark.getImageUrl())
+                .param("placeName", landmark.getPlaceName())
+                .param("address", landmark.getAddress())
                 .update();
     }
 }
