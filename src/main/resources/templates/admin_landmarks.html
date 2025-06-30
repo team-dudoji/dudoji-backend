@@ -1,0 +1,79 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Landmarks Management</title>
+    <link rel="stylesheet" type="text/css" href="/style/base-style.css">
+    <link rel="stylesheet" type="text/css" href="/style/table-style.css">
+    <link rel="stylesheet" type="text/css" href="/style/modal-style.css">
+</head>
+<body>
+<h1>Landmarks Management</h1>
+<div>
+    <button type="button" onclick="openModal('add')">Add Landmark</button>
+</div>
+<div>
+    <h2>Landmarks List</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>landmark id</th>
+            <th>PlaceName</th>
+            <th>latlng</th>
+            <th>image</th>
+            <th>content</th>
+            <th>address</th>
+            <th>function</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="landmark : ${landmarks}">
+            <td th:text="${landmark.landmarkId()()()}"></td>
+            <td th:text="${landmark.placeName()}"></td>
+            <td th:text="${landmark.lat()}, ${landmark.lng()}"></td>
+            <td th:text="${landmark.imageUrl()}"></td>
+            <td th:text="${landmark.content()}"></td>
+            <td th:text="${landmark.address()}"></td>
+            <td>
+                <button type="button" th:onclick="deleteProduct([[${landmark.landmarkId()}]])">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Add/Update Product -->
+<div id="modal">
+    <h4 id="modal-title"></h4>
+    <form id="infoForm">
+        <label>Place Name:
+            <input type="text" name="placeName" required>
+        </label><br><br>
+
+        <label>Latitude:
+            <input type="number" name="lat" required step="any">
+        </label><br><br>
+
+        <label>Longitude:
+            <input type="number" name="lng" required step="any">
+        </label><br><br>
+
+        <label>Image URL:
+            <input type="text" name="imageUrl" required>
+        </label><br><br>
+
+        <label>Content:
+            <textarea name="content" rows="3" required></textarea>
+        </label><br><br>
+
+        <label>Address:
+            <input type="text" name="address" required>
+        </label><br><br>
+
+        <button type="submit">제출</button>
+        <button type="button" onclick="closeModal()">닫기</button>
+    </form>
+</div>
+</body>
+
+<script src="/js/landmarks-management.js"></script>
+</html>
