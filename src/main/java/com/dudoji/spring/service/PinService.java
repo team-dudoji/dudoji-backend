@@ -115,7 +115,6 @@ public class PinService {
         List<PinResponseDto> pinResponseDtoList = pins.stream()
                 .map(pin -> {
                     PinResponseDto dto = new PinResponseDto(pin);
-                    long pinUserId = pin.getUserId();
 
                     dto.setMaster(PinResponseDto.Who.MINE);
                     dto.setLikeCount(getLikesCount(pin.getPinId()));
