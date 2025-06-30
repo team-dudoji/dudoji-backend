@@ -148,35 +148,9 @@ ALTER TABLE user_walk_distance
 ------------------------------------------------------------
 -- 2) 컬럼 이름 변경 및 속성 조정
 ------------------------------------------------------------
-ALTER TABLE user_walk_distance
-    RENAME COLUMN step_date  TO distance_date,
-    RENAME COLUMN step_count TO distance_meter,
-    ALTER COLUMN distance_meter SET DEFAULT 0,
-    ALTER COLUMN distance_meter SET NOT NULL;
-
-------------------------------------------------------------
--- 3) 제약조건 이름 변경
-------------------------------------------------------------
-ALTER TABLE user_walk_distance
-    RENAME CONSTRAINT user_steps_pkey        TO user_work_distance_pkey,
-    RENAME CONSTRAINT fk_user_steps_user     TO fk_user_work_distance_user,
-    RENAME CONSTRAINT unique_user_step       TO unique_user_distance;
-
-------------------------------------------------------------
--- 4) 인덱스 이름 변경
-------------------------------------------------------------
-ALTER INDEX idx_user_steps_user_date
-    RENAME TO idx_user_walk_distance_user_date;
-
-------------------------------------------------------------
--- 5) 테이블 소유자 및 권한
-------------------------------------------------------------
-ALTER TABLE user_walk_distance OWNER TO postgres;
-
-GRANT DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
-    ON user_walk_distance TO dudoji;
+ALTER TABLE user_walk_distance RENAME COLUMN step_date  TO distance_date;
+ALTER TABLE user_walk_distance RENAME COLUMN step_count TO distance_meter;
+ALTER TABLE user_walk_distance ALTER COLUMN distance_meter SET DEFAULT 0;
+ALTER TABLE user_walk_distance ALTER COLUMN distance_meter SET NOT NULL;
 
 COMMIT;
-
-ALTER TABLE user_walk_distance
-    RENAME CONSTRAINT user_steps_pkey TO user_walk_distance_pkey;
