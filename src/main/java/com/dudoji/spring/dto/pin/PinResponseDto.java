@@ -21,6 +21,7 @@ public class PinResponseDto {
     private String imageUrl;
     private String placeName;
     private String address;
+    private String pinSkin;
 
     public enum Who {
         MINE,
@@ -38,5 +39,6 @@ public class PinResponseDto {
         this.imageUrl = pin.getImageUrl();
         this.placeName = pin.getPlaceName();
         this.address = pin.getAddress();
+        this.pinSkin = pin.getPinSkin();
     }
 }
