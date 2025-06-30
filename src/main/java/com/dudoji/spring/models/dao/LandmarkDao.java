@@ -1,20 +1,10 @@
 package com.dudoji.spring.models.dao;
 
-import com.dudoji.spring.models.DBConnection;
 import com.dudoji.spring.models.domain.Landmark;
-import com.dudoji.spring.models.domain.Pin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
