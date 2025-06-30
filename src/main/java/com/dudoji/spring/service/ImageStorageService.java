@@ -29,17 +29,17 @@ public class ImageStorageService {
         }
     }
 
-    public String storeImage(MultipartFile file) {
-        String fileName = generateTimeBasedFileName() + getFileExtension(file.getOriginalFilename());
-        return storeImageActual(file, fileName);
+    public String storeImageToRandomName(MultipartFile file, String path) {
+        String fileName = path + generateTimeBasedFileName() + getFileExtension(file.getOriginalFilename());
+        return storeImageActually(file, fileName);
     }
 
-    public String storeImage(MultipartFile file, String pathName) {
+    public String storeImageWithPathName(MultipartFile file, String pathName) {
         String fileName = pathName + getFileExtension(file.getOriginalFilename());
-        return storeImageActual(file, fileName);
+        return storeImageActually(file, fileName);
     }
 
-    public String storeImageActual(MultipartFile file, String fileName) {
+    public String storeImageActually(MultipartFile file, String fileName) {
         try {
             Path targetLocation = this.imageStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);

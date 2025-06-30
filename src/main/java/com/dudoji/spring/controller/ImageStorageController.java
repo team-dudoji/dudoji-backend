@@ -29,7 +29,7 @@ public class ImageStorageController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        String imageUrl = imageStorageService.storeImage(image);
+        String imageUrl = imageStorageService.storeImageToRandomName(image, "memos");
         return ResponseEntity.ok().body(imageUrl);
     }
 
@@ -43,7 +43,7 @@ public class ImageStorageController {
         String prefix = "/api/admin/images/";
         String pathName = requestURI.substring(requestURI.indexOf(prefix) + prefix.length());
 
-        String imageUrl = imageStorageService.storeImage(image, pathName);
+        String imageUrl = imageStorageService.storeImageWithPathName(image, pathName);
         return ResponseEntity.ok().body(imageUrl);
     }
 }
