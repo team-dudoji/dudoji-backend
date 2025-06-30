@@ -1,5 +1,8 @@
 package com.dudoji.spring.models.domain;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class Landmark {
     private long landmarkId;
     private double lat;
@@ -8,4 +11,5 @@ public class Landmark {
     private String imageUrl;
     private String placeName;
     private String address;
+    private boolean isDetected;
 }

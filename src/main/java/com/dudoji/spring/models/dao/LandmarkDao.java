@@ -1,9 +1,12 @@
 package com.dudoji.spring.models.dao;
 
 import com.dudoji.spring.models.DBConnection;
+import com.dudoji.spring.models.domain.Landmark;
 import com.dudoji.spring.models.domain.Pin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -19,46 +22,64 @@ import java.util.List;
 public class LandmarkDao {
 
     @Autowired
-    private DBConnection dbConnection;
+    private JdbcClient jdbcClient;
 
-    private static final String GET_LANDMARKS = "select * from Landmark";
+    private static final String GET_LANDMARKS = """
+       SELECT
+          Landmark.landmarkId as landmarkId, lat, lng, placeName, content, imageUrl, address,
+          (ld.user_id IS NOT NULL) AS isDetected
+        FROM Landmark
+        LEFT OUTER JOIN (
+          SELECT landmark_id, user_id
+          FROM landmark_detection
+          WHERE user_id = :userId
+        ) AS ld
+        ON Landmark.landmarkId = ld.landmark_id
+       """;
 
-    public List<Pin> getLandmarks(long userId) {
-        List<Pin> pins = new ArrayList<>();
+    private static final String SAVE_LANDMARK = """
+            INSERT INTO Landmark(lat, lng, placeName, content, imageUrl, address)
+            VALUES
+            (:lat, :lng, :placeName, :content, :imageUrl, :address);
+            """;
+    private static final String SAVE_LANDMARK_DETECTION = """
+            INSERT INTO landmark_detection(landmark_id, user_id)
+            VALUES
+            (:landmarkId, :userId);
+            """;
 
-        try (Connection connection = dbConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(GET_ALL_PIN_BY_USER_ID);
-        ) {
-            statement.setLong(1, userId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    Long pinId = resultSet.getLong("id");
-                    double lat = resultSet.getDouble("lat");
-                    double lng = resultSet.getDouble("lng");
-                    String content = resultSet.getString("content");
-                    String imageUrl = resultSet.getString("image_url");
-                    LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
-                    String placeName = resultSet.getString("placeName");
-                    String address = resultSet.getString("address");
+    public List<Landmark> getLandmarks(long userId) {
+        return jdbcClient.sql(GET_LANDMARKS)
+                .param("userId", userId)
+                .query((rs, numOfRow) ->
+                        new Landmark(
+                                rs.getLong("landmarkId"),
+                                rs.getDouble("lat"),
+                                rs.getDouble("lng"),
+                                rs.getString("content"),
+                                rs.getString("imageUrl"),
+                                rs.getString("placeName"),
+                                rs.getString("address"),
+                                rs.getBoolean("isDetected")
+                        ))
+                .list();
+    }
 
-                    Pin temp = Pin.builder()
-                            .pinId(pinId)
-                            .userId(userId)
-                            .lat(lat)
-                            .lng(lng)
-                            .content(content)
-                            .createdDate(createdDate)
-                            .imageUrl(imageUrl)
-                            .placeName(placeName)
-                            .address(address)
-                            .build();
+    public void saveLandmark(double lat, double lng, String content, String imageUrl, String placeName, String address) {
+        jdbcClient.sql(SAVE_LANDMARK)
+                .param("lat", lat)
+                .param("lng", lng)
+                .param("content", content)
+                .param("imageUrl", imageUrl)
+                .param("placeName", placeName)
+                .param(address)
+                .update();
+    }
 
-                    pins.add(temp);
-                }
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        return pins;
+    public void setDetect(long userId, long landmarkId) {
+        jdbcClient.sql(SAVE_LANDMARK_DETECTION)
+                .param("userId", userId)
+                .param("landmarkId", landmarkId)
+                .update();
     }
 }
