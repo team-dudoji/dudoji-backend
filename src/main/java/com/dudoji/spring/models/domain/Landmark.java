@@ -1,7 +1,9 @@
 package com.dudoji.spring.models.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public class Landmark {
     private long landmarkId;
