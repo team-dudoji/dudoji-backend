@@ -31,17 +31,6 @@ public class UserWalkDistanceService {
     }
 
     /**
-     * Get User Step One Day
-     * @param uid user id
-     * @param distanceDate target date
-     * @return UserWalkDistanceDto Object that contains user step
-     */
-    @Deprecated(since = "No Using Single Day")
-    public UserWalkDistance getUserWalkDistanceByIdAndDate(long uid, LocalDate distanceDate) {
-        return userWalkDistanceDao.getUserWalkDistanceByIdOnDate(uid, distanceDate);
-    }
-
-    /**
      * Get User Steps by Given Duration
      * @param uid user id
      * @param startDate Start Date of Duration

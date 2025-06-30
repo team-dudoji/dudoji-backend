@@ -44,6 +44,7 @@ public class FollowService {
      * &#064;Deprecated
      * When Using Secret Account, Can be reactivated.
      */
+    /*
     @Deprecated
     public List<User> getFriendRequestList(long userId) {
         List<Long> requestIdList = followDao.getFollowRequestList(userId);
@@ -65,4 +66,5 @@ public class FollowService {
     public boolean requestFriend(long senderId, long userId) {
         return followDao.requestFollow(senderId, userId);
     }
+     */
 }

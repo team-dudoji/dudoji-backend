@@ -3,7 +3,9 @@ package com.dudoji.spring.models.dao;
 import com.dudoji.spring.models.DBConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+@Repository("FollowDao")
 public class FollowDao {
 
     private static String GET_FOLLOW_LIST_BY_ID = "SELECT (followee_id) FROM follow WHERE follower_id = ?";
@@ -30,73 +32,46 @@ public class FollowDao {
     private static String DELETE_FRIEND_REQUEST_BY_SENDER_RECEIVER = "DELETE friend_request WHERE sender_id = ? AND receiver_id = ? AND status = CAST('PENDING' AS friend_request_status)";
 
     @Autowired
-    private DBConnection dbConnection;
+    private JdbcClient jdbcClient;
 
+    // TODO: 이름 명확하게 할 것
     public List<Long> getFollowerListByUser(long userId) {
-        List<Long> followerList = new ArrayList<>();
-        try (Connection connection = dbConnection.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_FOLLOW_LIST_BY_ID)
-        ) {
-            preparedStatement.setLong(1, userId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    followerList.add(resultSet.getLong(1));
-                }
-                return followerList;
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcClient.sql(GET_FOLLOW_LIST_BY_ID)
+                .param(userId)
+                .query(Long.class)
+                .list();
     }
 
     public boolean isFollowing(long userId, long followeeId) {
-        try (Connection connection = dbConnection.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(IS_FOLLOW_EXIST);
-        ) {
-            preparedStatement.setLong(1, userId);
-            preparedStatement.setLong(2, followeeId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next();
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
+        return jdbcClient.sql(IS_FOLLOW_EXIST) // TODO: TEST NEEDED
+                .param(userId)
+                .param(followeeId)
+                .query()
+                .optionalValue().isPresent();
     }
 
     public boolean createFollowByUser(long userId, long followeeId) {
-        try (Connection connection = dbConnection.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(CREATE_FOLLOW_BY_ID);
-        ) {
-            preparedStatement.setLong(1, userId);
-            preparedStatement.setLong(2, followeeId);
-            int result = preparedStatement.executeUpdate();
-            return result > 0;
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcClient.sql(CREATE_FOLLOW_BY_ID)
+                .param(userId)
+                .param(followeeId)
+                .update() > 0;
     }
 
     public boolean deleteFollowByUser(long userId, long followeeId) {
-        try (Connection connection = dbConnection.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FOLLOW_BY_ID);
-        ) {
-            preparedStatement.setLong(1, userId);
-            preparedStatement.setLong(2, followeeId);
-            preparedStatement.setLong(2, followeeId);
-            int result = preparedStatement.executeUpdate();
-            return result > 0;
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return jdbcClient.sql(DELETE_FOLLOW_BY_ID)
+                .param(userId)
+                .param(followeeId)
+                .update() > 0;
     }
 
     /**
         &#064;Deprecated
         Below Methods are deprecated.
         If we use the secret account, can be reactivated and used again in the future.
+        25/06/27 Not Update to jdbcClient
      */
 
+    /*
     @Deprecated
     // If We Use Secret Account. Using it
     public List<Long> getFollowRequestList(long userId) {
@@ -160,4 +135,5 @@ public class FollowDao {
             throw new RuntimeException(e);
         }
     }
+    */
 }
