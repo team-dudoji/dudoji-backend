@@ -34,7 +34,7 @@
             <td th:text="${landmark.content()}"></td>
             <td th:text="${landmark.address()}"></td>
             <td>
-                <button type="button" th:onclick="deleteProduct([[${landmark.landmarkId()}]])">Delete</button>
+                <button type="button" th:onclick="deleteLandmark([[${landmark.landmarkId()}]])">Delete</button>
             </td>
         </tr>
         </tbody>
