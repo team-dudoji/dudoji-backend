@@ -40,6 +40,15 @@ dependencies {
     // For DBConnection
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
+    // 25.06.27 Update
+    // Testcontainers 버전 정렬(BOM)
+    testImplementation platform('org.testcontainers:testcontainers-bom:1.20.3')
+    // test containers
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    // JUnit 5 연동 어댑터
+    testImplementation 'org.testcontainers:junit-jupiter'
+    // PostgreSQL 전용 컨테이너
+    testImplementation 'org.testcontainers:postgresql'
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
