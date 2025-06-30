@@ -31,13 +31,10 @@ public class FollowDao {
     private static String CREATE_FRIEND_REQUEST_BY_SENDER_RECEIVER = "INSERT INTO friend_request (sender_id, receiver_id) VALUES (?, ?)";
     private static String DELETE_FRIEND_REQUEST_BY_SENDER_RECEIVER = "DELETE friend_request WHERE sender_id = ? AND receiver_id = ? AND status = CAST('PENDING' AS friend_request_status)";
 
-    @Deprecated
-    @Autowired
-    private DBConnection dbConnection;
-
     @Autowired
     private JdbcClient jdbcClient;
 
+    // TODO: 이름 명확하게 할 것
     public List<Long> getFollowerListByUser(long userId) {
         return jdbcClient.sql(GET_FOLLOW_LIST_BY_ID)
                 .param(userId)
@@ -74,6 +71,7 @@ public class FollowDao {
         25/06/27 Not Update to jdbcClient
      */
 
+    /*
     @Deprecated
     // If We Use Secret Account. Using it
     public List<Long> getFollowRequestList(long userId) {
@@ -137,4 +135,5 @@ public class FollowDao {
             throw new RuntimeException(e);
         }
     }
+    */
 }

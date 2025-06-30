@@ -24,10 +24,6 @@ public class LikesDao {
             ")";
     private static String REFRESH_LIKES = "REFRESH MATERIALIZED VIEW like_counts";
 
-    @Deprecated
-    @Autowired
-    private DBConnection dbConnection;
-
     @Autowired
     private JdbcClient jdbcClient;
 

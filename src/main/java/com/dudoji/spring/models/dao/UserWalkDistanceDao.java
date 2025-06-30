@@ -19,10 +19,6 @@ import java.util.*;
 @Repository("UserWalkDistanceDao")
 public class UserWalkDistanceDao {
 
-    @Deprecated
-    @Autowired
-    private DBConnection dbConnection;
-
     @Autowired
     private JdbcClient jdbcClient;
 
@@ -30,6 +26,8 @@ public class UserWalkDistanceDao {
 
     private static String CREATE_DISTANCE_BY_ID_AND_DATE = "INSERT INTO user_walk_distance (user_id, distance_date, distance_meter) VALUES (?, ?, ?)" +
             "ON CONFLICT (user_id, distance_date) DO UPDATE SET distance_meter=?";
+
+    private static String DELETE_DISTANCE_BY_ID_AND_DURATION = "DELETE FROM user_walk_distance WHERE user_id=? AND distance_date BETWEEN ? AND ?";
 
 
     public UserWalkDistancesDto getUserWalkDistanceByIdOnDuration(long uid, LocalDate startDate, LocalDate endDate) {
@@ -79,16 +77,15 @@ public class UserWalkDistanceDao {
      */
     public boolean createUserWalkDistance(long uid, LocalDate distanceDate, int distanceMeter) {
 
-        boolean updated =
+        int affected =
                 jdbcClient.sql(CREATE_DISTANCE_BY_ID_AND_DATE)
                         .param(uid)
                         .param(java.sql.Date.valueOf(distanceDate))
                         .param(distanceMeter)
                         .param(distanceMeter)
-                        .query(Boolean.class)
-                        .single();
+                        .update();
 
-        return updated;
+        return affected > 0;
 
 //        try (Connection connection = dbConnection.getConnection();
 //             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_DISTANCE_BY_ID_AND_DATE);
@@ -104,5 +101,13 @@ public class UserWalkDistanceDao {
 //        } catch (SQLException | ClassNotFoundException e) {
 //            throw new RuntimeException(e);
 //        }
+    }
+
+    public boolean deleteUserWalkDistance(long uid, LocalDate startDate, LocalDate endDate) {
+        return jdbcClient.sql(DELETE_DISTANCE_BY_ID_AND_DURATION)
+                .param(uid)
+                .param(java.sql.Date.valueOf(startDate))
+                .param(java.sql.Date.valueOf(endDate))
+                .update() > 0;
     }
 }

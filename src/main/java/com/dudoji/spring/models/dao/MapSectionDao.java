@@ -23,10 +23,6 @@ import java.util.*;
 @Slf4j
 public class MapSectionDao {
 
-    @Deprecated
-    @Autowired
-    private DBConnection dbConnection;
-
     @Autowired
     private JdbcClient jdbcClient;
 
@@ -96,50 +92,20 @@ public class MapSectionDao {
         int minX = tileMapPosition.getX() - radius;
         int minY = tileMapPosition.getY() - radius;
 
-        return jdbcClient.sql(GET_MAP_SECTIONS)          // SELECT … WHERE uid = ? AND …
-                .param(userId)                         // 1: 사용자 id
-                .param(minX)                            // 2: 최소 X
-                .param(maxX)                            // 3: 최대 X
-                .param(minY)                            // 4: 최소 Y
-                .param(maxY)                            // 5: 최대 Y
-                .query((rs, rowNum) ->                  // RowMapper<MapSection>
+        return jdbcClient.sql(GET_MAP_SECTIONS)
+                .param(userId)
+                .param(minX)
+                .param(maxX)
+                .param(minY)
+                .param(maxY)
+                .query((rs, rowNum) ->
                         new MapSection.Builder()
-                                .setUid(userId)        // 또는 rs.getLong("uid")
-                                .setX(rs.getInt("x"))   // m.x AS x 로 alias 되어 있다고 가정
-                                .setY(rs.getInt("y"))   // m.y AS y
+                                .setUid(userId)
+                                .setX(rs.getInt("x"))
+                                .setY(rs.getInt("y"))
                                 .setBitmap(rs.getBytes("bitmap"))
                                 .build())
-                .list();                                // 모든 행을 List<MapSection>으로
-
-//
-//        try (Connection connection = dbConnection.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(GET_MAP_SECTIONS);
-//        ) {
-//            List<MapSection> mapSections = new ArrayList<>();
-//            preparedStatement.setLong(1, userId);
-//            preparedStatement.setInt(2, minX);
-//            preparedStatement.setInt(3, maxX);
-//            preparedStatement.setInt(4, minY);
-//            preparedStatement.setInt(5, maxY);
-//            preparedStatement.executeQuery();
-//            try (ResultSet resultSet = preparedStatement.getResultSet()) {
-//                while (resultSet.next()) {
-//                    int x = resultSet.getInt("m.x");
-//                    int y = resultSet.getInt("m.y");
-//                    byte[] bitmap = resultSet.getBytes("mb.bitmap");
-//                    MapSection mapSection = new MapSection.Builder()
-//                            .setUid(userId)
-//                            .setX(x)
-//                            .setY(y)
-//                            .setBitmap(bitmap)
-//                            .build();
-//                    mapSections.add(mapSection);
-//                }
-//                return mapSections;
-//            }
-//        } catch (SQLException | ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
+                .list();
     }
 
     public Optional<MapSection> getMapSection(long userId, Point point) {
@@ -165,34 +131,6 @@ public class MapSectionDao {
             log.error("There is no such map section");
         }
         return section;
-//        try (Connection connection = dbConnection.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(GET_MAP_SECTION);
-//        ) {
-//            preparedStatement.setLong(1, userId);
-//            preparedStatement.setInt(2, tileMapPosition.getX());
-//            preparedStatement.setInt(3, tileMapPosition.getY());
-//            preparedStatement.executeQuery();
-//            try (ResultSet resultSet = preparedStatement.getResultSet()) {
-//                if (resultSet.next()) {
-//                    int x = resultSet.getInt("x");
-//                    int y = resultSet.getInt("y");
-//                    byte[] bitmap = resultSet.getBytes("bitmap");
-//                    MapSection mapSection = new MapSection.Builder()
-//                            .setUid(userId)
-//                            .setX(x)
-//                            .setY(y)
-//                            .setBitmap(bitmap)
-//                            .build();
-//                    return Optional.of(mapSection);
-//                }
-//                else {
-//                    log.error("There is no such map section");
-//                    return Optional.empty();
-//                }
-//            }
-//        } catch (SQLException | ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
     }
     public Optional<MapSection> getMapSection(long userId, int tileX, int tileY) {
         Pair<Integer, Integer> tileMapPosition = new Pair<>(tileX, tileY);
@@ -215,35 +153,6 @@ public class MapSectionDao {
             log.error("There is no such map section");
         }
         return section;
-
-//        try (Connection connection = dbConnection.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(GET_MAP_SECTION);
-//        ) {
-//            preparedStatement.setLong(1, user_id);
-//            preparedStatement.setInt(2, tileMapPosition.getX());
-//            preparedStatement.setInt(3, tileMapPosition.getY());
-//            preparedStatement.executeQuery();
-//            try (ResultSet resultSet = preparedStatement.getResultSet()) {
-//                if (resultSet.next()) {
-//                    int x = resultSet.getInt("x");
-//                    int y = resultSet.getInt("y");
-//                    byte[] bitmap = resultSet.getBytes("bitmap");
-//                    MapSection mapSection = new MapSection.Builder()
-//                            .setUid(user_id)
-//                            .setX(x)
-//                            .setY(y)
-//                            .setBitmap(bitmap)
-//                            .build();
-//                    return Optional.of(mapSection);
-//                }
-//                else {
-//                    log.error("There is no such map section");
-//                    return Optional.empty();
-//                }
-//            }
-//        } catch (SQLException | ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
     @Transactional
@@ -257,32 +166,12 @@ public class MapSectionDao {
                     .param(tileMapPosition.getX())
                     .param(tileMapPosition.getY())
                     .update();
-            jdbcClient.sql(UPDATE_MAP_SECTION)
+            jdbcClient.sql(SET_MAP_SECTION_BITMAP)
                     .param(userId)
                     .param(tileMapPosition.getX())
                     .param(tileMapPosition.getY())
                     .param(detailedMapSection.getBitmap())
                     .update();
-//
-//            try (Connection connection = dbConnection.getConnection();
-//                 PreparedStatement preparedStatement = connection.prepareStatement(SET_MAP_SECTION);
-//            ) {
-//                preparedStatement.setLong(1, userId);
-//                preparedStatement.setInt(2, tileMapPosition.getX());
-//                preparedStatement.setInt(3, tileMapPosition.getY());
-//
-//                preparedStatement.executeUpdate();
-//
-//                PreparedStatement preparedStatement1 = connection.prepareStatement(SET_MAP_SECTION_BITMAP);
-//                preparedStatement1.setLong(1, userId);
-//                preparedStatement1.setInt(2, tileMapPosition.getX());
-//                preparedStatement1.setInt(3, tileMapPosition.getY());
-//                preparedStatement1.setBytes(4, ((DetailedMapSection) mapSection).getBitmap());
-//
-//                preparedStatement1.executeUpdate();
-//            } catch (SQLException | ClassNotFoundException e) {
-//                throw new RuntimeException(e);
-//            }
         }
     }
 
@@ -308,33 +197,11 @@ public class MapSectionDao {
                         .param(tileMapPosition.getY())
                         .update();
             }
-//            try (Connection connection = dbConnection.getConnection();
-//                 PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_MAP_SECTION_BITMAP);
-//            ) {
-//                preparedStatement.setBytes(1, bitmap);
-//                preparedStatement.setLong(2, userId);
-//                preparedStatement.setInt(3, tileMapPosition.getX());
-//                preparedStatement.setInt(4, tileMapPosition.getY());
-//                preparedStatement.executeUpdate();
-//
-//                if (BitmapUtil.isExplored(bitmap)) {
-//                    // TODO: 여기 들어오면 없애는 기능도 만드는 게 필요할 듯
-//                    PreparedStatement preparedStatement1 = connection.prepareStatement(UPDATE_MAP_SECTION);
-//                    preparedStatement1.setLong(1, userId);
-//                    preparedStatement1.setInt(2, tileMapPosition.getX());
-//                    preparedStatement1.setInt(3, tileMapPosition.getY());
-//                    preparedStatement1.executeUpdate();
-//                }
-//            } catch (SQLException | ClassNotFoundException e) {
-//                throw new RuntimeException(e);
-//            }
         }
     }
 
     // Using In MapSectionController
     public MapSectionResponseDto getUserMapSections(long user_id) {
-        MapSectionResponseDto mapSectionResponseDto = new MapSectionResponseDto();
-
         MapSectionResponseDto dto = new MapSectionResponseDto();
 
         List<MapSectionResponseDto.MapSectionDto> sections =
@@ -356,32 +223,5 @@ public class MapSectionDao {
 
         dto.mapSections.addAll(sections);
         return dto;
-//        try (Connection connection = dbConnection.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_MAP_SECTIONS);
-//        ) {
-//            preparedStatement.setLong(1, user_id);
-//            preparedStatement.executeQuery();
-//            try(ResultSet resultSet = preparedStatement.getResultSet()) {
-//                while (resultSet.next()) {
-//                    int x = resultSet.getInt("x");
-//                    int y = resultSet.getInt("y");
-//                    boolean explored = resultSet.getBoolean("explored");
-//                    byte[] bitmap = resultSet.getBytes("bitmap");
-//
-//                    String bitmapBase64 = (bitmap != null && bitmap.length > 0) ? Base64.getEncoder().encodeToString(bitmap) : "";
-//                    mapSectionResponseDto.mapSections.add(
-//                            MapSectionResponseDto.MapSectionDto.builder()
-//                                    .x(x)
-//                                    .y(y)
-//                                    .explored(explored)
-//                                    .base64Encoded(bitmapBase64)
-//                                    .build()
-//                    );
-//                }
-//            }
-//        } catch (SQLException | ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return mapSectionResponseDto;
     }
 }

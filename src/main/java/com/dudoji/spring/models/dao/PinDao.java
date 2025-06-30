@@ -19,10 +19,6 @@ import java.util.List;
 @Repository("PinDao")
 public class PinDao {
 
-    @Deprecated
-    @Autowired
-    private DBConnection dbConnection;
-
     @Autowired
     private JdbcClient jdbcClient;
 
@@ -88,46 +84,6 @@ public class PinDao {
                                 .address(rs.getString("address"))
                                 .build())
                 .list();
-//        List<Pin> pins = new ArrayList<>();
-//
-//        try (Connection connection = dbConnection.getConnection();
-//             PreparedStatement statement = connection.prepareStatement(GET_CLOSE_PIN_BY_MIN_MAX);
-//        ) {
-//            statement.setDouble(1, minLat);
-//            statement.setDouble(2, maxLat);
-//            statement.setDouble(3, minLng);
-//            statement.setDouble(4, maxLng);
-//            try (ResultSet resultSet = statement.executeQuery()) {
-//                while (resultSet.next()) {
-//                    Long pinId = resultSet.getLong("id");
-//                    Long userId = resultSet.getLong("user_id");
-//                    double lat = resultSet.getDouble("lat");
-//                    double lng = resultSet.getDouble("lng");
-//                    String content = resultSet.getString("content");
-//                    String imageUrl = resultSet.getString("image_url");
-//                    LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
-//                    String placeName = resultSet.getString("placeName");
-//                    String address = resultSet.getString("address");
-//
-//                    Pin temp = Pin.builder()
-//                            .pinId(pinId)
-//                            .userId(userId)
-//                            .lat(lat)
-//                            .lng(lng)
-//                            .content(content)
-//                            .createdDate(createdDate)
-//                            .imageUrl(imageUrl)
-//                            .placeName(placeName)
-//                            .address(address)
-//                            .build();
-//
-//                    pins.add(temp);
-//                }
-//            }
-//        } catch (SQLException | ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return pins;
     }
 
     public List<Pin> getALlPinsByUserId(long userId) {
@@ -147,41 +103,8 @@ public class PinDao {
                             .address(rs.getString("address"))
                             .build())
                 .list();
-//        List<Pin> pins = new ArrayList<>();
-//
-//        try (Connection connection = dbConnection.getConnection();
-//             PreparedStatement statement = connection.prepareStatement(GET_ALL_PIN_BY_USER_ID);
-//        ) {
-//            statement.setLong(1, userId);
-//            try (ResultSet resultSet = statement.executeQuery()) {
-//                while (resultSet.next()) {
-//                    Long pinId = resultSet.getLong("id");
-//                    double lat = resultSet.getDouble("lat");
-//                    double lng = resultSet.getDouble("lng");
-//                    String content = resultSet.getString("content");
-//                    String imageUrl = resultSet.getString("image_url");
-//                    LocalDateTime createdDate = resultSet.getTimestamp("created_at").toLocalDateTime();
-//                    String placeName = resultSet.getString("placeName");
-//                    String address = resultSet.getString("address");
-//
-//                    Pin temp = Pin.builder()
-//                            .pinId(pinId)
-//                            .userId(userId)
-//                            .lat(lat)
-//                            .lng(lng)
-//                            .content(content)
-//                            .createdDate(createdDate)
-//                            .imageUrl(imageUrl)
-//                            .placeName(placeName)
-//                            .address(address)
-//                            .build();
-//
-//                    pins.add(temp);
-//                }
-//            }
-//        } catch (SQLException | ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return pins;
     }
+
+
+    // TODO: 삭제 기능 만들 것
 }
