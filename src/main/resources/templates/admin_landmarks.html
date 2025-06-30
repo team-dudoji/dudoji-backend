@@ -27,9 +27,9 @@
         </thead>
         <tbody>
         <tr th:each="landmark : ${landmarks}">
-            <td th:text="${landmark.landmarkId()()()}"></td>
+            <td th:text="${landmark.landmarkId()}"></td>
             <td th:text="${landmark.placeName()}"></td>
-            <td th:text="${landmark.lat()}, ${landmark.lng()}"></td>
+            <td th:text="${landmark.lat} + ', ' + ${landmark.lng}"></td>
             <td th:text="${landmark.imageUrl()}"></td>
             <td th:text="${landmark.content()}"></td>
             <td th:text="${landmark.address()}"></td>

@@ -62,7 +62,7 @@ public class LandmarkDao {
                 .param("content", content)
                 .param("imageUrl", imageUrl)
                 .param("placeName", placeName)
-                .param(address)
+                .param("address", address)
                 .update();
     }
 
