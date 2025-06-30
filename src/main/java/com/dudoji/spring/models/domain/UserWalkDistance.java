@@ -8,12 +8,12 @@ import java.time.LocalDate;
 @Data
 @Builder
 /**
- * For Control And Store UserStep Info
+ * For Control And Store UserWalkDistanceDto Info
  */
-public class UserStep {
+public class UserWalkDistance {
 
     private Long stepId;
     private Long uid;
-    private LocalDate stepDate;
-    private int stepMeter;
+    private LocalDate date;
+    private int meters;
 }

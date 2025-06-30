@@ -1,6 +1,7 @@
 package com.dudoji.spring;
 
-import com.dudoji.spring.models.dao.UserStepDao;
+import com.dudoji.spring.dto.UserWalkDistancesDto;
+import com.dudoji.spring.models.dao.UserWalkDistanceDao;
 import com.dudoji.spring.models.domain.*;
 import com.dudoji.spring.service.MapSectionService;
 import com.dudoji.spring.models.DBConnection;
@@ -30,36 +31,40 @@ class DudojiApplicationTests {
     @Autowired
     MapSectionService mapSectionService;
     @Autowired
-    UserStepDao userstepDao;
+    UserWalkDistanceDao userstepDao;
     @Autowired
-    private UserStepDao userStepDao;
+    private UserWalkDistanceDao userWalkDistanceDao;
+
+    private final int uid = 2; // LeeYoWhan
 
     @Test
-    void testUserStep() {
-        long uid = 4;
-        int stepCount = 5000;
+    void testUserWalkDistanceDao() {
+
+        int meter = 5000;
         LocalDate date = new Date(System.currentTimeMillis()).toLocalDate();
 
-        boolean checkCreate = userstepDao.createUserStep(4, date, stepCount);
+        boolean checkCreate = userstepDao.createUserWalkDistance(uid, date, meter);
         assertTrue(checkCreate);
 
-        UserStep userStep = userStepDao.getUserStepByIdOnDate(uid, date);
-        assertNotNull(userStep);
-        assertEquals(uid, userStep.getUid());
-        assertEquals(stepCount, userStep.getStepMeter());
-        assertEquals(date, userStep.getStepDate())
+        UserWalkDistancesDto userWalkDistance = userWalkDistanceDao.getUserWalkDistanceByIdOnDuration(uid, date, date);
+        assertNotNull(userWalkDistance);
+        assertEquals(meter, userWalkDistance.getUserWalkDistances().getFirst().getDistance());
+        assertEquals(date, userWalkDistance.getUserWalkDistances().getFirst().getDate());
 
-        stepCount += 3000;
-        checkCreate = userstepDao.createUserStep(4, date, stepCount);
+        meter += 3000;
+        checkCreate = userstepDao.createUserWalkDistance(uid, date, meter);
         assertTrue(checkCreate);
 
-        userStep = userStepDao.getUserStepByIdOnDate(uid, date);
-        assertNotNull(userStep);
-        assertEquals(uid, userStep.getUid());
-        assertEquals(stepCount, userStep.getStepMeter());
-        assertEquals(date, userStep.getStepDate());
+        userWalkDistance = userWalkDistanceDao.getUserWalkDistanceByIdOnDuration(uid, date, date);
+        assertNotNull(userWalkDistance);
+        assertEquals(meter, userWalkDistance.getUserWalkDistances().getFirst().getDistance());
+        assertEquals(date, userWalkDistance.getUserWalkDistances().getFirst().getDate());
+
+        boolean checkDelete = userstepDao.deleteUserWalkDistance(uid, date, date);
+        assertTrue(checkDelete);
     }
 
+    @Deprecated
     @Test
     void testDBConnection() {
         try (Connection connection = dbConnection.getConnection()) {
