@@ -12,6 +12,6 @@ public class DBTestBase {
     @ServiceConnection
     static PostgreSQLContainer<?> isolated =
             new PostgreSQLContainer<>("postgres:17.4-alpine")
-                    .withInitScript("static/sql/schema.sql")
+                    .withInitScripts("static/sql/schema.sql", "static/sql/data.sql")
                     .withReuse(true);
 }

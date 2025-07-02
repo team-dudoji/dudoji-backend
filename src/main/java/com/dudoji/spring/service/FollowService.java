@@ -17,7 +17,17 @@ public class FollowService {
     @Autowired
     private UserDao userDao;
 
-    public List<User> getFollowersById(long userId) {
+    public List<User> getFollowingById(long userId) {
+        List<Long> userIdList = followDao.getFollowingListByUser(userId);
+        List<User> userList = new ArrayList<>(userIdList.size());
+        for (Long friendId : userIdList) {
+            userList.add(userDao.getUserById(friendId));
+        }
+
+        return userList;
+    }
+
+    public List<User> getFollowerById(long userId) {
         List<Long> userIdList = followDao.getFollowerListByUser(userId);
         List<User> userList = new ArrayList<>(userIdList.size());
         for (Long friendId : userIdList) {
@@ -27,12 +37,12 @@ public class FollowService {
         return userList;
     }
 
-    public boolean createFollowById(long userId, long followeeId) {
-        return followDao.createFollowByUser(userId, followeeId);
+    public boolean createFollowing(long userId, long followeeId) {
+        return followDao.createFollowingByUser(userId, followeeId);
     }
 
-    public boolean deleteFollow(long userId, long followeeId) {
-        return followDao.deleteFollowByUser(userId, followeeId);
+    public boolean deleteFollowing(long userId, long followeeId) {
+        return followDao.deleteFollowingByUser(userId, followeeId);
     }
 
     public List<User> getRecommendedFollow(String email) {
