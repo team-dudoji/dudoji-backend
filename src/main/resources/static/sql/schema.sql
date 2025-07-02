@@ -137,7 +137,7 @@ CREATE TABLE landmark_detection (
 
 CREATE TABLE PinSkins (
     skinId BIGINT PRIMARY KEY,
-    name VARCHAR NOT NULL,
+    name VARCHAR NOT NULL UNIQUE,
     content VARCHAR,
     imageUrl VARCHAR NOT NULL,
     price BIGINT
@@ -147,4 +147,8 @@ CREATE TABLE UserPinSkins (
     skinId BIGINT REFERENCES PinSkins(skinId),
     userId BIGINT REFERENCES "User"(id),
     PRIMARY KEY (skinId, userId)
-)
+);
+
+ALTER TABLE PinSkins
+    ALTER COLUMN skinId
+        ADD GENERATED ALWAYS AS IDENTITY;
