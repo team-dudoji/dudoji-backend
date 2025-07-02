@@ -21,26 +21,36 @@ public class FollowController {
     private FollowService followService;
 
     @GetMapping("")
-    public ResponseEntity<List<User>> getFollow(
+    public ResponseEntity<List<User>> getFollowing(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        List<User> result = followService.getFollowersById(principalDetails.getUid());
-        log.info("getFollowersById({})", result);
+        List<User> result = followService.getFollowingById(principalDetails.getUid());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/follwer")
+    public ResponseEntity<List<User>> getFollowers(
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        if (principalDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        List<User> result = followService.getFollowerById(principalDetails.getUid());
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteFollow(
+    public ResponseEntity<String> deleteFollowing(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long userId
     ) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        if (followService.deleteFollow(principalDetails.getUid(), userId)) {
+        if (followService.deleteFollowing(principalDetails.getUid(), userId)) {
             return ResponseEntity.status(HttpStatus.OK).body("Delete Success");
         }
         else {
@@ -49,14 +59,14 @@ public class FollowController {
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<String> createFollow(
+    public ResponseEntity<String> createFollowing(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long userId
     ) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        if (followService.createFollowById(principalDetails.getUid(), userId)) {
+        if (followService.createFollowing(principalDetails.getUid(), userId)) {
             return ResponseEntity.status(HttpStatus.OK).body("Create Success");
         }
         else {
