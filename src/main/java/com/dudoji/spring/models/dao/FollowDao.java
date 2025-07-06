@@ -1,27 +1,22 @@
 package com.dudoji.spring.models.dao;
 
-import com.dudoji.spring.models.DBConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Repository("FollowDao")
 public class FollowDao {
 
-    private static String GET_FOLLOW_LIST_BY_ID = "SELECT (followee_id) FROM follow WHERE follower_id = ?";
-    private static String CREATE_FOLLOW_BY_ID = "INSERT INTO follow (follower_id, followee_id) VALUES (?, ?)";
-    private static String DELETE_FOLLOW_BY_ID = "DELETE FROM follow WHERE follower_id = ? AND followee_id = ?";
-    private static String IS_FOLLOW_EXIST = "SELECT 1 FROM follow WHERE follower_id = ? AND followee_id = ?";
+    private static String GET_FOLLOWING_LIST_BY_ID = "SELECT (followee_id) FROM follow WHERE follower_id = ?";
+    private static String CREATE_FOLLOWING_BY_ID = "INSERT INTO follow (follower_id, followee_id) VALUES (?, ?)";
+    private static String DELETE_FOLLOWING_BY_ID = "DELETE FROM follow WHERE follower_id = ? AND followee_id = ?";
+    private static String IS_FOLLOWING = "SELECT 1 FROM follow WHERE follower_id = ? AND followee_id = ?";
+
+    private static String GET_FOLLOWER_LIST_BY_ID = "SELECT (follower_id) FROM follow WHERE followee_id = ?";
 
     /**
      * &#064;Deprecated
@@ -35,30 +30,37 @@ public class FollowDao {
     private JdbcClient jdbcClient;
 
     // TODO: 이름 명확하게 할 것
+    public List<Long> getFollowingListByUser(long userId) {
+        return jdbcClient.sql(GET_FOLLOWING_LIST_BY_ID)
+                .param(userId)
+                .query(Long.class)
+                .list();
+    }
+
     public List<Long> getFollowerListByUser(long userId) {
-        return jdbcClient.sql(GET_FOLLOW_LIST_BY_ID)
+        return jdbcClient.sql(GET_FOLLOWER_LIST_BY_ID)
                 .param(userId)
                 .query(Long.class)
                 .list();
     }
 
     public boolean isFollowing(long userId, long followeeId) {
-        return jdbcClient.sql(IS_FOLLOW_EXIST) // TODO: TEST NEEDED
+        return jdbcClient.sql(IS_FOLLOWING) // TODO: TEST NEEDED
                 .param(userId)
                 .param(followeeId)
                 .query()
                 .optionalValue().isPresent();
     }
 
-    public boolean createFollowByUser(long userId, long followeeId) {
-        return jdbcClient.sql(CREATE_FOLLOW_BY_ID)
+    public boolean createFollowingByUser(long userId, long followeeId) {
+        return jdbcClient.sql(CREATE_FOLLOWING_BY_ID)
                 .param(userId)
                 .param(followeeId)
                 .update() > 0;
     }
 
-    public boolean deleteFollowByUser(long userId, long followeeId) {
-        return jdbcClient.sql(DELETE_FOLLOW_BY_ID)
+    public boolean deleteFollowingByUser(long userId, long followeeId) {
+        return jdbcClient.sql(DELETE_FOLLOWING_BY_ID)
                 .param(userId)
                 .param(followeeId)
                 .update() > 0;
