@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 public class ImageStorageController {
 
@@ -25,9 +26,6 @@ public class ImageStorageController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam("image") MultipartFile image
     ) {
-        if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
 
         if (image == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

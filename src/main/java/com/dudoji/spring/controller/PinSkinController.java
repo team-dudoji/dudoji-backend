@@ -2,7 +2,6 @@ package com.dudoji.spring.controller;
 
 import com.dudoji.spring.dto.PinSkinSimpleDto;
 import com.dudoji.spring.dto.PinSkinDto;
-import com.dudoji.spring.models.domain.PinSkin;
 import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.service.PinSkinService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import org.springframework.ui.Model;
 import java.util.List;
 
 @Controller
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 public class PinSkinController {
 
@@ -32,9 +32,6 @@ public class PinSkinController {
     public ResponseEntity<List<PinSkinDto>> getPinSkins(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        if (principalDetails == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
         List<PinSkinDto> result = pinSkinService.getPinSkins(principalDetails.getUid());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -43,9 +40,6 @@ public class PinSkinController {
     public ResponseEntity<List<PinSkinDto>> getMinePinSkins(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        if (principalDetails == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
         List<PinSkinDto> result = pinSkinService.getPurchasedPinSkins(principalDetails.getUid());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -55,10 +49,6 @@ public class PinSkinController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long skinId
     ) {
-        if (principalDetails == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
         // TODO: 구매 계산 로직
         boolean result = pinSkinService.updateUserPinSkin(skinId ,principalDetails.getUid());
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -71,10 +61,6 @@ public class PinSkinController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody PinSkinSimpleDto req
     ) {
-        if (principalDetails == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
         long result = pinSkinService.upsertPinSkin(req.toDomain());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -85,10 +71,6 @@ public class PinSkinController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long skinId
     ) {
-        if (principalDetails == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
         boolean result = pinSkinService.deletePinSkin(skinId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -102,6 +84,6 @@ public class PinSkinController {
                 pinSkinService.getPinSkins(-1)
         );
         model.addAttribute("uploadDir", uploadDir);
-        return "admin_pinSkins";
+        return "admin_pinskins";
     }
 }

@@ -7,12 +7,12 @@ import com.dudoji.spring.service.UserWalkDistanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("/api/user/walk-distances")
 public class UserWalkDistanceController {
 
@@ -29,9 +29,6 @@ public class UserWalkDistanceController {
     public ResponseEntity<String> saveUserWalkDistance(
             @AuthenticationPrincipal PrincipalDetails principal,
             @RequestBody UserWalkDistancesDto.UserWalkDistanceDto userWalkDistanceDto) {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
-        }
         if (userWalkDistanceService.applyUserWalkDistance(principal.getUid(), userWalkDistanceDto.getDate(), userWalkDistanceDto.getDistance()))
             return ResponseEntity.status(HttpStatus.CREATED).body("Saved");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Not Saved");
@@ -48,10 +45,6 @@ public class UserWalkDistanceController {
             @AuthenticationPrincipal PrincipalDetails principal,
             @RequestBody DateRangeRequestDto targetDuration
     ) {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-
         UserWalkDistancesDto result = userWalkDistanceService.getUserWalkDistanceByIdAndDuration(principal.getUid(), targetDuration.getStartDate(), targetDuration.getEndDate());
         return ResponseEntity.ok(result);
     }
