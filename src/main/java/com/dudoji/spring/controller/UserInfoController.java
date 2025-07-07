@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
+import java.util.function.Function;
 
 /**
  * UserInfoController
@@ -36,7 +36,7 @@ public class UserInfoController {
      */
     private ResponseEntity<String> fetchForCurrentUser(
             @AuthenticationPrincipal PrincipalDetails principal,
-            java.util.function.Function<Long, String> fetcher
+            Function<Long, String> fetcher
     ) {
         String result = fetcher.apply(principal.getUid());
         return ResponseEntity.status(HttpStatus.OK).body(result);

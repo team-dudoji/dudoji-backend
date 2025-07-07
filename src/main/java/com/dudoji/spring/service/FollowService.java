@@ -1,12 +1,11 @@
 package com.dudoji.spring.service;
 
+import com.dudoji.spring.dto.user.UserSimpleDto;
 import com.dudoji.spring.models.dao.FollowDao;
 import com.dudoji.spring.models.dao.UserDao;
-import com.dudoji.spring.models.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,24 +16,12 @@ public class FollowService {
     @Autowired
     private UserDao userDao;
 
-    public List<User> getFollowingById(long userId) {
-        List<Long> userIdList = followDao.getFollowingListByUser(userId);
-        List<User> userList = new ArrayList<>(userIdList.size());
-        for (Long friendId : userIdList) {
-            userList.add(userDao.getUserById(friendId));
-        }
-
-        return userList;
+    public List<UserSimpleDto> getFollowingById(long userId) {
+        return followDao.getFollowingListByUser(userId);
     }
 
-    public List<User> getFollowerById(long userId) {
-        List<Long> userIdList = followDao.getFollowerListByUser(userId);
-        List<User> userList = new ArrayList<>(userIdList.size());
-        for (Long friendId : userIdList) {
-            userList.add(userDao.getUserById(friendId));
-        }
-
-        return userList;
+    public List<UserSimpleDto> getFollowerById(long userId) {
+        return followDao.getFollowerListByUser(userId);
     }
 
     public boolean createFollowing(long userId, long followeeId) {
@@ -45,8 +32,11 @@ public class FollowService {
         return followDao.deleteFollowingByUser(userId, followeeId);
     }
 
-    public List<User> getRecommendedFollow(String email) {
-        return userDao.getRecommendedUsers(email);
+    public List<UserSimpleDto> getRecommendedFollow(String email) {
+        return userDao.getRecommendedUsers(email)
+                .stream()
+                .map(UserSimpleDto::new)
+                .toList();
     }
 
 
