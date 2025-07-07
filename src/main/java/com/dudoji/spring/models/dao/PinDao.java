@@ -12,7 +12,6 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -33,8 +32,20 @@ public class PinDao {
             "FROM pin " +
             "WHERE user_id = ?";
 
+    private static final String GET_NUM_OF_PIN_BY_USER_ID = """
+            SELECT count(1)
+            FROM pin
+            WHERE user_id = :userId;
+            """;
 
-
+    private static final String GET_NUM_OF_PIN_BY_USER_ID_AND_DATE = """
+            SELECT count(1)
+            FROM pin
+            WHERE
+            user_id = :userId AND
+            created_at >= :startDate AND
+            created_at < :endDate
+            """;
     /**
      * Create New Pin Content
      *
@@ -105,6 +116,22 @@ public class PinDao {
                 .list();
     }
 
+    public int getNumOfPinByUserId(long userId) {
+        Long num = (Long) jdbcClient.sql(GET_NUM_OF_PIN_BY_USER_ID)
+                .param("userId", userId)
+                .query()
+                .singleValue();
+        return num.intValue();
+    }
 
+    public int getNumOfPinByUserIdAndDates(long userId, Date startDate, Date endDate) {
+        Long num = (Long) jdbcClient.sql(GET_NUM_OF_PIN_BY_USER_ID_AND_DATE)
+                .param("userId", userId)
+                .param("startDate", startDate)
+                .param("endDate", endDate)
+                .query()
+                .singleValue();
+        return num.intValue();
+    }
     // TODO: 삭제 기능 만들 것
 }

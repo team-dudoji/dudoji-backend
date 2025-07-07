@@ -1,15 +1,10 @@
 package com.dudoji.spring.models.dao;
 
-import com.dudoji.spring.models.DBConnection;
-import com.dudoji.spring.models.domain.KakaoUser;
 import com.dudoji.spring.models.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository("UserDao")
@@ -18,27 +13,26 @@ public class UserDao {
     @Autowired
     private JdbcClient jdbcClient;
 
-    private static String GET_USER_BY_ID =
+    private static final String GET_USER_BY_ID =
             "select name, email, created_at, role, profile_image from \"User\" where id=?";
-    private static String GET_USER_BY_NAME =
+    private static final String GET_USER_BY_NAME =
             "SELECT id, email, created_at, role, password FROM \"User\" WHERE name=?";
-    private static String GET_USER_BY_EMAIL =
+    private static final String GET_USER_BY_EMAIL =
             "SELECT id, name, created_at, role, password FROM \"User\" WHERE email=?";
-    private static String REMOVE_USER_BY_ID =
+    private static final String REMOVE_USER_BY_ID =
             "delete from \"User\" where id=?";
-    private static String CREATE_USER_BY_ID =
+    private static final String CREATE_USER_BY_ID =
             "insert into \"User\"(name, email) values (?, ?) returning id";
-    private static String CREATE_USER_BY_USER =
+    private static final String CREATE_USER_BY_USER =
             "insert into \"User\"(name, email, password, role, profile_image) values (?, ?, ?, ?::user_role, ?) returning id";
-    private static String GET_USER_BY_KAKAO_ID =
+    private static final String GET_USER_BY_KAKAO_ID =
             "SELECT id, name, email, created_at FROM \"User\" WHERE kakao_id=?";
-    private static String CREATE_USER_BY_KAKAO_ID =
+    private static final String CREATE_USER_BY_KAKAO_ID =
             "insert into \"User\"(name, email, kakao_id) values (?, ?, ?) returning id";
-    private static String GET_PROFILE_IMAGE_BY_ID =
+    private static final String GET_PROFILE_IMAGE_BY_ID =
             "SELECT profile_image FROM \"User\" WHERE id=?";
-    private static String GET_USERS_BY_EMAIL_LIKE =
+    private static final String GET_USERS_BY_EMAIL_LIKE =
             "SELECT id, name, created_at, role, email FROM \"User\" WHERE email LIKE '%' || ? || '%'";
-
 
     public User getUserById(long uid) {
         return jdbcClient.sql(GET_USER_BY_ID)

@@ -152,3 +152,30 @@ CREATE TABLE UserPinSkins (
 ALTER TABLE PinSkins
     ALTER COLUMN skinId
         ADD GENERATED ALWAYS AS IDENTITY;
+
+CREATE TYPE mission_unit AS ENUM (
+    'DISTANCE',
+    'COUNT',
+    'PERCENTAGE'
+    );
+
+CREATE TYPE quest_type as ENUM (
+    'DAILY',
+    'LANDMARK'
+    );
+
+CREATE TABLE Achievement (
+                             achievementId BIGINT PRIMARY KEY ,
+                             title VARCHAR(20) NOT NULL,
+                             checker VARCHAR(20) NOT NULL,
+                             unit mission_unit
+);
+
+CREATE TABLE Quest (
+                       questId BIGINT PRIMARY KEY ,
+                       title VARCHAR(20) NOT NULL,
+                       checker VARCHAR(20) NOT NULL,
+                       goalValue INT,
+                       unit mission_unit,
+                       questType quest_type
+);
