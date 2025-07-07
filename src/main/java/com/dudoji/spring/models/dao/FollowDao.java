@@ -18,6 +18,17 @@ public class FollowDao {
 
     private static String GET_FOLLOWER_LIST_BY_ID = "SELECT (follower_id) FROM follow WHERE followee_id = ?";
 
+    private static String GET_NUM_OF_FOLLOWING = """
+            SELECT count(1)
+            FROM follow
+            WHERE follower_id = :userId;
+            """;
+    private static String GET_NUM_OF_FOLLOWER = """
+            SELECT count(1)
+            FROM follow
+            WHERE followee_id = :userId;
+            """;
+
     /**
      * &#064;Deprecated
      */
@@ -64,6 +75,22 @@ public class FollowDao {
                 .param(userId)
                 .param(followeeId)
                 .update() > 0;
+    }
+
+    public int getNumOfFollowerByUserId(long userId) {
+        Long num = (Long) jdbcClient.sql(GET_NUM_OF_FOLLOWER)
+                .param("userId", userId)
+                .query()
+                .singleValue();
+        return num.intValue();
+    }
+
+    public int getNumOfFollowingByUserId(long userId) {
+        Long num = (Long) jdbcClient.sql(GET_NUM_OF_FOLLOWING)
+                .param("userId", userId)
+                .query()
+                .singleValue();
+        return num.intValue();
     }
 
     /**

@@ -33,6 +33,11 @@ public class PinDao {
             "FROM pin " +
             "WHERE user_id = ?";
 
+    private static final String GET_NUM_OF_PIN_BY_USER_ID = """
+            SELECT count(1)
+            FROM pin
+            WHERE user_id = :userId;
+            """;
 
 
     /**
@@ -105,6 +110,12 @@ public class PinDao {
                 .list();
     }
 
-
+    public int getNumOfPinByUserId(long userId) {
+        Long num = (Long) jdbcClient.sql(GET_NUM_OF_PIN_BY_USER_ID)
+                .param("userId", userId)
+                .query()
+                .singleValue();
+        return num.intValue();
+    }
     // TODO: 삭제 기능 만들 것
 }

@@ -39,7 +39,6 @@ public class UserDao {
     private static String GET_USERS_BY_EMAIL_LIKE =
             "SELECT id, name, created_at, role, email FROM \"User\" WHERE email LIKE '%' || ? || '%'";
 
-
     public User getUserById(long uid) {
         return jdbcClient.sql(GET_USER_BY_ID)
                 .param(uid)
