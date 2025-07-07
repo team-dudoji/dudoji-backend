@@ -22,12 +22,12 @@ public class UserWalkDistanceDao {
     @Autowired
     private JdbcClient jdbcClient;
 
-    private static String GET_DISTANCE_BY_ID_AND_DURATION = "SELECT * FROM user_walk_distance WHERE user_id=? AND distance_date BETWEEN ? AND ? ORDER BY distance_date";
+    private static final String GET_DISTANCE_BY_ID_AND_DURATION = "SELECT * FROM user_walk_distance WHERE user_id=? AND distance_date BETWEEN ? AND ? ORDER BY distance_date";
 
-    private static String CREATE_DISTANCE_BY_ID_AND_DATE = "INSERT INTO user_walk_distance (user_id, distance_date, distance_meter) VALUES (?, ?, ?)" +
+    private static final String CREATE_DISTANCE_BY_ID_AND_DATE = "INSERT INTO user_walk_distance (user_id, distance_date, distance_meter) VALUES (?, ?, ?)" +
             "ON CONFLICT (user_id, distance_date) DO UPDATE SET distance_meter=?";
 
-    private static String DELETE_DISTANCE_BY_ID_AND_DURATION = "DELETE FROM user_walk_distance WHERE user_id=? AND distance_date BETWEEN ? AND ?";
+    private static final String DELETE_DISTANCE_BY_ID_AND_DURATION = "DELETE FROM user_walk_distance WHERE user_id=? AND distance_date BETWEEN ? AND ?";
 
 
     public UserWalkDistancesDto getUserWalkDistanceByIdOnDuration(long uid, LocalDate startDate, LocalDate endDate) {
