@@ -50,7 +50,7 @@ public class PinSkinController {
             @PathVariable Long skinId
     ) {
         // TODO: 구매 계산 로직
-        boolean result = pinSkinService.updateUserPinSkin(skinId ,principalDetails.getUid());
+        boolean result = pinSkinService.updateUserPinSkin(skinId, principalDetails.getUid());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -58,17 +58,15 @@ public class PinSkinController {
     @ResponseBody
     @PostMapping("/api/admin/pin-skins")
     public ResponseEntity<Long> addPinSkin(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestBody PinSkinSimpleDto req
+            @RequestBody PinSkinSimpleDto dto
     ) {
-        long result = pinSkinService.upsertPinSkin(req.toDomain());
+        long result = pinSkinService.upsertPinSkin(dto.toDomain());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/api/admin/pin-skins/{skinId}")
     public ResponseEntity<Boolean> deletePinSkin(
-            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long skinId
     ) {
         boolean result = pinSkinService.deletePinSkin(skinId);
