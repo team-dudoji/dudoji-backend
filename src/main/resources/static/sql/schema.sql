@@ -44,19 +44,19 @@ create table MapSectionStateBitmap (
 
 
 -- 유저 스텝 추가
-create table user_steps (
+create table user_walk_distance (
     id BIGSERIAL PRIMARY KEY ,
     user_id BIGINT NOT NULL,
-    step_date DATE NOT NULL,
-    step_count INT NOT NULL DEFAULT 0,
+    distance_date DATE NOT NULL,
+    distance_count INT NOT NULL DEFAULT 0,
     created_at timestamp not null default current_timestamp,
     updated_at timestamp not null default current_timestamp,
-    constraint fk_user_steps_user
+    constraint fk_user_walk_distance_user
         foreign key (user_id)
             references "User"(id)
             on delete cascade -- 정보 유지하려면 삭제해도 될 듯
             on update cascade,
-    constraint unique_user_step UNIQUE (user_id, step_date)
+    constraint unique_user_walk_distance UNIQUE (user_id, distance_date)
 );
 
 -- Pin 테이블 추가
@@ -165,17 +165,58 @@ CREATE TYPE quest_type as ENUM (
     );
 
 CREATE TABLE Achievement (
-                             achievementId BIGINT PRIMARY KEY ,
+                             achievementId BIGSERIAL PRIMARY KEY ,
                              title VARCHAR(20) NOT NULL,
-                             checker VARCHAR(20) NOT NULL,
+                             checker VARCHAR(30) NOT NULL,
                              unit mission_unit
 );
 
 CREATE TABLE Quest (
-                       questId BIGINT PRIMARY KEY ,
+                       questId BIGSERIAL PRIMARY KEY ,
                        title VARCHAR(20) NOT NULL,
                        checker VARCHAR(20) NOT NULL,
                        goalValue INT,
                        unit mission_unit,
                        questType quest_type
 );
+
+-- follow table
+ALTER TABLE follow RENAME COLUMN follower_id TO followerId;
+ALTER TABLE follow RENAME COLUMN followee_id TO followeeId;
+
+-- userWalkDistance table
+ALTER TABLE user_walk_distance RENAME TO userWalkDistance;
+
+ALTER TABLE userWalkDistance RENAME COLUMN user_id TO userId;
+ALTER TABLE userWalkDistance RENAME COLUMN distance_date TO distanceDate;
+ALTER TABLE userWalkDistance RENAME COLUMN distance_count TO distanceMeter;
+ALTER TABLE userWalkDistance RENAME COLUMN created_at TO createdAt;
+ALTER TABLE userWalkDistance RENAME COLUMN updated_at TO updatedAt;
+
+-- Pin table
+ALTER TABLE Pin RENAME COLUMN user_id TO userId;
+ALTER TABLE Pin RENAME COLUMN created_at TO createdAt;
+ALTER TABLE Pin RENAME COLUMN image_url TO imageUrl;
+
+-- likes table
+ALTER TABLE likes RENAME COLUMN user_id TO userId;
+ALTER TABLE likes RENAME COLUMN pin_id TO pinId;
+ALTER TABLE likes RENAME COLUMN created_at TO createdAt;
+ALTER MATERIALIZED VIEW like_counts RENAME TO likeCounts;
+ALTER MATERIALIZED VIEW likeCounts RENAME COLUMN pin_id TO pinId;
+ALTER MATERIALIZED VIEW likeCounts RENAME COLUMN like_count TO likeCount;
+
+-- landmark detection
+ALTER TABLE landmark_detection RENAME TO landmarkDetection;
+ALTER TABLE landmarkDetection RENAME COLUMN landmark_id TO landmarkId;
+ALTER TABLE landmarkDetection RENAME COLUMN user_id TO userId;
+ALTER TABLE landmarkDetection RENAME COLUMN detected_at TO detectedAt;
+
+-- User
+ALTER TABLE "User" RENAME COLUMN provider_id TO providerId;
+ALTER TABLE "User" RENAME COLUMN profile_image TO profileImage;
+ALTER TABLE "User" RENAME COLUMN created_at TO createdAt;
+
+-- MapSection
+ALTER TABLE MapSection RENAME COLUMN user_id TO userId;
+ALTER TABLE MapSectionStateBitmap RENAME COLUMN user_id TO userId;
