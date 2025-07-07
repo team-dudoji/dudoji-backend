@@ -1,4 +1,4 @@
-package com.dudoji.spring.dto;
+package com.dudoji.spring.dto.user;
 
 import com.dudoji.spring.models.domain.User;
 

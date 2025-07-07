@@ -12,7 +12,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class User {
-
     private Long id;
     private String password;
     private String role;

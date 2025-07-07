@@ -1,12 +1,10 @@
 package com.dudoji.spring.service;
 
-import com.dudoji.spring.dto.UserProfileDto;
+import com.dudoji.spring.dto.user.UserProfileDto;
 import com.dudoji.spring.models.dao.FollowDao;
 import com.dudoji.spring.models.dao.PinDao;
 import com.dudoji.spring.models.dao.UserDao;
-import com.dudoji.spring.models.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
