@@ -29,7 +29,11 @@ public class ImageStorageController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        String imageUrl = imageStorageService.storeImageToRandomName(image, "memos");
+        if (image == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        String imageUrl = imageStorageService.storeImageToRandomName(image, "memos/"); // TODO: OS 별로 ㄱㅊ은 지 모름
         return ResponseEntity.ok().body(imageUrl);
     }
 
@@ -43,7 +47,7 @@ public class ImageStorageController {
         String prefix = "/api/admin/images/";
         String pathName = requestURI.substring(requestURI.indexOf(prefix) + prefix.length());
 
-        String imageUrl = imageStorageService.storeImageWithPathName(image, pathName);
+        String imageUrl = imageStorageService.storeImageToRandomName(image, pathName + "/");
         return ResponseEntity.ok().body(imageUrl);
     }
 }
