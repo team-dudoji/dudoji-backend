@@ -1,6 +1,6 @@
 package com.dudoji.spring.controller;
 
-import com.dudoji.spring.dto.PinSkinCreateReq;
+import com.dudoji.spring.dto.PinSkinSimpleDto;
 import com.dudoji.spring.dto.PinSkinDto;
 import com.dudoji.spring.models.domain.PinSkin;
 import com.dudoji.spring.models.domain.PrincipalDetails;
@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole;
 
 @Controller
 @RequiredArgsConstructor
@@ -49,12 +46,7 @@ public class PinSkinController {
         if (principalDetails == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
-        List<PinSkinDto> result = pinSkinService.getPinSkins(principalDetails.getUid())
-                .stream()
-                .filter(PinSkinDto::isPurchased)
-                .toList();
-
+        List<PinSkinDto> result = pinSkinService.getPurchasedPinSkins(principalDetails.getUid());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -77,19 +69,13 @@ public class PinSkinController {
     @PostMapping("/api/admin/pin-skins")
     public ResponseEntity<Long> addPinSkin(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestBody PinSkinCreateReq req
+            @RequestBody PinSkinSimpleDto req
     ) {
         if (principalDetails == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        PinSkin entity = PinSkin.builder()
-                                .name(req.name())
-                                .content(req.content())
-                                .imageUrl(req.imageUrl())
-                                .price(req.price())
-                                .build();
-        long result = pinSkinService.upsertPinSkin(entity);
+        long result = pinSkinService.upsertPinSkin(req.toDomain());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

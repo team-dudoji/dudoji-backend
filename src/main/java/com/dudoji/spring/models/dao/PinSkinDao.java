@@ -88,7 +88,7 @@ public class PinSkinDao {
                 .update() > 0;
     }
 
-    // update when buying pinSkin
+    // update when buying pinSkinName
     public boolean updateUserPinSkin(long skinId, long userId) {
         return jdbcClient.sql(UPDATE_USER_PIN_SKIN)
                 .param("skinId", skinId)

@@ -17,6 +17,13 @@ public class PinSkinService {
         return pinSkinDao.getPinSkins(userId);
     }
 
+    public List<PinSkinDto> getPurchasedPinSkins(long userId) {
+        return getPinSkins(userId)
+                .stream()
+                .filter(PinSkinDto::isPurchased)
+                .toList();
+    }
+
     public long upsertPinSkin(PinSkin pinSkin) {
         return pinSkinDao.createOrUpdatePinSkin(pinSkin);
     }

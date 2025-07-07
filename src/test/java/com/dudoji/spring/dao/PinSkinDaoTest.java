@@ -1,7 +1,6 @@
 package com.dudoji.spring.dao;
 
 import com.dudoji.spring.dao.DBtest.DBTestBase;
-import com.dudoji.spring.dto.PinSkinCreateReq;
 import com.dudoji.spring.models.dao.PinSkinDao;
 import com.dudoji.spring.models.domain.PinSkin;
 import org.junit.jupiter.api.Test;
