@@ -21,30 +21,30 @@ public class PinDao {
     @Autowired
     private JdbcClient jdbcClient;
 
-    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (user_id, lat, lng, content, created_at, image_url, placeName, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
+    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (userId, lat, lng, content, createdAt, imageUrl, placeName, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
 
-    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, user_id, lat, lng, content, created_at, image_url, placeName, address " +
+    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, userId, lat, lng, content, createdAt, imageUrl, placeName, address " +
             "FROM pin " +
             "WHERE lat BETWEEN ? AND ? " +
             "AND lng BETWEEN ? AND ?";
 
-    private static final String GET_ALL_PIN_BY_USER_ID = "SELECT id, lat, lng, content, created_at, image_url, placeName, address " +
+    private static final String GET_ALL_PIN_BY_USER_ID = "SELECT id, lat, lng, content, createdAt, imageUrl, placeName, address " +
             "FROM pin " +
-            "WHERE user_id = ?";
+            "WHERE userId = ?";
 
     private static final String GET_NUM_OF_PIN_BY_USER_ID = """
             SELECT count(1)
             FROM pin
-            WHERE user_id = :userId;
+            WHERE userId = :userId;
             """;
 
     private static final String GET_NUM_OF_PIN_BY_USER_ID_AND_DATE = """
             SELECT count(1)
             FROM pin
             WHERE
-            user_id = :userId AND
-            created_at >= :startDate AND
-            created_at < :endDate
+            userId = :userId AND
+            createdAt >= :startDate AND
+            createdAt < :endDate
             """;
     /**
      * Create New Pin Content
@@ -85,12 +85,12 @@ public class PinDao {
                 .query((rs, rowNum) ->
                         Pin.builder()
                                 .pinId(rs.getLong("id"))
-                                .userId(rs.getLong("user_id"))
+                                .userId(rs.getLong("userId"))
                                 .lat(rs.getDouble("lat"))
                                 .lng(rs.getDouble("lng"))
                                 .content(rs.getString("content"))
-                                .imageUrl(rs.getString("image_url"))
-                                .createdDate(rs.getTimestamp("created_at").toLocalDateTime())
+                                .imageUrl(rs.getString("imageUrl"))
+                                .createdDate(rs.getTimestamp("createdAt").toLocalDateTime())
                                 .placeName(rs.getString("placeName"))
                                 .address(rs.getString("address"))
                                 .build())
@@ -107,9 +107,9 @@ public class PinDao {
                             .lat(rs.getDouble("lat"))
                             .lng(rs.getDouble("lng"))
                             .content(rs.getString("content"))
-                            .imageUrl(rs.getString("image_url"))
+                            .imageUrl(rs.getString("imageUrl"))
                             .createdDate(
-                                    rs.getTimestamp("created_at").toLocalDateTime())
+                                    rs.getTimestamp("createdAt").toLocalDateTime())
                             .placeName(rs.getString("placeName"))
                             .address(rs.getString("address"))
                             .build())

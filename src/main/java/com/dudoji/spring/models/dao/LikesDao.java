@@ -16,13 +16,13 @@ import java.sql.SQLException;
 @Repository("LikesDao")
 public class LikesDao {
 
-    private static final String LIKE_PIN_BY_ID = "INSERT INTO likes (user_id, pin_id) VALUES (?, ?)";
-    private static final String UNLIKE_PIN_BY_ID = "DELETE FROM likes WHERE user_id = ? AND pin_id = ?";
-    private static final String GET_LIKE_COUNT_BY_ID = "SELECT like_count FROM like_counts WHERE pin_id = ?";
+    private static final String LIKE_PIN_BY_ID = "INSERT INTO likes (userId, pinId) VALUES (?, ?)";
+    private static final String UNLIKE_PIN_BY_ID = "DELETE FROM likes WHERE userId = ? AND pinId = ?";
+    private static final String GET_LIKE_COUNT_BY_ID = "SELECT likeCount FROM likeCounts WHERE pinId = ?";
     private static final String GET_IS_LIKED_BY_ID = "SELECT EXISTS (\n" +
-            "    SELECT 1 FROM likes WHERE pin_id = ? AND user_id = ?\n" +
+            "    SELECT 1 FROM likes WHERE pinId = ? AND userId = ?\n" +
             ")";
-    private static final String REFRESH_LIKES = "REFRESH MATERIALIZED VIEW like_counts";
+    private static final String REFRESH_LIKES = "REFRESH MATERIALIZED VIEW likeCounts";
 
     @Autowired
     private JdbcClient jdbcClient;

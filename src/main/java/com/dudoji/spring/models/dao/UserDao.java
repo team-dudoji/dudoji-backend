@@ -14,25 +14,25 @@ public class UserDao {
     private JdbcClient jdbcClient;
 
     private static final String GET_USER_BY_ID =
-            "select name, email, created_at, role, profile_image from \"User\" where id=?";
+            "select name, email, createdAt, role, profileImage from \"User\" where id=?";
     private static final String GET_USER_BY_NAME =
-            "SELECT id, email, created_at, role, password FROM \"User\" WHERE name=?";
+            "SELECT id, email, createdAt, role, password FROM \"User\" WHERE name=?";
     private static final String GET_USER_BY_EMAIL =
-            "SELECT id, name, created_at, role, password FROM \"User\" WHERE email=?";
+            "SELECT id, name, createdAt, role, password FROM \"User\" WHERE email=?";
     private static final String REMOVE_USER_BY_ID =
             "delete from \"User\" where id=?";
     private static final String CREATE_USER_BY_ID =
             "insert into \"User\"(name, email) values (?, ?) returning id";
     private static final String CREATE_USER_BY_USER =
-            "insert into \"User\"(name, email, password, role, profile_image) values (?, ?, ?, ?::user_role, ?) returning id";
+            "insert into \"User\"(name, email, password, role, profileImage) values (?, ?, ?, ?::user_role, ?) returning id";
     private static final String GET_USER_BY_KAKAO_ID =
-            "SELECT id, name, email, created_at FROM \"User\" WHERE kakao_id=?";
+            "SELECT id, name, email, createdAt FROM \"User\" WHERE kakao_id=?";
     private static final String CREATE_USER_BY_KAKAO_ID =
             "insert into \"User\"(name, email, kakao_id) values (?, ?, ?) returning id";
     private static final String GET_PROFILE_IMAGE_BY_ID =
-            "SELECT profile_image FROM \"User\" WHERE id=?";
+            "SELECT profileImage FROM \"User\" WHERE id=?";
     private static final String GET_USERS_BY_EMAIL_LIKE =
-            "SELECT id, name, created_at, role, email FROM \"User\" WHERE email LIKE '%' || ? || '%'";
+            "SELECT id, name, createdAt, role, email FROM \"User\" WHERE email LIKE '%' || ? || '%'";
 
     public User getUserById(long uid) {
         return jdbcClient.sql(GET_USER_BY_ID)
@@ -51,7 +51,7 @@ public class UserDao {
     }
 
     public User getUserByName(String name) {
-        return jdbcClient.sql(GET_USER_BY_NAME)      // "SELECT id, email, created_at, role, password FROM \"User\" WHERE name=?"
+        return jdbcClient.sql(GET_USER_BY_NAME)      // "SELECT id, email, createdAt, role, password FROM \"User\" WHERE name=?"
                 .param(name)
                 .query((rs, rowNum) ->
                         User.builder()

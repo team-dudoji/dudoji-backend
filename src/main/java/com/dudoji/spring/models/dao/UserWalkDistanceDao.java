@@ -22,12 +22,12 @@ public class UserWalkDistanceDao {
     @Autowired
     private JdbcClient jdbcClient;
 
-    private static final String GET_DISTANCE_BY_ID_AND_DURATION = "SELECT * FROM user_walk_distance WHERE user_id=? AND distance_date BETWEEN ? AND ? ORDER BY distance_date";
+    private static final String GET_DISTANCE_BY_ID_AND_DURATION = "SELECT * FROM userWalkDistance WHERE userId=? AND distanceDate BETWEEN ? AND ? ORDER BY distanceDate";
 
-    private static final String CREATE_DISTANCE_BY_ID_AND_DATE = "INSERT INTO user_walk_distance (user_id, distance_date, distance_meter) VALUES (?, ?, ?)" +
-            "ON CONFLICT (user_id, distance_date) DO UPDATE SET distance_meter=?";
+    private static final String CREATE_DISTANCE_BY_ID_AND_DATE = "INSERT INTO userWalkDistance (userId, distanceDate, distanceMeter) VALUES (?, ?, ?)" +
+            "ON CONFLICT (userId, distanceDate) DO UPDATE SET distanceMeter=?";
 
-    private static final String DELETE_DISTANCE_BY_ID_AND_DURATION = "DELETE FROM user_walk_distance WHERE user_id=? AND distance_date BETWEEN ? AND ?";
+    private static final String DELETE_DISTANCE_BY_ID_AND_DURATION = "DELETE FROM userWalkDistance WHERE userId=? AND distanceDate BETWEEN ? AND ?";
 
 
     public UserWalkDistancesDto getUserWalkDistanceByIdOnDuration(long uid, LocalDate startDate, LocalDate endDate) {
@@ -40,32 +40,12 @@ public class UserWalkDistanceDao {
                         .param(java.sql.Date.valueOf(endDate))
                         .query((rs, rowNum) ->
                                 UserWalkDistancesDto.UserWalkDistanceDto.builder()
-                                        .distance(rs.getInt("distance_meter"))
-                                        .date(rs.getDate("distance_date").toLocalDate())
+                                        .distance(rs.getInt("distanceMeter"))
+                                        .date(rs.getDate("distanceDate").toLocalDate())
                                         .build())
                         .list()
         );
         return result;
-//        try (Connection connection = dbConnection.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(GET_DISTANCE_BY_ID_AND_DURATION);
-//        ) {
-//
-//
-//            preparedStatement.setLong(1, uid);
-//            preparedStatement.setDate(2, java.sql.Date.valueOf(startDate));
-//            preparedStatement.setDate(3, java.sql.Date.valueOf(endDate));
-//            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-//                while (resultSet.next()) {
-//                    int distanceMeter = resultSet.getInt("distance_meter");
-//                    LocalDate distanceDate = resultSet.getDate("distance_date").toLocalDate();
-//                    result.userWalkDistances.add(UserWalkDistancesDto.UserWalkDistanceDto.builder().distance(distanceMeter).date(distanceDate).build());
-//                }
-//            }
-//
-//            return result;
-//        } catch (SQLException | ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
     /**
@@ -86,21 +66,6 @@ public class UserWalkDistanceDao {
                         .update();
 
         return affected > 0;
-
-//        try (Connection connection = dbConnection.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_DISTANCE_BY_ID_AND_DATE);
-//        ) {
-//
-//            preparedStatement.setLong(1, uid);
-//            preparedStatement.setDate(2, java.sql.Date.valueOf(distanceDate));
-//            preparedStatement.setInt(3, distanceMeter);
-//            preparedStatement.setInt(4, distanceMeter);
-//            preparedStatement.executeUpdate();
-//
-//            return true;
-//        } catch (SQLException | ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
     public boolean deleteUserWalkDistance(long uid, LocalDate startDate, LocalDate endDate) {

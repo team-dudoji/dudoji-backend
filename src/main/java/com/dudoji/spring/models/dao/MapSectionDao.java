@@ -29,38 +29,38 @@ public class MapSectionDao {
     private static final String GET_MAP_SECTIONS =
             "select m.x, m.y, mb.bitmap " +
             "    from MapSectionStateBitmap as mb right join (\n" +
-            "    select user_id, x, y, explored\n" +
+            "    select userId, x, y, explored\n" +
             "    from MapSection\n" +
-            "    where user_id=? and (? <= x and x <= ? and ? <= y and y <= ?)\n" +
+            "    where userId=? and (? <= x and x <= ? and ? <= y and y <= ?)\n" +
             "    ) as m\n" +
-            "    on (m.user_id=mb.user_id and m.x=mb.x and m.y =mb.y);";
+            "    on (m.userId=mb.userId and m.x=mb.x and m.y =mb.y);";
 
     private static final String GET_MAP_SECTION =
             "select m.x, m.y, mb.bitmap " +
                     "    from MapSectionStateBitmap as mb right join (\n" +
-                    "    select user_id, x, y, explored\n" +
+                    "    select userId, x, y, explored\n" +
                     "    from MapSection\n" +
-                    "    where user_id=? and (x=? and y=?)\n" +
+                    "    where userId=? and (x=? and y=?)\n" +
                     "    ) as m\n" +
-                    "    on (m.user_id=mb.user_id and m.x=mb.x and m.y =mb.y);";
+                    "    on (m.userId=mb.userId and m.x=mb.x and m.y =mb.y);";
 
     private static final String SET_MAP_SECTION =
-            "INSERT INTO MapSection (user_id, x, y) " +
+            "INSERT INTO MapSection (userId, x, y) " +
                     "VALUES (?, ?, ?);";
 
     private static final String SET_MAP_SECTION_BITMAP =
-            "INSERT INTO MapSectionStateBitmap (user_id, x, y, bitmap) " +
+            "INSERT INTO MapSectionStateBitmap (userId, x, y, bitmap) " +
                     "VALUES (?, ?, ?, ?);";
 
     private static final String UPDATE_MAP_SECTION_BITMAP =
             "UPDATE MapSectionStateBitmap " +
                     "SET bitmap=? " +
-                    "WHERE user_id=? and X=? and Y=?;";
+                    "WHERE userId=? and X=? and Y=?;";
 
     private static final String UPDATE_MAP_SECTION =
             "UPDATE MapSection " +
                     "SET explored=TRUE " +
-                    "WHERE user_id=? and X=? and Y=?;";
+                    "WHERE userId=? and X=? and Y=?;";
 
     // Using in MapSectionController
     private static final String GET_USER_MAP_SECTIONS =
@@ -72,11 +72,11 @@ public class MapSectionDao {
                     + "END AS bitmap "
                     + "FROM MapSectionStateBitmap AS mb "
                     + "RIGHT JOIN ( "
-                    + "  SELECT user_id, x, y, explored "
+                    + "  SELECT userId, x, y, explored "
                     + "  FROM MapSection "
-                    + "  WHERE user_id = ? "
+                    + "  WHERE userId = ? "
                     + ") AS m "
-                    + "  ON mb.user_id = m.user_id "
+                    + "  ON mb.userId = m.userId "
                     + "  AND mb.x   = m.x "
                     + "  AND mb.y   = m.y;";
 
@@ -201,12 +201,12 @@ public class MapSectionDao {
     }
 
     // Using In MapSectionController
-    public MapSectionResponseDto getUserMapSections(long user_id) {
+    public MapSectionResponseDto getUserMapSections(long userId) {
         MapSectionResponseDto dto = new MapSectionResponseDto();
 
         List<MapSectionResponseDto.MapSectionDto> sections =
                 jdbcClient.sql(GET_USER_MAP_SECTIONS)
-                        .param(user_id)
+                        .param(userId)
                         .query((rs, rowNum) -> {
                             byte[] bitmap = rs.getBytes("bitmap");
                             String base64 = (bitmap != null && bitmap.length > 0)
