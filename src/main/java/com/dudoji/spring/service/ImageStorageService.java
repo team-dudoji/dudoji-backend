@@ -42,6 +42,12 @@ public class ImageStorageService {
     public String storeImageActually(MultipartFile file, String fileName) {
         try {
             Path targetLocation = this.imageStorageLocation.resolve(fileName);
+
+            Path parentDir = targetLocation.getParent();
+            if (Files.notExists(parentDir)) {
+                Files.createDirectories(parentDir);
+            }
+
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return "uploads/" + fileName;
