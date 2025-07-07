@@ -1,5 +1,6 @@
 // Admin's landmarks management script
 
+const baseURL = "http://localhost:8000"
 const modal = document.getElementById('modal');
 const modalTitle = document.getElementById('modal-title');
 let modalMode = 'none';
@@ -31,16 +32,19 @@ document.getElementById('infoForm').addEventListener('submit', function(event) {
 
 // Functions to communicate with the backend
 function addLandmark() {
-    sendLandmarkData('http://localhost:80/api/admin/landmarks', 'POST');
+    const URL = "/api/admin/landmarks"
+    sendLandmarkData(baseURL + URL, 'POST');
 }
 
 function updateLandmark(landmarkId) {
-    sendLandmarkData(`http://localhost:80/api/admin/landmarks/${landmarkId}`, 'PUT');
+    const URL = "/api/admin/landmarks" + landmarkId
+    sendLandmarkData(baseURL + URL, 'PUT');
 }
 
 function deleteLandmark(landmarkId) {
+    const URL = "/api/admin/landmarks" + landmarkId
     if (landmarkId) {
-        fetch(`http://localhost:80/api/admin/landmarks/${landmarkId}`, {
+        fetch(baseURL + URL, {
             method: 'DELETE'
         }).then(() => {
             location.reload();
