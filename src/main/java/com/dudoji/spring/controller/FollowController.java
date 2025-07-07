@@ -1,7 +1,7 @@
 package com.dudoji.spring.controller;
 
+import com.dudoji.spring.dto.user.UserSimpleDto;
 import com.dudoji.spring.models.domain.PrincipalDetails;
-import com.dudoji.spring.models.domain.User;
 import com.dudoji.spring.service.FollowService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,25 +21,27 @@ public class FollowController {
     private FollowService followService;
 
     @GetMapping("")
-    public ResponseEntity<List<User>> getFollowing(
+    public ResponseEntity<List<UserSimpleDto>> getFollowing(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        List<User> result = followService.getFollowingById(principalDetails.getUid());
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(
+                followService.getFollowingById(principalDetails.getUid())
+        );
     }
 
     @GetMapping("/follwer")
-    public ResponseEntity<List<User>> getFollowers(
+    public ResponseEntity<List<UserSimpleDto>> getFollowers(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        List<User> result = followService.getFollowerById(principalDetails.getUid());
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(
+                followService.getFollowerById(principalDetails.getUid())
+        );
     }
 
     @DeleteMapping("/{userId}")
@@ -75,15 +77,14 @@ public class FollowController {
     }
 
     @GetMapping("/recommended")
-    public ResponseEntity<List<User>> getRecommendedFriends(
+    public ResponseEntity<List<UserSimpleDto>> getRecommendedFriends(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam String email // TODO: Query? OR Path Variable?
     ) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
-        List<User> recommendedUsers = followService.getRecommendedFollow(email);
-        return ResponseEntity.ok(recommendedUsers);
+        return ResponseEntity.ok(followService.getRecommendedFollow(email));
     }
 
 

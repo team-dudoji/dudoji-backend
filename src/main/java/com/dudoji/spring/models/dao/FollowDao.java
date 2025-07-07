@@ -1,5 +1,6 @@
 package com.dudoji.spring.models.dao;
 
+import com.dudoji.spring.dto.user.UserSimpleDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -11,12 +12,20 @@ import java.util.List;
 @Repository("FollowDao")
 public class FollowDao {
 
-    private static String GET_FOLLOWING_LIST_BY_ID = "SELECT (followee_id) FROM follow WHERE follower_id = ?";
+    private static String GET_FOLLOWING_LIST_BY_ID = """
+          SELECT "User".id as userId, name, email, profile_image as profileImage
+          FROM "User" JOIN follow ON "User".id = follow.followee_id
+          WHERE follower_id = :userId;
+          """;
     private static String CREATE_FOLLOWING_BY_ID = "INSERT INTO follow (follower_id, followee_id) VALUES (?, ?)";
     private static String DELETE_FOLLOWING_BY_ID = "DELETE FROM follow WHERE follower_id = ? AND followee_id = ?";
     private static String IS_FOLLOWING = "SELECT 1 FROM follow WHERE follower_id = ? AND followee_id = ?";
 
-    private static String GET_FOLLOWER_LIST_BY_ID = "SELECT (follower_id) FROM follow WHERE followee_id = ?";
+    private static String GET_FOLLOWER_LIST_BY_ID = """
+            SELECT "User".id as userId, name, email, profile_image as profileImage
+            FROM "User" JOIN follow ON "User".id = follow.follower_id
+            WHERE followee_id = :userId;
+            """;
 
     private static String GET_NUM_OF_FOLLOWING = """
             SELECT count(1)
@@ -40,18 +49,27 @@ public class FollowDao {
     @Autowired
     private JdbcClient jdbcClient;
 
-    // TODO: 이름 명확하게 할 것
-    public List<Long> getFollowingListByUser(long userId) {
+    public List<UserSimpleDto> getFollowingListByUser(long userId) {
         return jdbcClient.sql(GET_FOLLOWING_LIST_BY_ID)
-                .param(userId)
-                .query(Long.class)
+                .param("userId", userId)
+                .query((rs, numOfRows) -> new UserSimpleDto(
+                        rs.getLong("userId"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("profileImage")
+                ))
                 .list();
     }
 
-    public List<Long> getFollowerListByUser(long userId) {
+    public List<UserSimpleDto> getFollowerListByUser(long userId) {
         return jdbcClient.sql(GET_FOLLOWER_LIST_BY_ID)
-                .param(userId)
-                .query(Long.class)
+                .param("userId", userId)
+                .query((rs, numOfRows) -> new UserSimpleDto(
+                        rs.getLong("userId"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("profileImage")
+                ))
                 .list();
     }
 
