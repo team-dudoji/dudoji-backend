@@ -59,16 +59,4 @@ public class LandmarkController {
         landmarkService.putLandmark(landmarkId, landmarkRequestDto);
         return ResponseEntity.ok("successfully saved");
     }
-
-    @PreAuthorize("hasRole('admin')")
-    @GetMapping("/admin/landmarks")
-    public String getAdminLandmarkPage(
-            Model model
-    ) {
-        model.addAttribute("landmarks",
-                landmarkService.getLandmarks(-1)
-        );
-        return "admin_landmarks";
-    }
-
 }
