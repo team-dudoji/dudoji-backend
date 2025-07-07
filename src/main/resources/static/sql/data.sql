@@ -18,3 +18,14 @@ INSERT INTO public."User" (
       (107, '테스트8', '8@8',   NULL, 'user'::user_role, NULL, NULL, DEFAULT, NULL),
       (108, '테스트9', '9@9',   NULL, 'user'::user_role, NULL, NULL, DEFAULT, NULL),
       (109, '테스트10','10@10', NULL, 'user'::user_role, NULL, NULL, DEFAULT, NULL);
+
+INSERT INTO Achievement(title, checker, unit) VALUES
+    ('안개 제거', 'FogAchievement', 'PERCENTAGE'),
+    ('총 이동거리', 'TotalMovementAchievement', 'DISTANCE'),
+    ('랜드마크', 'LandmarkAchievement', 'COUNT');
+
+INSERT INTO Quest(title, checker, goalValue, unit, questType) VALUES
+    ('오늘 하루도 힘차게!', 'DailyMovementQuest', 5, 'DISTANCE', 'DAILY'),
+    ('핀을 꽂아보자!', 'DailyPinQuest', 5, 'COUNT', 'DAILY'),
+    ('새로운 랜드마크를 방문하자!', 'NewLandmarkQuest', 5, 'DISTANCE', 'LANDMARK'),
+    ('모든 랜드마크를 방문하자!', 'LandmarkCountQuest', 5, 'COUNT', 'LANDMARK');
