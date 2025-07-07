@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 public class DailyMovementQuestChecker implements MissionChecker {
     @Override
     public int check(long uid) {
+        // TODO - implement logic
         return 0;
     }
 }
