@@ -29,9 +29,17 @@ public class ImageStorageService {
         }
     }
 
-    public String storeImage(MultipartFile file) {
-        String fileName = generateTimeBasedFileName() + getFileExtension(file.getOriginalFilename());
+    public String storeImageToRandomName(MultipartFile file, String path) {
+        String fileName = path + generateTimeBasedFileName() + getFileExtension(file.getOriginalFilename());
+        return storeImageActually(file, fileName);
+    }
 
+    public String storeImageWithPathName(MultipartFile file, String pathName) {
+        String fileName = pathName + getFileExtension(file.getOriginalFilename());
+        return storeImageActually(file, fileName);
+    }
+
+    public String storeImageActually(MultipartFile file, String fileName) {
         try {
             Path targetLocation = this.imageStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
@@ -42,6 +50,7 @@ public class ImageStorageService {
             throw new RuntimeException("Could not store file!", e);
         }
     }
+
 
     public String generateTimeBasedFileName() {
         String currentTime = Instant.now().toString();

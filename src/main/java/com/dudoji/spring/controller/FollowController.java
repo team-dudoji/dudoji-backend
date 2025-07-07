@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("/api/user/follows")
 public class FollowController {
 
@@ -24,9 +26,6 @@ public class FollowController {
     public ResponseEntity<List<UserSimpleDto>> getFollowing(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
         return ResponseEntity.ok(
                 followService.getFollowingById(principalDetails.getUid())
         );
@@ -36,9 +35,6 @@ public class FollowController {
     public ResponseEntity<List<UserSimpleDto>> getFollowers(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
         return ResponseEntity.ok(
                 followService.getFollowerById(principalDetails.getUid())
         );
@@ -49,9 +45,6 @@ public class FollowController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long userId
     ) {
-        if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
         if (followService.deleteFollowing(principalDetails.getUid(), userId)) {
             return ResponseEntity.status(HttpStatus.OK).body("Delete Success");
         }
@@ -65,9 +58,6 @@ public class FollowController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long userId
     ) {
-        if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
         if (followService.createFollowing(principalDetails.getUid(), userId)) {
             return ResponseEntity.status(HttpStatus.OK).body("Create Success");
         }
@@ -81,9 +71,6 @@ public class FollowController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam String email // TODO: Query? OR Path Variable?
     ) {
-        if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
         return ResponseEntity.ok(followService.getRecommendedFollow(email));
     }
 

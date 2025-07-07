@@ -135,25 +135,23 @@ CREATE TABLE landmark_detection (
     PRIMARY KEY (landmark_id, user_id)
 );
 
-BEGIN;
+CREATE TABLE PinSkins (
+    skinId BIGINT PRIMARY KEY,
+    name VARCHAR NOT NULL UNIQUE,
+    content VARCHAR,
+    imageUrl VARCHAR NOT NULL,
+    price BIGINT
+);
 
-------------------------------------------------------------
--- 1) 테이블·시퀀스 이름 변경
-------------------------------------------------------------
-ALTER TABLE user_steps RENAME TO user_walk_distance;
-ALTER SEQUENCE user_steps_id_seq RENAME TO user_walk_distance_id_seq;
-ALTER TABLE user_walk_distance
-    ALTER COLUMN id SET DEFAULT nextval('user_walk_distance_id_seq');
+CREATE TABLE UserPinSkins (
+    skinId BIGINT REFERENCES PinSkins(skinId),
+    userId BIGINT REFERENCES "User"(id),
+    PRIMARY KEY (skinId, userId)
+);
 
-------------------------------------------------------------
--- 2) 컬럼 이름 변경 및 속성 조정
-------------------------------------------------------------
-ALTER TABLE user_walk_distance RENAME COLUMN step_date  TO distance_date;
-ALTER TABLE user_walk_distance RENAME COLUMN step_count TO distance_meter;
-ALTER TABLE user_walk_distance ALTER COLUMN distance_meter SET DEFAULT 0;
-ALTER TABLE user_walk_distance ALTER COLUMN distance_meter SET NOT NULL;
-
-COMMIT;
+ALTER TABLE PinSkins
+    ALTER COLUMN skinId
+        ADD GENERATED ALWAYS AS IDENTITY;
 
 CREATE TYPE mission_unit AS ENUM (
     'DISTANCE',

@@ -3,6 +3,7 @@ package com.dudoji.spring.config;
 import com.dudoji.spring.models.domain.JwtProvider;
 import com.dudoji.spring.security.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,12 +15,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity
-public class WebSecurityConfig {
+public class WebSecurityConfig extends WebMvcAutoConfiguration {
 
     private final UserDetailsService userDetailsService;
     private final PrincipalOauth2UserService principalOauth2UserService;
@@ -33,11 +35,19 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
 //                        .requestMatchers("/user/**").authenticated()
-                        .requestMatchers("/auth/login/kakao/**",
-                                "/oauth2/**",
-                               "/**" ).permitAll()
+                        .requestMatchers( // About Static File
+                                AntPathRequestMatcher.antMatcher("/style/**"),
+                                AntPathRequestMatcher.antMatcher("/js/**")
+                        ).permitAll()
+                        .requestMatchers(
+                                AntPathRequestMatcher.antMatcher("/auth/login/kakao/**"),
+                                AntPathRequestMatcher.antMatcher("/oauth2/**"),
+                                AntPathRequestMatcher.antMatcher("/user/loginForm"),
+                                AntPathRequestMatcher.antMatcher("/login")
+                        ).permitAll()
 //                        .requestMatchers("/api1/**").hasRole("user")
 //                        .requestMatchers("/api2/**").hasRole("admin")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                         .anyRequest().authenticated()
         )
                 .addFilterBefore(
