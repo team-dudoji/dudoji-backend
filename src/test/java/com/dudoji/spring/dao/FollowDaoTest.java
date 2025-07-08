@@ -1,6 +1,7 @@
 package com.dudoji.spring.dao;
 
 import com.dudoji.spring.dao.DBtest.DBTestBase;
+import com.dudoji.spring.dto.user.UserSimpleDto;
 import com.dudoji.spring.models.dao.FollowDao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,13 +31,13 @@ public class FollowDaoTest extends DBTestBase {
         assertTrue(result);
 
         assertTrue(followDao.isFollowing(101, 102));
-        List<Long> getFollowerListByUser = followDao.getFollowingListByUser(101);
+        List<UserSimpleDto> getFollowerListByUser = followDao.getFollowingListByUser(101);
         assertEquals(1, getFollowerListByUser.size());
 
         boolean result2 = followDao.deleteFollowingByUser(101, 102);
         assertTrue(result2);
 
-        List<Long> getFollowerListByUserAfterDelete = followDao.getFollowingListByUser(101);
+        List<UserSimpleDto> getFollowerListByUserAfterDelete = followDao.getFollowingListByUser(101);
         assertTrue(getFollowerListByUserAfterDelete.isEmpty());
 
     }
@@ -45,11 +48,14 @@ public class FollowDaoTest extends DBTestBase {
         followDao.createFollowingByUser(103, 102);
         followDao.createFollowingByUser(104, 102);
 
-        List<Long> followerListByUser = followDao.getFollowerListByUser(102);
+        List<UserSimpleDto> followerListByUser = followDao.getFollowerListByUser(102);
+
+        List<Long> followerIdList = List.of(101L, 103L, 104L);
 
         assertEquals(3, followerListByUser.size());
-        assertTrue(followerListByUser.contains(101L));
-        assertTrue(followerListByUser.contains(103L));
-        assertTrue(followerListByUser.contains(104L));
+        Set<Long> followerIdListFromDB = followerListByUser.stream()
+            .map(UserSimpleDto::id)
+            .collect(Collectors.toSet());
+        assertTrue(followerIdListFromDB.containsAll(followerIdList));
     }
 }

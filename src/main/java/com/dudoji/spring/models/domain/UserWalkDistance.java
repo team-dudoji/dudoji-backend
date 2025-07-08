@@ -12,7 +12,7 @@ import java.time.LocalDate;
  */
 public class UserWalkDistance {
 
-    private Long stepId;
+    private Long id;
     private Long uid;
     private LocalDate date;
     private int meters;

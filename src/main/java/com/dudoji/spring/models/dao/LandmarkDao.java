@@ -17,14 +17,14 @@ public class LandmarkDao {
     private static final String GET_LANDMARKS = """
        SELECT
           Landmark.landmarkId as landmarkId, lat, lng, placeName, content, imageUrl, address,
-          (ld.user_id IS NOT NULL) AS isDetected
+          (ld.userId IS NOT NULL) AS isDetected
         FROM Landmark
         LEFT OUTER JOIN (
-          SELECT landmark_id, user_id
-          FROM landmark_detection
-          WHERE user_id = :userId
+          SELECT landmarkId, userId
+          FROM landmarkDetection
+          WHERE userId = :userId
         ) AS ld
-        ON Landmark.landmarkId = ld.landmark_id
+        ON Landmark.landmarkId = ld.landmarkId
        """;
 
     private static final String SAVE_LANDMARK = """
@@ -33,7 +33,7 @@ public class LandmarkDao {
             (:lat, :lng, :placeName, :content, :imageUrl, :address);
             """;
     private static final String SAVE_LANDMARK_DETECTION = """
-            INSERT INTO landmark_detection(landmark_id, user_id)
+            INSERT INTO landmarkDetection(landmarkId, userId)
             VALUES
             (:landmarkId, :userId);
             """;

@@ -6,7 +6,7 @@ values
     );
 
 INSERT INTO public."User" (
-    id, name, email, password, role, provider, provider_id, created_at, profile_image
+    id, name, email, password, role, provider, providerId, createdAt, profileImage
 ) VALUES
       (100, '테스트1', '1@1',   NULL, 'user'::user_role, NULL, NULL, DEFAULT, NULL),
       (101, '테스트2', '2@2',   NULL, 'user'::user_role, NULL, NULL, DEFAULT, NULL),
