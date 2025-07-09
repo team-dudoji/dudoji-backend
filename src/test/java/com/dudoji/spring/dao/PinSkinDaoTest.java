@@ -1,8 +1,8 @@
 package com.dudoji.spring.dao;
 
 import com.dudoji.spring.dao.DBtest.DBTestBase;
-import com.dudoji.spring.models.dao.PinSkinDao;
-import com.dudoji.spring.models.domain.PinSkin;
+import com.dudoji.spring.models.dao.skin.PinSkinDao;
+import com.dudoji.spring.models.domain.skin.PinSkin;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;

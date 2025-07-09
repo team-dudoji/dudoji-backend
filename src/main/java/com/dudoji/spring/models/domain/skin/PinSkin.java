@@ -1,4 +1,4 @@
-package com.dudoji.spring.models.domain;
+package com.dudoji.spring.models.domain.skin;
 
 import lombok.Builder;
 import lombok.Data;
@@ -10,5 +10,5 @@ public class PinSkin {
     private String name;
     private String content;
     private String imageUrl;
-    private int price; // TODO: 필요한 가?
+    private int price;
 }
