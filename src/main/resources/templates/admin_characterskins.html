@@ -1,0 +1,76 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CharacterSkins Management</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style/base-style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style/table-style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style/modal-style.css}">
+</head>
+<body>
+<h1>CharacterSkins Management</h1>
+<div>
+    <button type="button" onclick="openModal('add')">Add CharacterSkins</button>
+</div>
+<div>
+    <h2>CharacterSkin List</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>CharacterSkin id</th>
+            <th>Name</th>
+            <th>Image</th>
+            <th>Content</th>
+            <th>Price</th>
+            <th>Function</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="skin : ${characterSkins}">
+            <td th:text="${skin.skinId}"></td>
+            <td th:text="${skin.name}"></td>
+            <!-- <td><img th:src="@{${#strings.substring(uploadDir, 0, uploadDir.lastIndexOf('uploads'))} + ${skin.imageUrl}}" style="height:64px"/></td> -->
+            <td><img th:src="@{${skin.imageUrl}}" style="height:64px"/></td>
+            <td th:text="${skin.content}"></td>
+            <td th:text="${skin.price}"></td>
+            <td>
+                <button type="button" th:onclick="deleteCharacterSkin(${skin.skinId})">Delete</button>
+                <button type="button" th:onclick="openModal('update', ${skin.skinId})">Update</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Add/Update Product -->
+<div id="modal">
+    <h4 id="modal-title"></h4>
+    <form id="infoForm">
+        <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+        <label>Name:
+            <input type="text" name="name" required>
+        </label><br><br>
+
+        <label>Image:
+            <input type="file" name="imageFile" id="modal-imageFile" accept="image/*" onchange="previewImage(event)">
+        </label><br>
+        <input type="hidden" name="imageUrl" id="modal-imageUrl">
+        <img id="modal-imagePreview" src="#" alt="Image Preview" style="max-width:100px; max-height:100px; margin-top:10px; border:1px solid #ddd; display:none;"><br><br>
+        <input type="hidden" name="existingImageUrl" id="modal-existingImageUrl">
+
+        <label>Content:
+            <textarea name="content" rows="3" required></textarea>
+        </label><br><br>
+
+        <label>Price:
+            <input type="number" name="price" required min="0">
+        </label><br><br>
+
+        <button type="submit">제출</button>
+        <button type="button" onclick="closeModal()">닫기</button>
+    </form>
+
+</div>
+</body>
+
+<script src="/js/characterskins-management.js"></script>
+</html>

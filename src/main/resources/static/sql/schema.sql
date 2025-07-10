@@ -220,3 +220,17 @@ ALTER TABLE "User" RENAME COLUMN created_at TO createdAt;
 -- MapSection
 ALTER TABLE MapSection RENAME COLUMN user_id TO userId;
 ALTER TABLE MapSectionStateBitmap RENAME COLUMN user_id TO userId;
+
+CREATE TABLE CharacterSkins (
+                                skinId BIGSERIAL PRIMARY KEY,
+                                name VARCHAR NOT NULL UNIQUE,
+                                content VARCHAR,
+                                imageUrl VARCHAR NOT NULL,
+                                price BIGINT
+);
+
+CREATE TABLE UserCharacterSkins (
+                                    skinId BIGSERIAL REFERENCES CharacterSkins(skinId),
+                                    userId BIGINT REFERENCES "User"(id),
+                                    PRIMARY KEY (skinId, userId)
+)

@@ -1,6 +1,6 @@
-package com.dudoji.spring.dto;
+package com.dudoji.spring.dto.skin;
 
-import com.dudoji.spring.models.domain.PinSkin;
+import com.dudoji.spring.models.domain.skin.PinSkin;
 
 public record PinSkinSimpleDto(
         String name,

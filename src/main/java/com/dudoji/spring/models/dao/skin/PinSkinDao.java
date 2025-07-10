@@ -1,7 +1,7 @@
-package com.dudoji.spring.models.dao;
+package com.dudoji.spring.models.dao.skin;
 
-import com.dudoji.spring.dto.PinSkinDto;
-import com.dudoji.spring.models.domain.PinSkin;
+import com.dudoji.spring.dto.skin.PinSkinDto;
+import com.dudoji.spring.models.domain.skin.PinSkin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
