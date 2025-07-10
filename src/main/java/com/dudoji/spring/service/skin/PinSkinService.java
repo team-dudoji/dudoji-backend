@@ -1,8 +1,8 @@
-package com.dudoji.spring.service;
+package com.dudoji.spring.service.skin;
 
-import com.dudoji.spring.dto.PinSkinDto;
-import com.dudoji.spring.models.dao.PinSkinDao;
-import com.dudoji.spring.models.domain.PinSkin;
+import com.dudoji.spring.dto.skin.PinSkinDto;
+import com.dudoji.spring.models.dao.skin.PinSkinDao;
+import com.dudoji.spring.models.domain.skin.PinSkin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

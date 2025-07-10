@@ -1,9 +1,9 @@
-package com.dudoji.spring.controller;
+package com.dudoji.spring.controller.skin;
 
-import com.dudoji.spring.dto.PinSkinSimpleDto;
-import com.dudoji.spring.dto.PinSkinDto;
+import com.dudoji.spring.dto.skin.PinSkinSimpleDto;
+import com.dudoji.spring.dto.skin.PinSkinDto;
 import com.dudoji.spring.models.domain.PrincipalDetails;
-import com.dudoji.spring.service.PinSkinService;
+import com.dudoji.spring.service.skin.PinSkinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
