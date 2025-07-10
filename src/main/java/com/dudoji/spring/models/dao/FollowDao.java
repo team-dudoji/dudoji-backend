@@ -13,7 +13,7 @@ import java.util.List;
 public class FollowDao {
 
     private static final String GET_FOLLOWING_LIST_BY_ID = """
-          SELECT "User".id as userId, name, email, profile_image as profileImage
+          SELECT "User".id as userId, name, email, profileImage
           FROM "User" JOIN follow ON "User".id = follow.followeeId
           WHERE followerId = :userId;
           """;
@@ -22,7 +22,7 @@ public class FollowDao {
     private static final String IS_FOLLOWING = "SELECT 1 FROM follow WHERE followerId = ? AND followeeId = ?";
 
     private static final String GET_FOLLOWER_LIST_BY_ID = """
-            SELECT "User".id as userId, name, email, profile_image as profileImage
+            SELECT "User".id as userId, name, email, profileImage
             FROM "User" JOIN follow ON "User".id = follow.followerId
             WHERE followeeId = :userId;
             """;
