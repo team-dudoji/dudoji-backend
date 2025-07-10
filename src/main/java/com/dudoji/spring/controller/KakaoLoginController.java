@@ -64,8 +64,8 @@ public class KakaoLoginController {
         return ResponseEntity.ok(Map.of("token", tokenInfo));
     }
 
-    @GetMapping("/valid")
-    public ResponseEntity<String> getUserProfile(
+    @GetMapping("/validate")
+    public ResponseEntity<String> validateJwt(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         if (principalDetails == null) {
