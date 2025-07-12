@@ -1,0 +1,15 @@
+<configuration>
+    <springProperty scope="context" name="WEBHOOK_URL" source="logging.webhook-url"/>
+    <springProperty scope="context" name="CHANNEL" source="logging.channel"/>
+    <appender name="SlackAppender" class="com.dudoji.spring.util.log.SlackAppender">
+        <webhookUrl>${WEBHOOK_URL}</webhookUrl>
+        <channel>${CHANNEL}</channel>
+    </appender>
+    <appender name="AsyncSlackAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="SlackAppender"/>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="AsyncSlackAppender"/>
+    </root>
+</configuration>
