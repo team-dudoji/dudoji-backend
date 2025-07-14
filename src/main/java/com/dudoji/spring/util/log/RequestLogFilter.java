@@ -7,20 +7,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @Component
 public class RequestLogFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if (servletRequest instanceof HttpServletRequest) {
-            HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
+        if (servletRequest instanceof HttpServletRequest httpRequest) {
             log.info(
                     "Request: method={}, uri={}, ip={}, userAgent={}",
                     httpRequest.getMethod(),
                     httpRequest.getRequestURI(),
                     httpRequest.getRemoteAddr(),
-                    httpRequest.getHeader(HttpHeaders.USER_AGENT)
+                    Objects.requireNonNullElse(httpRequest.getHeader(HttpHeaders.USER_AGENT), "Unknown")
             );
 
             filterChain.doFilter(servletRequest, servletResponse);
