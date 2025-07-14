@@ -13,15 +13,20 @@ import java.io.IOException;
 public class RequestLogFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-        log.info(
-                "Request: method={}, uri={}, ip={}, userAgent={}",
-                httpRequest.getMethod(),
-                httpRequest.getRequestURI(),
-                httpRequest.getRemoteAddr(),
-                httpRequest.getHeader(HttpHeaders.USER_AGENT)
-        );
+        if (servletRequest instanceof HttpServletRequest) {
+            HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
+            log.info(
+                    "Request: method={}, uri={}, ip={}, userAgent={}",
+                    httpRequest.getMethod(),
+                    httpRequest.getRequestURI(),
+                    httpRequest.getRemoteAddr(),
+                    httpRequest.getHeader(HttpHeaders.USER_AGENT)
+            );
 
-        filterChain.doFilter(servletRequest, servletResponse);
+            filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            log.warn("Received a non-HTTP request. Skipping request logging.");
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
     }
 }
