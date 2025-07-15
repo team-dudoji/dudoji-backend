@@ -1,4 +1,3 @@
-const baseURL = "http://localhost:8000"
 const modal = document.getElementById('modal');
 const modalTitle = document.getElementById('modal-title');
 const modalImagePreview = document.getElementById('modal-imagePreview');
@@ -22,6 +21,7 @@ function closeModal() {
     selectedCharacterSkinId = null;
     modalMode = 'none';
 }
+
 document.getElementById('infoForm').addEventListener('submit', async function(event) {
      event.preventDefault();
 
