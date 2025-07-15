@@ -33,6 +33,7 @@ public class JoinController {
         String rawPassword = user.getPassword();
         String encodedPassword = passwordEncoder.encode(rawPassword);
         user.setPassword(encodedPassword);
+        user.setRole("user");
         userDao.createUserByUser(user);
         log.info("user = {} ", user);
         return "redirect:/user/loginForm";
