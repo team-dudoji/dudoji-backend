@@ -25,8 +25,6 @@ public class PinSkinController {
     @Autowired
     private PinSkinService pinSkinService;
 
-    @Value("${file.upload-dir}") String uploadDir;
-
     // Get all PinSkin contain whether purchase
     @GetMapping("/api/user/pin-skins")
     public ResponseEntity<List<PinSkinDto>> getPinSkins(
@@ -71,17 +69,5 @@ public class PinSkinController {
     ) {
         boolean result = pinSkinService.deletePinSkin(skinId);
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasRole('admin')")
-    @GetMapping("/admin/pin-skins")
-    public String getAdminPinSkinPage(
-            Model model
-    ) {
-        model.addAttribute("pinSkins",
-                pinSkinService.getPinSkins(-1)
-        );
-        model.addAttribute("uploadDir", uploadDir);
-        return "admin_pinskins";
     }
 }
