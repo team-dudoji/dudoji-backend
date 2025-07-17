@@ -76,16 +76,4 @@ public class CharacterSkinController {
 		boolean result = characterSkinService.deleteCharacterSkin(skinId);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
-
-	@PreAuthorize("hasRole('admin')")
-	@GetMapping("/admin/character-skins")
-	public String getAdminCharacterSkinPage(
-		Model model
-	) {
-		model.addAttribute("characterSkins",
-			characterSkinService.getCharacterSkins(-1)
-		);
-		model.addAttribute("uploadDir", uploadDir);
-		return "admin_characterskins";
-	}
 }

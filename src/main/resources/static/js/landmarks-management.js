@@ -1,6 +1,5 @@
 // Admin's landmarks management script
 
-const baseURL = "http://localhost:8000"
 const modal = document.getElementById('modal');
 const modalTitle = document.getElementById('modal-title');
 let modalMode = 'none';
