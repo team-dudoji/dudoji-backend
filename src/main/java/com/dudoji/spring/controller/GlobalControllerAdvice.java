@@ -10,7 +10,7 @@ public class GlobalControllerAdvice {
     @Value("${server.port}")
     private int port;
 
-    @Value("${server.url")
+    @Value("${server.url}")
     private String url;
 
     @ModelAttribute("baseUrl")
