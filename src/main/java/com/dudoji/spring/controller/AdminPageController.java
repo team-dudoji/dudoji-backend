@@ -35,7 +35,7 @@ public class AdminPageController {
         return "admin_pinskins";
     }
 
-    @PreAuthorize("hasRole('admin')")
+    
     @GetMapping("/character-skins")
     public String getAdminCharacterSkinPage(
             Model model
