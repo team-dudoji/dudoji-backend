@@ -51,7 +51,7 @@ public class AdminPageController {
     public String getAdminLandmarkPage(
             Model model
     ) {
-        model.addAttribute("characterSkins",
+        model.addAttribute("landmarks",
                 landmarkService.getLandmarks(-1)
         );
         model.addAttribute("uploadDir", uploadDir);
