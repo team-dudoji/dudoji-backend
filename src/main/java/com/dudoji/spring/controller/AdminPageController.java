@@ -47,7 +47,6 @@ public class AdminPageController {
         return "admin_characterskins";
     }
 
-    @PreAuthorize("hasRole('admin')")
     @GetMapping("/landmarks")
     public String getAdminLandmarkPage(
             Model model
