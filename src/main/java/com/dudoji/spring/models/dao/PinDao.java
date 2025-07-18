@@ -109,7 +109,7 @@ public class PinDao {
                                     rs.getTimestamp("createdAt").toLocalDateTime())
                             .placeName(rs.getString("placeName"))
                             .address(rs.getString("address"))
-                            .pinSkinId(rs.getLong("skinId"))
+                            .pinSkinId(rs.getLong("skinid"))
                             .build())
                 .list();
     }
