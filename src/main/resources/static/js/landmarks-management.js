@@ -36,12 +36,12 @@ function addLandmark() {
 }
 
 function updateLandmark(landmarkId) {
-    const URL = "/api/admin/landmarks" + landmarkId
+    const URL = "/api/admin/landmarks" + '/' + landmarkId
     sendLandmarkData(baseURL + URL, 'PUT');
 }
 
 function deleteLandmark(landmarkId) {
-    const URL = "/api/admin/landmarks" + landmarkId
+    const URL = "/api/admin/landmarks" + '/' + landmarkId
     if (landmarkId) {
         fetch(baseURL + URL, {
             method: 'DELETE'

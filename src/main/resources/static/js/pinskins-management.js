@@ -65,7 +65,7 @@ function addPinSkin() {
 function deletePinSkin(skinId) {
     const URL = "/api/admin/pin-skins";
     if (skinId) {
-        fetch(baseURL + URL + skinId, {
+        fetch(baseURL + URL + '/' + skinId, {
             method: 'DELETE'
         }).then(() => {
             location.reload();
