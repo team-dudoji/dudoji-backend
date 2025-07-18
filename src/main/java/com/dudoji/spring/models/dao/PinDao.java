@@ -1,17 +1,12 @@
 package com.dudoji.spring.models.dao;
 
-import com.dudoji.spring.models.DBConnection;
 import com.dudoji.spring.models.domain.Pin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -21,14 +16,14 @@ public class PinDao {
     @Autowired
     private JdbcClient jdbcClient;
 
-    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (userId, lat, lng, content, createdAt, imageUrl, placeName, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
+    private static final String CREATE_PIN_BY_REQUEST = "INSERT INTO pin (userId, lat, lng, content, createdAt, imageUrl, placeName, address, skinid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
 
-    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, userId, lat, lng, content, createdAt, imageUrl, placeName, address " +
+    private static final String GET_CLOSE_PIN_BY_MIN_MAX = "SELECT id, userId, lat, lng, content, createdAt, imageUrl, placeName, address, skinid " +
             "FROM pin " +
             "WHERE lat BETWEEN ? AND ? " +
             "AND lng BETWEEN ? AND ?";
 
-    private static final String GET_ALL_PIN_BY_USER_ID = "SELECT id, lat, lng, content, createdAt, imageUrl, placeName, address " +
+    private static final String GET_ALL_PIN_BY_USER_ID = "SELECT id, lat, lng, content, createdAt, imageUrl, placeName, address, skinid " +
             "FROM pin " +
             "WHERE userId = ?";
 
@@ -61,6 +56,7 @@ public class PinDao {
                 .param(pin.getImageUrl())
                 .param(pin.getPlaceName())
                 .param(pin.getAddress())
+                .param(pin.getPinSkinId())
                 .query(Long.class)
                 .single();
     }
@@ -93,6 +89,7 @@ public class PinDao {
                                 .createdDate(rs.getTimestamp("createdAt").toLocalDateTime())
                                 .placeName(rs.getString("placeName"))
                                 .address(rs.getString("address"))
+                                .pinSkinId(rs.getLong("skinId"))
                                 .build())
                 .list();
     }
@@ -112,6 +109,7 @@ public class PinDao {
                                     rs.getTimestamp("createdAt").toLocalDateTime())
                             .placeName(rs.getString("placeName"))
                             .address(rs.getString("address"))
+                            .pinSkinId(rs.getLong("skinId"))
                             .build())
                 .list();
     }
