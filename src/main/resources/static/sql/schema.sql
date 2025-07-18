@@ -237,4 +237,4 @@ CREATE TABLE UserCharacterSkins (
 
 ALTER TABLE Pin
     ADD COLUMN skinId BIGINT,
-    ADD CONSTRAINT fk_pin_skin FOREIGN KEY (skinId) REFERENCES pinskins(skinId);
+    ADD CONSTRAINT fk_pin_skin FOREIGN KEY (skinId) REFERENCES PinSkins(skinId);
