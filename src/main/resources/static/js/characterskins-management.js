@@ -66,7 +66,7 @@ function addCharacterSkin() {
 function deleteCharacterSkin(skinId) {
     const URL = "/api/admin/character-skins";
     if (skinId) {
-        fetch(baseURL + URL + skinId, {
+        fetch(baseURL + URL + '/' + skinId, {
             method: 'DELETE'
         }).then(() => {
             location.reload();

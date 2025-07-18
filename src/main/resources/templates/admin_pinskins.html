@@ -36,8 +36,8 @@
             <td th:text="${skin.content}"></td>
             <td th:text="${skin.price}"></td>
             <td>
-                <button type="button" th:onclick="deletePinSkin(${skin.skinId})">Delete</button>
-                <button type="button" th:onclick="openModal('update', ${skin.skinId})">Update</button>
+                <button type="button" th:onclick="deletePinSkin([[${skin.skinId}]])">Delete</button>
+                <button type="button" th:onclick="openModal('update', [[${skin.skinId}]])">Update</button>
             </td>
         </tr>
         </tbody>
