@@ -71,6 +71,11 @@ public class KakaoLoginController {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Jwt is not valid");
         }
+
+        if (userDao.getUserById(principalDetails.getUid()) == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+        }
+
         return ResponseEntity.ok("Jwt is valid");
     }
 
