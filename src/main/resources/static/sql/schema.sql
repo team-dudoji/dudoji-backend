@@ -1,12 +1,10 @@
-drop table if exists MapSectionStateBitmap;
-drop table if exists MapSection;
-drop table if exists user_steps;
-drop table if exists follow;
-drop materialized view if exists like_counts;
-drop table if exists likes;
-drop table if exists Pin;
-drop table if exists "User";
-drop type if exists user_role;
+DO $$ DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = current_schema()) LOOP
+            EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+        END LOOP;
+END $$;
 
 
 CREATE TYPE user_role AS ENUM ('user', 'admin');
@@ -119,13 +117,13 @@ ALTER TABLE Pin ADD COLUMN address VARCHAR(255) DEFAULT 'address';
 
 -- 랜드마크 관련
 create table Landmark (
-  landmarkId BIGSERIAL PRIMARY KEY ,
-  lat DOUBLE PRECISION ,
-  lng DOUBLE PRECISION ,
-  placeName VARCHAR ,
-  content VARCHAR ,
-  imageUrl VARCHAR ,
-  address VARCHAR
+    landmarkId BIGSERIAL PRIMARY KEY,
+    lat DOUBLE PRECISION,
+    lng DOUBLE PRECISION,
+    placeName VARCHAR,
+    content VARCHAR,
+    imageUrl VARCHAR,
+    address VARCHAR
 );
 
 CREATE TABLE landmark_detection (
@@ -165,19 +163,19 @@ CREATE TYPE quest_type as ENUM (
     );
 
 CREATE TABLE Achievement (
-                             achievementId BIGSERIAL PRIMARY KEY ,
-                             title VARCHAR(20) NOT NULL,
-                             checker VARCHAR(30) NOT NULL,
-                             unit mission_unit
+    achievementId BIGSERIAL PRIMARY KEY ,
+    title VARCHAR(20) NOT NULL,
+    checker VARCHAR(30) NOT NULL,
+    unit mission_unit
 );
 
 CREATE TABLE Quest (
-                       questId BIGSERIAL PRIMARY KEY ,
-                       title VARCHAR(20) NOT NULL,
-                       checker VARCHAR(20) NOT NULL,
-                       goalValue INT,
-                       unit mission_unit,
-                       questType quest_type
+    questId BIGSERIAL PRIMARY KEY ,
+    title VARCHAR(20) NOT NULL,
+    checker VARCHAR(20) NOT NULL,
+    goalValue INT,
+    unit mission_unit,
+    questType quest_type
 );
 
 -- follow table
@@ -222,15 +220,19 @@ ALTER TABLE MapSection RENAME COLUMN user_id TO userId;
 ALTER TABLE MapSectionStateBitmap RENAME COLUMN user_id TO userId;
 
 CREATE TABLE CharacterSkins (
-                                skinId BIGSERIAL PRIMARY KEY,
-                                name VARCHAR NOT NULL UNIQUE,
-                                content VARCHAR,
-                                imageUrl VARCHAR NOT NULL,
-                                price BIGINT
+    skinId BIGSERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL UNIQUE,
+    content VARCHAR,
+    imageUrl VARCHAR NOT NULL,
+    price BIGINT
 );
 
 CREATE TABLE UserCharacterSkins (
-                                    skinId BIGSERIAL REFERENCES CharacterSkins(skinId),
-                                    userId BIGINT REFERENCES "User"(id),
-                                    PRIMARY KEY (skinId, userId)
-)
+    skinId BIGSERIAL REFERENCES CharacterSkins(skinId),
+    userId BIGINT REFERENCES "User"(id),
+    PRIMARY KEY (skinId, userId)
+);
+
+ALTER TABLE Pin
+    ADD COLUMN skinId BIGINT,
+    ADD CONSTRAINT fk_pin_skin FOREIGN KEY (skinId) REFERENCES PinSkins(skinId);

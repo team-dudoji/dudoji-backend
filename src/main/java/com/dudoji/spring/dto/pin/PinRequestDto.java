@@ -17,7 +17,7 @@ public class PinRequestDto {
     private String imageUrl;
     private String placeName;
     private String address;
-    private String pinSkinName;
+    private Long pinSkinId;
 
     public Pin toDomain(Long userId) {
         return Pin.builder()
@@ -29,7 +29,7 @@ public class PinRequestDto {
                 .imageUrl(imageUrl)
                 .placeName(placeName)
                 .address(address)
-                .pinSkin(pinSkinName)
+                .pinSkinId(pinSkinId)
                 .build();
     }
 }

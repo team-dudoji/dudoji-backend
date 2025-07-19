@@ -16,5 +16,5 @@ public class Pin {
     private String imageUrl;
     private String placeName;
     private String address;
-    private String pinSkin;
+    private Long pinSkinId;
 }
