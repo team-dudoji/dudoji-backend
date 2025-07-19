@@ -1,5 +1,6 @@
 package com.dudoji.spring.controller;
 
+import com.dudoji.spring.service.ItemService;
 import com.dudoji.spring.service.LandmarkService;
 import com.dudoji.spring.service.skin.CharacterSkinService;
 import com.dudoji.spring.service.skin.PinSkinService;
@@ -20,6 +21,7 @@ public class AdminPageController {
     private final PinSkinService pinSkinService;
     private final CharacterSkinService characterSkinService;
     private final LandmarkService landmarkService;
+    private final ItemService itemService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -56,5 +58,14 @@ public class AdminPageController {
         );
         model.addAttribute("uploadDir", uploadDir);
         return "admin_landmarks";
+    }
+
+    @GetMapping("/items")
+    public String getAdminItemPage(
+        Model model
+    ) {
+        model.addAttribute("items", itemService.getAllItem());
+        model.addAttribute("uploadDir", uploadDir);
+        return "admin_items";
     }
 }

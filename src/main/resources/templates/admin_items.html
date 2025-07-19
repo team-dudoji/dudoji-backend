@@ -1,0 +1,77 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Items Management</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/style/base-style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style/table-style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style/modal-style.css}">
+</head>
+<body>
+<h1>Items Management</h1>
+<div>
+    <button type="button" onclick="openModal('add')">Add Items</button>
+</div>
+<div>
+    <h2>Items List</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Item id</th>
+            <th>Name</th>
+            <th>Image</th>
+            <th>Content</th>
+            <th>Price</th>
+            <th>Function</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${items}"
+            th:data-item-id="${item.itemId}"
+            th:data-item-name="${item.name}">
+            <td th:text="${item.itemId}"></td>
+            <td th:text="${item.name}"></td>
+            <td><img th:src="@{${item.imageUrl}}" style="height:64px"/></td>
+            <td th:text="${item.content}"></td>
+            <td th:text="${item.price}"></td>
+            <td>
+                <button type="button" th:onclick="|deleteItem(${item.itemId})|">Delete</button>
+                <button type="button" th:onclick="|openModal('update', ${item.itemId})|">Update</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Add/Update Product -->
+<div id="modal">
+    <h4 id="modal-title"></h4>
+    <form id="infoForm">
+        <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+        <label>Name:
+            <input type="text" name="name" id="modal-name" required>
+        </label><br><br>
+
+        <label>Image:
+            <input type="file" name="imageFile" id="modal-imageFile" accept="image/*" onchange="previewImage(event)">
+        </label><br>
+        <input type="hidden" name="imageUrl" id="modal-imageUrl">
+        <img id="modal-imagePreview" src="#" alt="Image Preview" style="max-width:100px; max-height:100px; margin-top:10px; border:1px solid #ddd; display:none;"><br><br>
+        <input type="hidden" name="existingImageUrl" id="modal-existingImageUrl">
+
+        <label>Content:
+            <textarea name="content" rows="3" required></textarea>
+        </label><br><br>
+
+        <label>Price:
+            <input type="number" name="price" required min="0">
+        </label><br><br>
+
+        <button type="submit">제출</button>
+        <button type="button" onclick="closeModal()">닫기</button>
+    </form>
+
+</div>
+</body>
+
+<script src="/js/items-management.js"></script>
+</html>
