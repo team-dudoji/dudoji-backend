@@ -1,12 +1,10 @@
-drop table if exists MapSectionStateBitmap;
-drop table if exists MapSection;
-drop table if exists user_steps;
-drop table if exists follow;
-drop materialized view if exists like_counts;
-drop table if exists likes;
-drop table if exists Pin;
-drop table if exists "User";
-drop type if exists user_role;
+DO $$ DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = current_schema()) LOOP
+            EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+        END LOOP;
+END $$;
 
 
 CREATE TYPE user_role AS ENUM ('user', 'admin');
