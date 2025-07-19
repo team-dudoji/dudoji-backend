@@ -36,8 +36,6 @@ public class InventoryDao {
 		""";
 
 	public boolean buyItems(long userId, long itemId, long quantity) {
-		if (quantity <= 0) return false;
-
 		return jdbcClient.sql(BUY_ITEM)
 			.param("userId", userId)
 			.param("itemId", itemId)
@@ -47,8 +45,6 @@ public class InventoryDao {
 
 	// TODO: 확장성을 위해 quantity 변수 추가. 기본은 1로 한 번에 하나만 사용하게 합니다.
 	public boolean useItems(long userId, long itemId, long quantity) {
-		if (quantity <= 0) return false;
-
 		return jdbcClient.sql(USE_ITEM)
 			.param("userId", userId)
 			.param("itemId", itemId)

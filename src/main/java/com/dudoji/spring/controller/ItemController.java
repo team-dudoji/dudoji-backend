@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.dudoji.spring.dto.Item.ItemRequestDto;
 import com.dudoji.spring.dto.Item.ItemSimpleDto;
 import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.service.ItemService;
@@ -52,23 +53,21 @@ public class ItemController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	@PostMapping("/api/user/items/{itemId}/{quantity}")
+	@PostMapping("/api/user/items/buy")
 	public ResponseEntity<Boolean> buyItems(
 		@AuthenticationPrincipal PrincipalDetails principalDetails,
-		@PathVariable Long itemId,
-		@PathVariable Integer quantity
+		@RequestBody ItemRequestDto item
 	) {
-		boolean result = itemService.buyItems(principalDetails.getUid(), itemId, quantity);
+		boolean result = itemService.buyItems(principalDetails.getUid(), item.itemId(), item.quantity());
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/api/user/items/{itemId}/{quantity}")
+	@PostMapping("/api/user/items/use")
 	public ResponseEntity<Boolean> useItems(
 		@AuthenticationPrincipal PrincipalDetails principalDetails,
-		@PathVariable Long itemId,
-		@PathVariable Integer quantity
+		@RequestBody ItemRequestDto item
 	) {
-		boolean result = itemService.useItems(principalDetails.getUid(), itemId, quantity);
+		boolean result = itemService.useItems(principalDetails.getUid(), item.itemId(), item.quantity());
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 

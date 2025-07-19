@@ -40,23 +40,23 @@ public class ItemService {
 		Map<Long, Long> itemCount = inventoryDao.getInventory(userId);
 		List<ItemSimpleDto> itemDtos = new ArrayList<>();
 
-		items.forEach(item -> {
-			if (itemCount.containsKey(item.getItemId())) {
-				itemDtos.add(new ItemSimpleDto(item, userId, itemCount.get(item.getItemId())));
-			}
-			else {
-				itemDtos.add(new ItemSimpleDto(item, userId, 0));
-			}
-		});
+
+		// 0일 때는 고려 x
+		itemDtos = items.stream()
+				.filter(item -> itemCount.containsKey(item.getItemId()))
+					.map(item -> new ItemSimpleDto(item, userId, itemCount.get(item.getItemId())))
+						.toList();
 
 		return itemDtos;
 	}
 
 	public boolean buyItems(long userId, long itemId, int quantity) {
+		if (quantity <= 0) return false; // 에러
 		return inventoryDao.buyItems(userId, itemId, quantity);
 	}
 
 	public boolean useItems(long userId, long itemId, int quantity) {
+		if (quantity <= 0) return false; // 에러
 		return inventoryDao.useItems(userId, itemId, quantity);
 	}
 
