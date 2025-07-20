@@ -96,14 +96,4 @@ public class ItemController {
 		}
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-
-	@PreAuthorize("hasRole('admin')")
-	@GetMapping("/admin/items")
-	public String getAdminItemPage(
-		Model model
-	) {
-		model.addAttribute("items", itemService.getAllItem());
-		model.addAttribute("uploadDir", uploadDir);
-		return "admin_items";
-	}
 }
