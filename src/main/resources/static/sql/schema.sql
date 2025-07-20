@@ -236,3 +236,26 @@ CREATE TABLE UserCharacterSkins (
 ALTER TABLE Pin
     ADD COLUMN skinId BIGINT,
     ADD CONSTRAINT fk_pin_skin FOREIGN KEY (skinId) REFERENCES PinSkins(skinId);
+
+CREATE TABLE Item (
+                      itemId BIGSERIAL PRIMARY KEY,
+                      name VARCHAR NOT NULL UNIQUE,
+                      content VARCHAR,
+                      imageUrl VARCHAR NOT NULL,
+                      price BIGINT
+);
+
+CREATE TABLE Inventory (
+                           userId BIGINT NOT NULL REFERENCES "User"(id),
+                           itemId BIGINT NOT NULL REFERENCES Item(itemId),
+                           quantity BIGSERIAL NOT NULL CHECK (quantity >= 0),
+                           PRIMARY KEY (userId, itemId),
+                           CONSTRAINT fk_inventory_user
+                               FOREIGN KEY (userId)
+                                   REFERENCES "User"(id)
+                                   ON DELETE CASCADE,
+                           CONSTRAINT fk_inventory_item
+                               FOREIGN KEY (itemId)
+                                   REFERENCES Item(itemId)
+                                   ON DELETE CASCADE
+);
