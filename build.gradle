@@ -13,7 +13,7 @@ java {
     }
 }
 
-jar {
+bootJar {
     archiveBaseName.set('app')
     archiveVersion.set('')
     archiveClassifier.set('')
