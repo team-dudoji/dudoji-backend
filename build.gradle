@@ -13,6 +13,12 @@ java {
     }
 }
 
+jar {
+    archiveBaseName.set('app')
+    archiveVersion.set('')
+    archiveClassifier.set('')
+}
+
 repositories {
     mavenCentral()
 }
