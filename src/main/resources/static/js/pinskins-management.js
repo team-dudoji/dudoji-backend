@@ -6,19 +6,16 @@ const modalImageFile = document.getElementById('modal-imageFile'); // 파일 선
 const infoForm = document.getElementById('infoForm');
 
 let modalMode = 'none';
-let selectedLandmarkId = null;
 
 // Functions to open and close modal
 function openModal(mode, landmarkId = null) {
     modalMode = mode;
     modalTitle.innerText = (mode === 'add') ? '핀 스킨 추가' : '핀 스킨 수정';
-    if (mode === 'update') selectedPinSkinId = pinSkinId;
     modal.style.display = 'block';
 }
 
 function closeModal() {
     modal.style.display = 'none';
-    selectedPinSkinId = null;
     modalMode = 'none';
 }
 document.getElementById('infoForm').addEventListener('submit', async function(event) {
