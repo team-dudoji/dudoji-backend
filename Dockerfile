@@ -6,4 +6,6 @@ ARG JAR_FILE=build/libs/app.jar
 
 COPY ${JAR_FILE} app.jar
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENV JAVA_OPTS="-Xms128m -Xmx512m"
+
+ENTRYPOINT ["java", "$JAVA_OPTS", "-jar", "app.jar"]
