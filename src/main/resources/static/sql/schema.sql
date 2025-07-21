@@ -181,6 +181,8 @@ CREATE TABLE Quest (
 -- follow table
 ALTER TABLE follow RENAME COLUMN follower_id TO followerId;
 ALTER TABLE follow RENAME COLUMN followee_id TO followeeId;
+ALTER TABLE follow RENAME COLUMN created_at TO createAt;
+
 
 -- userWalkDistance table
 ALTER TABLE user_walk_distance RENAME TO userWalkDistance;
@@ -209,6 +211,10 @@ ALTER TABLE landmark_detection RENAME TO landmarkDetection;
 ALTER TABLE landmarkDetection RENAME COLUMN landmark_id TO landmarkId;
 ALTER TABLE landmarkDetection RENAME COLUMN user_id TO userId;
 ALTER TABLE landmarkDetection RENAME COLUMN detected_at TO detectedAt;
+
+-- landmark
+ALTER TABLE landmark RENAME COLUMN place_name TO placeName;
+ALTER TABLE landmark RENAME COLUMN image_url TO imageUrl;
 
 -- User
 ALTER TABLE "User" RENAME COLUMN provider_id TO providerId;
