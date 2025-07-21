@@ -38,7 +38,7 @@
             <td th:text="${landmark.address()}"></td>
             <td>
                 <button type="button" th:onclick="deleteLandmark([[${landmark.landmarkId()}]])">Delete</button>
-                <button type="button" th:onclick="openModal('update', [[${landmark.landmarkId()}]])">Update</button>
+                <button type="button" th:onclick="openModal('update', [[${landmark}]])">Update</button>
             </td>
         </tr>
         </tbody>

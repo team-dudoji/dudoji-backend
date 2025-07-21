@@ -6,19 +6,16 @@ const modalImageFile = document.getElementById('modal-imageFile'); // 파일 선
 const infoForm = document.getElementById('infoForm');
 
 let modalMode = 'none';
-let selectedLandmarkId = null;
 
 // Functions to open and close modal
 function openModal(mode, landmarkId = null) {
     modalMode = mode;
     modalTitle.innerText = (mode === 'add') ? '캐릭터 스킨 추가' : '캐릭터 스킨 수정';
-    if (mode === 'update') selectedCharacterSkinId = characterSkinId;
     modal.style.display = 'block';
 }
 
 function closeModal() {
     modal.style.display = 'none';
-    selectedCharacterSkinId = null;
     modalMode = 'none';
 }
 
