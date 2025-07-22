@@ -1,10 +1,15 @@
 package com.dudoji.spring.models.dao;
 
+import com.dudoji.spring.dto.mapsection.RevealCirclesRequestDto;
 import com.dudoji.spring.models.domain.Landmark;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Component
@@ -47,6 +52,33 @@ public class LandmarkDao {
             SET lat = :lat, lng = :lng, placeName = :placeName, content = :content, imageUrl = :imageUrl, address = :address
             WHERE landmarkId = :landmarkId;
             """;
+
+    private static final String GET_LANDMARKS_CIRCLE_RADIUS = """
+       SELECT
+          Landmark.landmarkId as landmarkId, lat, lng, placeName, content, imageUrl, address,
+          (ld.userId IS NOT NULL) AS isDetected
+        FROM Landmark
+        LEFT OUTER JOIN (
+          SELECT landmarkId, userId
+          FROM landmarkDetection
+          WHERE userId = :userId
+        ) AS ld
+        ON Landmark.landmarkId = ld.landmarkId
+        WHERE lat BETWEEN :minLat AND :maxLat
+        AND lng BETWEEN :minLng AND :maxLng;
+        """;
+
+    private final RowMapper<Landmark> LandmarkMapper =
+		(rs, rowNum) -> new Landmark(
+			rs.getLong("landmarkId"),
+			rs.getDouble("lat"),
+			rs.getDouble("lng"),
+			rs.getString("content"),
+			rs.getString("imageUrl"),
+			rs.getString("placeName"),
+			rs.getString("address"),
+			rs.getBoolean("isDetected")
+		);
 
     public List<Landmark> getLandmarks(long userId) {
         return jdbcClient.sql(GET_LANDMARKS)
@@ -99,5 +131,21 @@ public class LandmarkDao {
                 .param("placeName", landmark.getPlaceName())
                 .param("address", landmark.getAddress())
                 .update();
+    }
+
+    public List<Landmark> getLandmarksCircleRadius(long userId, double lat, double lng, double deltaLat, double deltaLng) {
+		double minLat = lat - deltaLat;
+		double maxLat = lat + deltaLat;
+		double minLng = lng - deltaLng;
+		double maxLng = lng + deltaLng;
+
+		return jdbcClient.sql(GET_LANDMARKS_CIRCLE_RADIUS)
+			.param("userId", userId)
+			.param("minLat", minLat)
+			.param("maxLat", maxLat)
+			.param("minLng", minLng)
+			.param("maxLng", maxLng)
+			.query(LandmarkMapper)
+			.list();
     }
 }
