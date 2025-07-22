@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -47,6 +49,20 @@ public class LandmarkDao {
             SET lat = :lat, lng = :lng, placeName = :placeName, content = :content, imageUrl = :imageUrl, address = :address
             WHERE landmarkId = :landmarkId;
             """;
+
+    private static final String GET_NUM_OF_LANDMARKS_BY_USER_ID_AND_DATE = """
+        SELECT count(1)
+        FROM landmarkDetection
+        WHERE userId = :userId AND
+        detectedAt >= :startDate AND
+        detectedAt < :endDate;
+        """;
+
+    private static final String GET_NUM_OF_DETECTED_LANDMARK_BY_USER_ID = """
+        SELECT count(1)
+        FROM landmarkDetection
+        WHERE userId = :userId
+        """;
 
     public List<Landmark> getLandmarks(long userId) {
         return jdbcClient.sql(GET_LANDMARKS)
@@ -99,5 +115,23 @@ public class LandmarkDao {
                 .param("placeName", landmark.getPlaceName())
                 .param("address", landmark.getAddress())
                 .update();
+    }
+
+    public int getNumOfLandmarksByUserIdAndDates(long userId, LocalDate startDate, LocalDate endDate) {
+        return jdbcClient.sql(GET_NUM_OF_LANDMARKS_BY_USER_ID_AND_DATE)
+            .param("userId", userId)
+            .param("startDate", startDate)
+            .param("endDate", endDate)
+            .query(Integer.class)
+            .optional()
+            .orElse(0);
+    }
+
+    public int getNumOfDetectedLandmarksByUserId(long userId) {
+        return jdbcClient.sql(GET_NUM_OF_DETECTED_LANDMARK_BY_USER_ID)
+            .param("userId", userId)
+            .query(Integer.class)
+            .optional()
+            .orElse(0);
     }
 }
