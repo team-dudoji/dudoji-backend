@@ -1,20 +1,11 @@
 package com.dudoji.spring.models.dao;
 
 import com.dudoji.spring.dto.UserWalkDistancesDto;
-import com.dudoji.spring.models.DBConnection;
-import com.dudoji.spring.models.domain.UserWalkDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
 
 @Repository("UserWalkDistanceDao")
 public class UserWalkDistanceDao {
@@ -28,6 +19,12 @@ public class UserWalkDistanceDao {
             "ON CONFLICT (userId, distanceDate) DO UPDATE SET distanceMeter=?";
 
     private static final String DELETE_DISTANCE_BY_ID_AND_DURATION = "DELETE FROM userWalkDistance WHERE userId=? AND distanceDate BETWEEN ? AND ?";
+
+    private static final String GET_TOTAL_DISTANCE_BY_USER_ID = """
+        SELECT COALESCE(SUM(distanceMeter), 0) AS totalDistance
+        FROM user_walk_distance
+        WHERE userId = :userId;
+        """;
 
 
     public UserWalkDistancesDto getUserWalkDistanceByIdOnDuration(long uid, LocalDate startDate, LocalDate endDate) {
@@ -74,5 +71,13 @@ public class UserWalkDistanceDao {
                 .param(java.sql.Date.valueOf(startDate))
                 .param(java.sql.Date.valueOf(endDate))
                 .update() > 0;
+    }
+
+    public int getTotalDistance(long userid) {
+        return jdbcClient.sql(GET_TOTAL_DISTANCE_BY_USER_ID)
+            .param("userId", userid)
+            .query(Integer.class)
+            .optional()
+            .orElse(0);
     }
 }

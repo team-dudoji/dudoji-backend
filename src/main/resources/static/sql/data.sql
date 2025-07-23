@@ -19,6 +19,10 @@ INSERT INTO public."User" (
       (108, '테스트9', '9@9',   NULL, 'user'::user_role, NULL, NULL, DEFAULT, NULL),
       (109, '테스트10','10@10', NULL, 'user'::user_role, NULL, NULL, DEFAULT, NULL);
 
+INSERT INTO Landmark(landmarkId, lat, lng, placeName, content, imageUrl, address)
+VALUES
+    (1, 0, 0, 'test', 'test', 'test', 'test');
+
 INSERT INTO Achievement(title, checker, unit) VALUES
     ('안개 제거', 'FogAchievement', 'PERCENTAGE'),
     ('총 이동거리', 'TotalMovementAchievement', 'DISTANCE'),
