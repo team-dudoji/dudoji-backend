@@ -2,6 +2,7 @@ package com.dudoji.spring.controller;
 
 import com.dudoji.spring.dto.landmark.LandmarkRequestDto;
 import com.dudoji.spring.dto.landmark.LandmarkResponseDto;
+import com.dudoji.spring.dto.mapsection.RevealCirclesRequestDto;
 import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.service.LandmarkService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,17 @@ public class LandmarkController {
     ){
         return ResponseEntity.ok(
                 landmarkService.getLandmarks(principalDetails.getUid())
+        );
+    }
+
+    ///  Only need lat, lng, radius
+    @GetMapping("/api/user/landmarks/point")
+    public ResponseEntity<List<LandmarkResponseDto>> getLandmarkPoints(
+        @AuthenticationPrincipal PrincipalDetails principalDetails,
+        @RequestBody RevealCirclesRequestDto.RevealCircleDto revealCircleDto
+    ) {
+        return ResponseEntity.ok(
+            landmarkService.getLandmarksCircleRadius(principalDetails.getUid(), revealCircleDto)
         );
     }
 
