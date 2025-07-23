@@ -5,15 +5,33 @@ const modalTitle = document.getElementById('modal-title');
 const modalImagePreview = document.getElementById('modal-imagePreview');
 const modalImageUrl = document.getElementById('modal-imageUrl'); // 서버로부터 받은 최종 이미지 URL을 저장할 hidden input
 const modalImageFile = document.getElementById('modal-imageFile'); // 파일 선택 input
+
 let modalMode = 'none';
 let selectedLandmarkId = null;
 
 // Functions to open and close modal
-function openModal(mode, landmarkId = null) {
+function openModal(mode, landmark = null) {
     modalMode = mode;
     modalTitle.innerText = (mode === 'add') ? '랜드마크 추가' : '랜드마크 수정';
-    if (mode === 'update') selectedLandmarkId = landmarkId;
+    if (mode === 'update') {
+        selectedLandmarkId = landmark.landmarkId;
+        document.querySelector('[name="placeName"]').value = landmark.placeName;
+        document.querySelector('[name="lat"]').value = landmark.lat;
+        document.querySelector('[name="lng"]').value = landmark.lng;
+        document.querySelector('[name="content"]').value = landmark.content;
+        document.querySelector('[name="address"]').value = landmark.address;
+
+        // 기존 이미지 URL이 있을 경우 preview
+        if (landmark.imageUrl) {
+            const preview = document.getElementById('modal-imagePreview');
+            preview.src = landmark.imageUrl;
+            preview.style.display = 'block';
+            document.getElementById('modal-imageUrl').value = landmark.imageUrl;
+            document.getElementById('modal-existingImageUrl').value = landmark.imageUrl;
+        }
+    }
     modal.style.display = 'block';
+
 }
 
 function closeModal() {

@@ -9,7 +9,6 @@ const infoForm = document.getElementById('infoForm');
 
 
 let modalMode = 'none';
-let selectedItemId = null;
 
 // Functions to open and close modal
 function openModal(mode, itemId = null) {
@@ -22,14 +21,12 @@ function openModal(mode, itemId = null) {
         if (row) {
             modalNameInput.value = row.dataset.itemName ?? '';
         }
-        selectedItemId = itemId;
     }
     modal.style.display = 'block';
 }
 
 function closeModal() {
     modal.style.display = 'none';
-    selectedItemId = null;
     modalMode = 'none';
 }
 document.getElementById('infoForm').addEventListener('submit', async function(event) {
