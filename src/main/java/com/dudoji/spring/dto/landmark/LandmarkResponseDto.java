@@ -10,7 +10,8 @@ public record LandmarkResponseDto(
         String placeName,
         String address,
         String content,
-        String imageUrl,
+        String mapImageUrl,
+        String detailImageUrl,
         double radius,
         boolean isDetected
 ) {
@@ -22,7 +23,9 @@ public record LandmarkResponseDto(
             landmark.getPlaceName(),
             landmark.getAddress(),
             landmark.getContent(),
-            landmark.getImageUrl(), landmark.isDetected() ? LandmarkConfig.LANDMARK_DETECTED_RADIUS : LandmarkConfig.LANDMARK_UNDETECTED_RADIUS,
+            landmark.getMapImageUrl(),
+            landmark.getDetailImageUrl(),
+            landmark.isDetected() ? LandmarkConfig.LANDMARK_DETECTED_RADIUS : LandmarkConfig.LANDMARK_UNDETECTED_RADIUS,
             landmark.isDetected());
         }
 }

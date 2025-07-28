@@ -22,7 +22,7 @@ public class LandmarkDao {
 
     private static final String GET_LANDMARKS = """
        SELECT
-          Landmark.landmarkId as landmarkId, lat, lng, placeName, content, imageUrl, address,
+          Landmark.landmarkId as landmarkId, lat, lng, placeName, content, mapImageUrl, detailImageUrl, address,
           (ld.userId IS NOT NULL) AS isDetected
         FROM Landmark
         LEFT OUTER JOIN (
@@ -34,9 +34,9 @@ public class LandmarkDao {
        """;
 
     private static final String SAVE_LANDMARK = """
-            INSERT INTO Landmark(lat, lng, placeName, content, imageUrl, address)
+            INSERT INTO Landmark(lat, lng, placeName, content, mapImageUrl, detailImageUrl, address)
             VALUES
-            (:lat, :lng, :placeName, :content, :imageUrl, :address);
+            (:lat, :lng, :placeName, :content, :mapImageUrl, :detailImageUrl, :address);
             """;
     private static final String SAVE_LANDMARK_DETECTION = """
             INSERT INTO landmarkDetection(landmarkId, userId)
@@ -50,13 +50,13 @@ public class LandmarkDao {
 
     private static final String UPDATE_LANDMARK = """
             UPDATE Landmark
-            SET lat = :lat, lng = :lng, placeName = :placeName, content = :content, imageUrl = :imageUrl, address = :address
+            SET lat = :lat, lng = :lng, placeName = :placeName, content = :content, mapImageUrl = :mapImageUrl, detailImageUrl = :detailImageUrl, address = :address
             WHERE landmarkId = :landmarkId;
             """;
 
     private static final String GET_LANDMARKS_CIRCLE_RADIUS = """
        SELECT
-          Landmark.landmarkId as landmarkId, lat, lng, placeName, content, imageUrl, address,
+          Landmark.landmarkId as landmarkId, lat, lng, placeName, content, mapImageUrl, detailImageUrl, address,
           (ld.userId IS NOT NULL) AS isDetected
         FROM Landmark
         LEFT OUTER JOIN (
@@ -75,7 +75,8 @@ public class LandmarkDao {
 			rs.getDouble("lat"),
 			rs.getDouble("lng"),
 			rs.getString("content"),
-			rs.getString("imageUrl"),
+			rs.getString("mapImageUrl"),
+			rs.getString("detailImageUrl"),
 			rs.getString("placeName"),
 			rs.getString("address"),
 			rs.getBoolean("isDetected")
@@ -98,26 +99,17 @@ public class LandmarkDao {
     public List<Landmark> getLandmarks(long userId) {
         return jdbcClient.sql(GET_LANDMARKS)
                 .param("userId", userId)
-                .query((rs, numOfRow) ->
-                        new Landmark(
-                                rs.getLong("landmarkId"),
-                                rs.getDouble("lat"),
-                                rs.getDouble("lng"),
-                                rs.getString("content"),
-                                rs.getString("imageUrl"),
-                                rs.getString("placeName"),
-                                rs.getString("address"),
-                                rs.getBoolean("isDetected")
-                        ))
+                .query(LandmarkMapper)
                 .list();
     }
 
-    public void saveLandmark(double lat, double lng, String content, String imageUrl, String placeName, String address) {
+    public void saveLandmark(double lat, double lng, String content, String mapImageUrl, String detailImageUrl, String placeName, String address) {
         jdbcClient.sql(SAVE_LANDMARK)
                 .param("lat", lat)
                 .param("lng", lng)
                 .param("content", content)
-                .param("imageUrl", imageUrl)
+                .param("mapImageUrl", mapImageUrl)
+				.param("detailImageUrl", detailImageUrl)
                 .param("placeName", placeName)
                 .param("address", address)
                 .update();
@@ -142,7 +134,8 @@ public class LandmarkDao {
                 .param("lat", landmark.getLat())
                 .param("lng", landmark.getLng())
                 .param("content", landmark.getContent())
-                .param("imageUrl", landmark.getImageUrl())
+                .param("mapImageUrl", landmark.getMapImageUrl())
+				.param("detailImageUrl", landmark.getDetailImageUrl())
                 .param("placeName", landmark.getPlaceName())
                 .param("address", landmark.getAddress())
                 .update();
@@ -163,6 +156,7 @@ public class LandmarkDao {
 			.param("maxLng", maxLng)
 			.query(LandmarkMapper)
 			.list();
+	}
 
     public int getNumOfLandmarksByUserIdAndDates(long userId, LocalDate startDate, LocalDate endDate) {
         return jdbcClient.sql(GET_NUM_OF_LANDMARKS_BY_USER_ID_AND_DATE)
@@ -178,6 +172,7 @@ public class LandmarkDao {
         return jdbcClient.sql(GET_NUM_OF_DETECTED_LANDMARK_BY_USER_ID)
             .param("userId", userId)
             .query(Integer.class)
-            .optional()
+			.optional()
+			.orElse(0);
     }
 }

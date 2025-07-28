@@ -265,3 +265,8 @@ CREATE TABLE Inventory (
                                    REFERENCES Item(itemId)
                                    ON DELETE CASCADE
 );
+
+ALTER TABLE Landmark
+    RENAME COLUMN imageUrl TO mapImageUrl;
+
+ALTER TABLE Landmark ADD COLUMN detailImageUrl VARCHAR;
