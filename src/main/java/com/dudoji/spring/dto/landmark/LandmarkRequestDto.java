@@ -6,6 +6,7 @@ public record LandmarkRequestDto(
         String placeName,
         String address,
         String content,
-        String imageUrl
+        String mapImageUrl,
+		String detailImageUrl
 ) {
 }

@@ -11,7 +11,8 @@ public class Landmark {
     private double lat;
     private double lng;
     private String content;
-    private String imageUrl;
+    private String mapImageUrl;
+    private String detailImageUrl;
     private String placeName;
     private String address;
     private boolean isDetected;
@@ -21,7 +22,8 @@ public class Landmark {
                 landmarkRequestDto.lat(),
                 landmarkRequestDto.lng(),
                 landmarkRequestDto.content(),
-                landmarkRequestDto.imageUrl(),
+                landmarkRequestDto.mapImageUrl(),
+                landmarkRequestDto.detailImageUrl(),
                 landmarkRequestDto.placeName(),
                 landmarkRequestDto.address(),
                 false

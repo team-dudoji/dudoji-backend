@@ -33,7 +33,8 @@ public class LandmarkService {
                 landmarkRequestDto.lat(),
                 landmarkRequestDto.lng(),
                 landmarkRequestDto.content(),
-                landmarkRequestDto.imageUrl(),
+                landmarkRequestDto.mapImageUrl(),
+                landmarkRequestDto.detailImageUrl(),
                 landmarkRequestDto.placeName(),
                 landmarkRequestDto.address()
         );
