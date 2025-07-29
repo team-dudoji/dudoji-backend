@@ -1,15 +1,15 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>PinSkins Management</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/style/base-style.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/style/table-style.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/style/modal-style.css}">
+    <title layout:title="PinSkens Managements">PinSkins Management</title>
     <script th:inline="javascript">
         let baseURL = [[${baseUrl}]];
     </script>
 </head>
 <body>
+<section layout:fragment="content">
 <h1>PinSkins Management</h1>
 <div>
     <button type="button" onclick="openModal('add')">Add PinSkins</button>
@@ -73,7 +73,10 @@
     </form>
 
 </div>
+</section>
 </body>
+<section layout:fragment="underScripts">
+    <script src="/admin/js/pinskins-management.js"></script>
+</section>
 
-<script src="/admin/js/pinskins-management.js"></script>
 </html>

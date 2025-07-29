@@ -1,15 +1,16 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>CharacterSkins Management</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/style/base-style.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/style/table-style.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/style/modal-style.css}">
-    <script th:inline="javascript">
-        let baseURL = [[${baseUrl}]];
-    </script>
+    <title layout:title="CharacterSkins Management">CharacterSkins Management</title>
+    <section layout:fragment="scripts">
+        <script th:inline="javascript">
+            let baseURL = [[${baseUrl}]];
+        </script>
+    </section>
 </head>
 <body>
+<section layout:fragment="content">
 <h1>CharacterSkins Management</h1>
 <div>
     <button type="button" onclick="openModal('add')">Add CharacterSkins</button>
@@ -73,7 +74,11 @@
     </form>
 
 </div>
+
+</section>
 </body>
 
-<script src="/admin/js/characterskins-management.js"></script>
+<section layout:fragment="underScripts">
+    <script src="/admin/js/characterskins-management.js"></script>
+</section>
 </html>

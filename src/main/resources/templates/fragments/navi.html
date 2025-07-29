@@ -1,0 +1,11 @@
+<div layout:fragment="navi" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <nav style="background-color: #f5f5f5; padding: 1rem;">
+        <ul style="list-style: none; display: flex; gap: 1rem; margin: 0;">
+            <li><a th:href="@{/}" style="text-decoration: none;">홈</a></li>
+            <li><a th:href="@{/admin/items}" style="text-decoration: none;">아이템</a></li>
+            <li><a th:href="@{/admin/pin-skins}" style="text-decoration: none;">핀 스킨</a></li>
+            <li><a th:href="@{/admin/landmarks}" style="text-decoration: none;">랜드마크</a></li>
+            <li><a th:href="@{/admin/character-skins}" style="text-decoration: none;">캐릭터 스킨</a></li>
+        </ul>
+    </nav>
+</div>

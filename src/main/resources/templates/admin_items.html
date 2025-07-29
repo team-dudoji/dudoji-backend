@@ -1,12 +1,12 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Items Management</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/style/base-style.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/style/table-style.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/admin/style/modal-style.css}">
+    <title layout:title="Items Managment" >Items Management</title>
 </head>
 <body>
+<section layout:fragment="content">
 <h1>Items Management</h1>
 <div>
     <button type="button" onclick="openModal('add')">Add Items</button>
@@ -71,7 +71,11 @@
     </form>
 
 </div>
+
+</section>
 </body>
 
-<script src="/admin/js/items-management.js"></script>
+<section layout:fragment="underScripts">
+    <script src="/admin/js/items-management.js"></script>
+</section>
 </html>
