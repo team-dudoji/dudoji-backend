@@ -16,18 +16,20 @@ public class RequestLogFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         if (servletRequest instanceof HttpServletRequest httpRequest) {
             long startTime = System.currentTimeMillis();
-
+            log.info("[Request Start] method={}, uri={}, ip={}, userAgent={}",
+                    httpRequest.getMethod(),
+                    httpRequest.getRequestURI(),
+                    httpRequest.getRemoteAddr(),
+                    Objects.requireNonNullElse(httpRequest.getHeader(HttpHeaders.USER_AGENT), "Unknown")
+            );
             try {
                 filterChain.doFilter(servletRequest, servletResponse);
             } finally {
                 long duration = System.currentTimeMillis() - startTime;
 
-                log.info(
-                        "Request: method={}, uri={}, ip={}, userAgent={}, duration={}ms",
+                log.info("[Request End] method={}, uri={}, duration={}ms",
                         httpRequest.getMethod(),
                         httpRequest.getRequestURI(),
-                        httpRequest.getRemoteAddr(),
-                        Objects.requireNonNullElse(httpRequest.getHeader(HttpHeaders.USER_AGENT), "Unknown"),
                         duration
                 );
             }
