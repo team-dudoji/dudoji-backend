@@ -1,15 +1,14 @@
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Landmarks Management</title>
-    <link rel="stylesheet" type="text/css" href="/admin/style/base-style.css">
-    <link rel="stylesheet" type="text/css" href="/admin/style/table-style.css">
-    <link rel="stylesheet" type="text/css" href="/admin/style/modal-style.css">
+    <title layout:title="Landmarks Management">Landmarks Management</title>
     <script th:inline="javascript">
         let baseURL = [[${baseUrl}]];
     </script>
 </head>
 <body>
+<section layout:fragment="content">
 <h1>Landmarks Management</h1>
 <div>
     <button type="button" onclick="openModal('add')">Add Landmark</button>
@@ -89,7 +88,10 @@
         <button type="button" onclick="closeModal()">닫기</button>
     </form>
 </div>
+    </section>
 </body>
+<section layout:fragment="underScripts">
+    <script src="/admin/js/landmarks-management.js"></script>
+</section>
 
-<script src="/admin/js/landmarks-management.js"></script>
 </html>

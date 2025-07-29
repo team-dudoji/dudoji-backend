@@ -36,8 +36,8 @@ public class WebSecurityConfig extends WebMvcAutoConfiguration {
                 authorizeRequests
 //                        .requestMatchers("/user/**").authenticated()
                         .requestMatchers( // About Static File
-                                AntPathRequestMatcher.antMatcher("/style/**"),
-                                AntPathRequestMatcher.antMatcher("/js/**")
+                                AntPathRequestMatcher.antMatcher("/admin/style/**"),
+                                AntPathRequestMatcher.antMatcher("/admin/js/**")
                         ).permitAll()
                         .requestMatchers(
                                 AntPathRequestMatcher.antMatcher("/auth/login/kakao/**"),

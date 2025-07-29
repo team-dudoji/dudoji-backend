@@ -1,16 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>KakaoLogin</title>
-    <link rel="stylesheet" type="text/css" href="/admin/style/base-style.css">
+    <title layout:title="Kakao Login">Kakao Login</title>
 </head>
 <body>
-<div class="container" style="display: flex; justify-content: center; align-content: center; align-items: center; flex-direction: column; margin: 200px auto; ">
-    <h1>카카오 로그인</h1>
-    <a href="/oauth2/authorization/kakao">
-        <img src="/kakao_login_medium_narrow.png" >
-    </a>
-</div>
+<section layout:fragment="content">
+    <div class="container" style="display: flex; justify-content: center; align-content: center; align-items: center; flex-direction: column; margin: 200px auto; ">
+        <h1>카카오 로그인</h1>
+        <a href="/oauth2/authorization/kakao">
+            <img src="/kakao_login_medium_narrow.png" >
+        </a>
+    </div>
+</section>
 </body>
 </html>

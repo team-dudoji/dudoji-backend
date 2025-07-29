@@ -1,20 +1,21 @@
-<!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>로그인 페이지</title>
-    <link rel="stylesheet" type="text/css" href="/admin/style/base-style.css">
+    <title layout:title="Login Page">Login Page</title>
 </head>
 <body>
-<h1>로그인 페이지</h1>
-<hr/>
-<!-- 시큐리티는 x-www-form-url-encoded 타입만 인식 -->
-<form action="/login" method="post">
-    <!-- <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> -->
-    <input type="text" name="username" placeholder="Username" />
-    <input type="password" name="password" placeholder="Password"/>
-    <button>로그인</button>
-</form>
-<a href="/user/joinForm">회원가입을 아직 하지 않으셨나요?</a>
+<section layout:fragment="content">
+    <h1>로그인 페이지</h1>
+    <hr/>
+    <!-- 시큐리티는 x-www-form-url-encoded 타입만 인식 -->
+    <form action="/login" method="post">
+        <!-- <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> -->
+        <input type="text" name="username" placeholder="Username" />
+        <input type="password" name="password" placeholder="Password"/>
+        <button>로그인</button>
+    </form>
+    <a href="/user/joinForm">회원가입을 아직 하지 않으셨나요?</a>
+    </section>
 </body>
 </html>

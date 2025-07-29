@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>회원가입 페이지</title>
-    <link rel="stylesheet" type="text/css" href="/admin/style/base-style.css">
+    <title layout:title="Join Page">회원가입 페이지</title>
 </head>
 <body>
+<section layout:fragment="content">
 <h1>회원가입 페이지</h1>
 <hr/>
 <form action="/user/join" method="post">
@@ -34,5 +35,6 @@
     <button type="submit">회원가입</button>
 </form>
 <a href="/user/loginForm">이미 회원이신가요? 로그인하러 가기</a>
+</section>
 </body>
 </html>
