@@ -69,18 +69,33 @@ public class LandmarkDao {
         AND lng BETWEEN :minLng AND :maxLng;
         """;
 
+	private static final String GET_LANDMARKS_BY_KEYWORD = """
+		SELECT *
+		FROM Landmark
+		WHERE placeName ILIKE '%' || :keyword || '%' OR content ILIKE '%' || :keyword || '%' OR address ILIKE '%' || :keyword || '%';
+		""";
+
     private final RowMapper<Landmark> LandmarkMapper =
-		(rs, rowNum) -> new Landmark(
-			rs.getLong("landmarkId"),
-			rs.getDouble("lat"),
-			rs.getDouble("lng"),
-			rs.getString("content"),
-			rs.getString("mapImageUrl"),
-			rs.getString("detailImageUrl"),
-			rs.getString("placeName"),
-			rs.getString("address"),
-			rs.getBoolean("isDetected")
-		);
+		(rs, rowNum) -> {
+			boolean isDetected = false;
+			try {
+				rs.findColumn("isDetected"); // 컬럼 존재 여부 확인
+				isDetected = rs.getBoolean("isDetected");
+			} catch (SQLException e) {
+				// isDetected 컬럼이 없으면 기본값 false 유지
+			}
+			return new Landmark(
+				rs.getLong("landmarkId"),
+				rs.getDouble("lat"),
+				rs.getDouble("lng"),
+				rs.getString("content"),
+				rs.getString("mapImageUrl"),
+				rs.getString("detailImageUrl"),
+				rs.getString("placeName"),
+				rs.getString("address"),
+				isDetected
+			);
+		};
   
     private static final String GET_NUM_OF_LANDMARKS_BY_USER_ID_AND_DATE = """
         SELECT count(1)
@@ -175,4 +190,11 @@ public class LandmarkDao {
 			.optional()
 			.orElse(0);
     }
+
+	public List<Landmark> getLandmarksByKeyword(String keyword) {
+		return jdbcClient.sql(GET_LANDMARKS_BY_KEYWORD)
+			.param("keyword", keyword)
+			.query(LandmarkMapper)
+			.list();
+	}
 }
