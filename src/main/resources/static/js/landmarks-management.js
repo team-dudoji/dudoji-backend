@@ -28,7 +28,7 @@ function openModal(mode, landmark = null) {
         // 기존 이미지 URL이 있을 경우 preview
         if (landmark.mapImageUrl) {
             const preview = document.getElementById('modal-imagePreview');
-            preview.src = landmark.imageUrl;
+            preview.src = landmark.mapImageUrl;
             preview.style.display = 'block';
             document.getElementById('modal-mapImageUrl').value = landmark.mapImageUrl;
             document.getElementById('modal-existingMapImageUrl').value = landmark.mapImageUrl;
