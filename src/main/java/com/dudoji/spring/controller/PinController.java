@@ -34,9 +34,11 @@ public class PinController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestParam double radius, // TODO: PARAM? OR PATH VARIABLE?
             @RequestParam double lat,
-            @RequestParam double lng
+            @RequestParam double lng,
+            @RequestParam int limit,
+            @RequestParam int offset
     ) {
-        List<PinResponseDto> pins = pinService.getClosePins(radius, lat, lng, principalDetails.getUid());
+        List<PinResponseDto> pins = pinService.getClosePins(radius, lat, lng, principalDetails.getUid(), limit, offset);
         pinService.refreshLikes(); // TODO: CHANGE
         return ResponseEntity.status(HttpStatus.OK).body(pins);
     }
@@ -61,9 +63,11 @@ public class PinController {
 
     @GetMapping("/mine")
     public ResponseEntity<List<PinResponseDto>> getMyPins(
-            @AuthenticationPrincipal PrincipalDetails principalDetails
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam int limit,
+            @RequestParam int offset
     ) {
-        List<PinResponseDto> pins = pinService.getMyPins(principalDetails.getUid());
+        List<PinResponseDto> pins = pinService.getMyPins(principalDetails.getUid(), limit, offset);
         return ResponseEntity.status(HttpStatus.OK).body(pins);
     }
 }

@@ -54,7 +54,7 @@ public class PinService {
      * @return List of PinResponseDto
      */
     public List<PinResponseDto> getClosePins (
-            double radius, double centerLat, double centerLng, long userId
+            double radius, double centerLat, double centerLng, long userId, int limit, int offset
     ) {
         double deltaLat = Math.toDegrees(radius / BitmapUtil.EARTH_RADIUS);
         double deltaLng = Math.toDegrees(radius / BitmapUtil.EARTH_RADIUS / Math.cos(Math.toRadians(centerLat)));
@@ -64,32 +64,10 @@ public class PinService {
         double minLng = centerLng - deltaLng;
         double maxLng = centerLng + deltaLng;
 
-        List<Pin> pinList = pinDao.getClosePins(minLat, maxLat, minLng, maxLng);
-        List<PinResponseDto> pinResponseDtoList = pinList.stream()
-                .map(pin -> {
-                    PinResponseDto dto = new PinResponseDto(pin);
-                    long pinUserId = pin.getUserId();
+        List<Pin> pinList = pinDao.getClosePins(minLat, maxLat, minLng, maxLng, limit, offset);
+		// set likes
 
-                    PinResponseDto.Who who = (pinUserId == userId)                     ? PinResponseDto.Who.MINE
-                                    : followDao.isFollowing(userId, pinUserId) ? PinResponseDto.Who.FOLLOWING
-                                                                               : PinResponseDto.Who.UNKNOWN;
-                    dto.setMaster(who);
-                    // set likes
-                    dto.setLikeCount(
-                            getLikesCount(pin.getPinId())
-                    );
-
-                    dto.setLiked(
-                            isLiked(userId, pin.getPinId())
-                    );
-
-                    dto.setAddress(pin.getAddress());
-                    dto.setPlaceName(pin.getPlaceName());
-                    return dto;
-                })
-                .collect(Collectors.toList());
-
-//        for (Pin pin : pinList) {
+		//        for (Pin pin : pinList) {
 //            // 3가지로 분류.
 //            PinResponseDto temp = new PinResponseDto(pin);
 //            long pinUserId = pin.getUserId();
@@ -107,25 +85,34 @@ public class PinService {
 //            pinResponseDtoList.add(temp);
 //        }
 
-        return pinResponseDtoList;
-    }
-
-    public List<PinResponseDto> getMyPins(long userId) {
-        List<Pin> pins = pinDao.getALlPinsByUserId(userId);
-        List<PinResponseDto> pinResponseDtoList = pins.stream()
+        return pinList.stream()
                 .map(pin -> {
                     PinResponseDto dto = new PinResponseDto(pin);
+                    long pinUserId = pin.getUserId();
 
-                    dto.setMaster(PinResponseDto.Who.MINE);
-                    dto.setLikeCount(getLikesCount(pin.getPinId()));
-                    dto.setLiked(isLiked(pin.getUserId(), pin.getPinId()));
-                    dto.setAddress(pin.getAddress());
-                    dto.setPlaceName(pin.getPlaceName());
+                    PinResponseDto.Who who = (pinUserId == userId)                     ? PinResponseDto.Who.MINE
+                                    : followDao.isFollowing(userId, pinUserId) ? PinResponseDto.Who.FOLLOWING
+                                                                               : PinResponseDto.Who.UNKNOWN;
+                    dto.setMaster(who);
+                    dto.setLiked(
+                            isLiked(userId, pin.getPinId())
+                    );
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
 
-        return pinResponseDtoList;
+    public List<PinResponseDto> getMyPins(long userId, int limit, int offset) {
+        List<Pin> pins = pinDao.getALlPinsByUserId(userId, limit, offset);
+
+		return pins.stream()
+				.map(pin -> {
+					PinResponseDto dto = new PinResponseDto(pin);
+					dto.setMaster(PinResponseDto.Who.MINE);
+					dto.setLiked(isLiked(pin.getUserId(), pin.getPinId()));
+					return dto;
+				})
+				.collect(Collectors.toList());
     }
 
     public boolean likePin(long userId, long pinId) {
