@@ -62,12 +62,13 @@ public class PinDaoTest extends DBTestBase {
 
         List<Pin> pinList = pinDao.getClosePins(
                 lat, lng,
-                lat + 0.3, lng + 0.3
+                lat + 0.3, lng + 0.3,
+            100, 0
         );
 
         assertEquals(2, pinList.size());
 
-        List<Pin> pinListByUserId = pinDao.getALlPinsByUserId(uid);
+        List<Pin> pinListByUserId = pinDao.getALlPinsByUserId(uid, 100, 0);
         assertEquals(2, pinListByUserId.size());
     }
 }

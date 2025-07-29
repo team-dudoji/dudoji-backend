@@ -40,5 +40,6 @@ public class PinResponseDto {
         this.placeName = pin.getPlaceName();
         this.address = pin.getAddress();
         this.pinSkinId = pin.getPinSkinId();
+        this.likeCount = pin.getLikes();
     }
 }
