@@ -71,4 +71,11 @@ public class LandmarkController {
         landmarkService.putLandmark(landmarkId, landmarkRequestDto);
         return ResponseEntity.ok("successfully saved");
     }
+
+    @GetMapping("/api/user/landmarks/search")
+    public ResponseEntity<List<LandmarkResponseDto>> getLandmarksByKeyword(
+        @RequestParam String keyword
+    ) {
+        return ResponseEntity.ok(landmarkService.getLandmarksByKeyword(keyword));
+    }
 }

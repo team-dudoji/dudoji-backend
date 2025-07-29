@@ -18,6 +18,8 @@ import java.util.List;
 @Slf4j
 public class LandmarkService {
 
+    public static final int MAX_LANDMARK_SIZE = 10;
+
     @Autowired
     private LandmarkDao landmarkDao;
 
@@ -71,5 +73,13 @@ public class LandmarkService {
 			.stream()
 			.map(LandmarkResponseDto::new)
 			.toList();
+    }
+
+    public List<LandmarkResponseDto> getLandmarksByKeyword(String keyword) {
+        return landmarkDao.getLandmarksByKeyword(keyword)
+            .stream()
+            .limit(MAX_LANDMARK_SIZE)
+            .map(LandmarkResponseDto::new)
+            .toList();
     }
 }
