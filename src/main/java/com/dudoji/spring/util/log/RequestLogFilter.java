@@ -15,15 +15,22 @@ public class RequestLogFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         if (servletRequest instanceof HttpServletRequest httpRequest) {
-            log.info(
-                    "Request: method={}, uri={}, ip={}, userAgent={}",
-                    httpRequest.getMethod(),
-                    httpRequest.getRequestURI(),
-                    httpRequest.getRemoteAddr(),
-                    Objects.requireNonNullElse(httpRequest.getHeader(HttpHeaders.USER_AGENT), "Unknown")
-            );
+            long startTime = System.currentTimeMillis();
 
-            filterChain.doFilter(servletRequest, servletResponse);
+            try {
+                filterChain.doFilter(servletRequest, servletResponse);
+            } finally {
+                long duration = System.currentTimeMillis() - startTime;
+
+                log.info(
+                        "Request: method={}, uri={}, ip={}, userAgent={}, duration={}ms",
+                        httpRequest.getMethod(),
+                        httpRequest.getRequestURI(),
+                        httpRequest.getRemoteAddr(),
+                        Objects.requireNonNullElse(httpRequest.getHeader(HttpHeaders.USER_AGENT), "Unknown"),
+                        duration
+                );
+            }
         } else {
             log.warn("Received a non-HTTP request. Skipping request logging.");
             filterChain.doFilter(servletRequest, servletResponse);
