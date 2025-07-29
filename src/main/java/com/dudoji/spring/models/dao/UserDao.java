@@ -2,6 +2,7 @@ package com.dudoji.spring.models.dao;
 
 import com.dudoji.spring.models.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -14,11 +15,14 @@ public class UserDao {
     private JdbcClient jdbcClient;
 
     private static final String GET_USER_BY_ID =
-            "select name, email, createdAt, role, profileImage from \"User\" where id=?";
+            "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage "
+                + "from \"User\" where id=?";
     private static final String GET_USER_BY_NAME =
-            "SELECT id, email, createdAt, role, password FROM \"User\" WHERE name=?";
+            "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage "
+                + "FROM \"User\" WHERE name=?";
     private static final String GET_USER_BY_EMAIL =
-            "SELECT id, name, createdAt, role, password FROM \"User\" WHERE email=?";
+            "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage "
+                + "FROM \"User\" WHERE email=?";
     private static final String REMOVE_USER_BY_ID =
             "delete from \"User\" where id=?";
     private static final String CREATE_USER_BY_ID =
@@ -32,20 +36,26 @@ public class UserDao {
     private static final String GET_PROFILE_IMAGE_BY_ID =
             "SELECT profileImage FROM \"User\" WHERE id=?";
     private static final String GET_USERS_BY_EMAIL_LIKE =
-            "SELECT id, name, createdAt, role, email FROM \"User\" WHERE email LIKE '%' || ? || '%'";
+        "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage " +
+            "FROM \"User\" WHERE email LIKE '%' || ? || '%'";
+
+
+    private static final RowMapper<User> UserMapper = (rs, rowNum) -> new User(
+        rs.getLong("id"),
+        rs.getString("password"),
+        rs.getString("role"),
+        rs.getString("name"),
+        rs.getString("email"),
+        rs.getDate("createdAt"),
+        rs.getString("provider"),
+        rs.getString("providerId"),
+        rs.getString("profileImage")
+    );
 
     public User getUserById(long uid) {
         return jdbcClient.sql(GET_USER_BY_ID)
                 .param(uid)
-                .query( (rs, rowNum) ->
-                        User.builder()
-                                .id(uid)
-                                .name(rs.getString(1))
-                                .email(rs.getString(2))
-                                .createAt(rs.getTimestamp(3))
-                                .role(rs.getString(4))
-                                .profileImageUrl(rs.getString(5))
-                                .build())
+                .query(UserMapper)
                 .optional()
                 .orElse(null);
     }
@@ -53,15 +63,7 @@ public class UserDao {
     public User getUserByName(String name) {
         return jdbcClient.sql(GET_USER_BY_NAME)      // "SELECT id, email, createdAt, role, password FROM \"User\" WHERE name=?"
                 .param(name)
-                .query((rs, rowNum) ->
-                        User.builder()
-                                .id(rs.getLong(1))
-                                .name(name)
-                                .email(rs.getString(2))
-                                .createAt(rs.getTimestamp(3))
-                                .role(rs.getString(4))
-                                .password(rs.getString(5))
-                                .build())
+                .query(UserMapper)
                 .optional()
                 .orElse(null);
     }
@@ -69,15 +71,7 @@ public class UserDao {
     public User getUserByEmail(String email) {
         return jdbcClient.sql(GET_USER_BY_EMAIL)
                 .param(email)
-                .query((rs, rowNum) ->
-                        User.builder()
-                                .id(rs.getLong(1))
-                                .name(rs.getString(2))
-                                .email(email)
-                                .createAt(rs.getTimestamp(3))
-                                .role(rs.getString(4))
-                                .password(rs.getString(5))
-                                .build())
+                .query(UserMapper)
                 .optional()
                 .orElse(null);
     }
@@ -112,14 +106,7 @@ public class UserDao {
         int count = 5;
         return jdbcClient.sql(GET_USERS_BY_EMAIL_LIKE)
                 .param(email)
-                .query((rs, rowNum) ->
-                        User.builder()
-                                .id(rs.getLong(1))
-                                .name(rs.getString(2))
-                                .createAt(rs.getTimestamp(3))
-                                .role(rs.getString(4))
-                                .email(rs.getString(5))
-                                .build())
+                .query(UserMapper)
                 .list()
                 .stream()
                 .limit(count)
