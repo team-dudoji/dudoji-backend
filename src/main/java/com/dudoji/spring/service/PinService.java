@@ -1,7 +1,11 @@
 package com.dudoji.spring.service;
 
+import com.dudoji.spring.dto.pin.HashtagDto;
+import com.dudoji.spring.dto.pin.PinRequestDto;
 import com.dudoji.spring.dto.pin.PinResponseDto;
+import com.dudoji.spring.dto.user.UserSimpleDto;
 import com.dudoji.spring.models.dao.FollowDao;
+import com.dudoji.spring.models.dao.HashtagDao;
 import com.dudoji.spring.models.dao.LikesDao;
 import com.dudoji.spring.models.dao.PinDao;
 import com.dudoji.spring.models.domain.Pin;
@@ -9,13 +13,17 @@ import com.dudoji.spring.util.BitmapUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional
 public class PinService {
 
     @Autowired
@@ -24,20 +32,33 @@ public class PinService {
     private FollowDao followDao;
     @Autowired
     private LikesDao likesDao;
+    @Autowired
+    private HashtagDao hashtagDao;
 
-    public PinResponseDto createPin (Pin pin) {
-        Objects.requireNonNull(pin, "Pin cannot be null");
+    public PinResponseDto createPin(PinRequestDto pinRequestDto, long userId) {
+        Objects.requireNonNull(pinRequestDto, "Pin Request Object cannot be null");
         // TODO: 하루에 개수 제한 넣으려면 여기에 넣어야 합니다.
 
-        long id = pinDao.createPin(pin);
-        if (id > 0) {
+        Pin pin = pinRequestDto.toDomain(userId);
+
+        long pinId = pinDao.createPin(pin);
+
+        // HashTags
+        List<String> hashtags = pinRequestDto.getHashtags();
+        hashtags.forEach(hashtag -> {
+            hashtagDao.insertOrGetHashtag(hashtag, pinId);
+        });
+
+        if (pinId > 0) {
             PinResponseDto pinResponseDto = new PinResponseDto(pin);
-            pinResponseDto.setPinId(id);
+            pinResponseDto.setPinId(pinId);
             pinResponseDto.setMaster(PinResponseDto.Who.MINE);
             pinResponseDto.setLikeCount(0);
             pinResponseDto.setLiked(false);
             pinResponseDto.setAddress(pin.getAddress());
             pinResponseDto.setPlaceName(pin.getPlaceName());
+            pinResponseDto.setPinSkinId(pin.getPinSkinId());
+            pinResponseDto.setHashtags(hashtags);
 
             return pinResponseDto;
         }
@@ -64,55 +85,15 @@ public class PinService {
         double minLng = centerLng - deltaLng;
         double maxLng = centerLng + deltaLng;
 
-        List<Pin> pinList = pinDao.getClosePins(minLat, maxLat, minLng, maxLng, limit, offset);
-		// set likes
+        List<Pin> pinList = pinDao.getClosePins(minLat, minLng, maxLat, maxLng, limit, offset);
 
-		//        for (Pin pin : pinList) {
-//            // 3가지로 분류.
-//            PinResponseDto temp = new PinResponseDto(pin);
-//            long pinUserId = pin.getUserId();
-//            if (pinUserId == userId) {
-//                temp.setMaster(PinResponseDto.Who.MINE);
-//            }
-//            else {
-//                if (followDao.isFollowing(userId, pinUserId)) {
-//                    temp.setMaster(PinResponseDto.Who.FOLLOWING);
-//                }
-//                else {
-//                    temp.setMaster(PinResponseDto.Who.UNKNOWN);
-//                }
-//            }
-//            pinResponseDtoList.add(temp);
-//        }
-
-        return pinList.stream()
-                .map(pin -> {
-                    PinResponseDto dto = new PinResponseDto(pin);
-                    long pinUserId = pin.getUserId();
-
-                    PinResponseDto.Who who = (pinUserId == userId)                     ? PinResponseDto.Who.MINE
-                                    : followDao.isFollowing(userId, pinUserId) ? PinResponseDto.Who.FOLLOWING
-                                                                               : PinResponseDto.Who.UNKNOWN;
-                    dto.setMaster(who);
-                    dto.setLiked(
-                            isLiked(userId, pin.getPinId())
-                    );
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        return createResponsDtoList(pinList, userId);
     }
 
     public List<PinResponseDto> getMyPins(long userId, int limit, int offset) {
         List<Pin> pins = pinDao.getALlPinsByUserId(userId, limit, offset);
 
-		return pins.stream()
-				.map(pin -> {
-					PinResponseDto dto = new PinResponseDto(pin);
-					dto.setMaster(PinResponseDto.Who.MINE);
-					dto.setLiked(isLiked(pin.getUserId(), pin.getPinId()));
-					return dto;
-				})
-				.collect(Collectors.toList());
+        return createResponsDtoList(pins, userId);
     }
 
     public boolean likePin(long userId, long pinId) {
@@ -133,5 +114,44 @@ public class PinService {
 
     public void refreshLikes() {
         likesDao.refreshViews();
+    }
+
+    private List<PinResponseDto> createResponsDtoList(List<Pin> pinList, long userId) {
+        List<Long> pinIds = pinList.stream()
+            .map(Pin::getPinId)
+            .toList();
+
+        Set<Long> followingSet = followDao.getFollowingListByUser(userId)
+            .stream()
+            .map(UserSimpleDto::id).collect(Collectors.toSet());
+
+        Set<Long> likedSet = likesDao.getLikedSet(userId, pinIds);
+
+        Map<Long, List<String>> hashtagsMap = hashtagDao.getHashtagByPinIds(pinIds)
+            .stream()
+            .collect(Collectors.groupingBy(
+                HashtagDto::pinId,
+                Collectors.mapping(HashtagDto::content, Collectors.toList())
+            ));
+
+        return pinList.stream()
+            .map(pin -> {
+                PinResponseDto dto = new PinResponseDto(pin);
+                long pinUserId = pin.getUserId();
+
+                PinResponseDto.Who who = (pinUserId == userId)                     ? PinResponseDto.Who.MINE
+                    : followingSet.contains(pinUserId) ? PinResponseDto.Who.FOLLOWING
+                    : PinResponseDto.Who.UNKNOWN;
+
+                dto.setMaster(who);
+                dto.setLiked(
+                    likedSet.contains(pin.getPinId())
+                );
+                dto.setHashtags(
+                    hashtagsMap.get(pin.getPinId())
+                );
+                return dto;
+            })
+            .toList();
     }
 }

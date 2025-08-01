@@ -38,6 +38,11 @@ public class FollowDao {
             WHERE followeeId = :userId;
             """;
 
+    private static final String GET_FOLLOWING_BULK_BY_ID = """
+        SELECT "User".id as userId, name, email, profileImage
+        FROM "User" JOIN follow ON "User".id = follow.followeeId
+        WHERE followerId = :userId;
+        """;
     /**
      * &#064;Deprecated
      */

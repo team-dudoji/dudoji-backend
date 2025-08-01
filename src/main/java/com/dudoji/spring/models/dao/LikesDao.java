@@ -1,16 +1,13 @@
 package com.dudoji.spring.models.dao;
 
-import com.dudoji.spring.models.DBConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Repository("LikesDao")
@@ -23,6 +20,11 @@ public class LikesDao {
             "    SELECT 1 FROM likes WHERE pinId = ? AND userId = ?\n" +
             ")";
     private static final String REFRESH_LIKES = "REFRESH MATERIALIZED VIEW likeCounts";
+    private static final String GET_LIKE_PIN_ID_SET = """
+        SELECT pinId FROM likes
+        WHERE userId = :userId
+        AND pinId IN (:pinIds)
+        """;
 
     @Autowired
     private JdbcClient jdbcClient;
@@ -61,5 +63,17 @@ public class LikesDao {
     public void refreshViews() {
         jdbcClient.sql(REFRESH_LIKES)
                 .update();
+    }
+
+    public Set<Long> getLikedSet(long userId, List<Long> pinIds) {
+        List<Long> likedList = jdbcClient.sql(GET_LIKE_PIN_ID_SET)
+            .param("userId", userId)
+            .param("pinIds", pinIds)
+            .query( (rs, rowNum) ->
+                rs.getLong("pinId")
+            )
+            .list();
+
+        return new HashSet<>(likedList);
     }
 }
