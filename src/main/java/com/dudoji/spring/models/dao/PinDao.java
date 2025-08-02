@@ -29,10 +29,10 @@ public class PinDao {
         SELECT p.id, p.userId, p.lat, p.lng, p.content, p.createdAt, p.imageUrl, p.placeName, p.address, p.skinId, lc.likecount
         FROM Pin AS p 
         LEFT JOIN likecounts lc ON p.id = lc.pinId 
-        WHERE p.lat BETWEEN ? AND ? 
-        AND p.lng BETWEEN ? AND ? 
+        WHERE p.lat BETWEEN :minLat AND :maxLat 
+        AND p.lng BETWEEN :minLng AND :maxLng
         ORDER BY lc.likecount DESC NULLS LAST
-        LIMIT ? OFFSET ?
+        LIMIT :lim OFFSET :ofs
     """;
 
     // private static final String GET_ALL_PIN_BY_USER_ID_WITH_LIMIT = "SELECT id, userId, lat, lng, content, createdAt, imageUrl, placeName, address, skinid " +
@@ -75,7 +75,7 @@ public class PinDao {
         rs.getString("placeName"),
         rs.getString("address"),
         rs.getLong("skinId"),
-        rs.getInt("likecount")
+        rs.getInt("likeCount")
     );
 
     /**
@@ -112,12 +112,12 @@ public class PinDao {
         int limit, int offset) {
 
         return jdbcClient.sql(GET_CLOSE_PIN_BY_MIN_MAX_WITH_LIMIT)
-                .param(minLat)
-                .param(maxLat)
-                .param(minLng)
-                .param(maxLng)
-                .param(limit)
-                .param(offset)
+                .param("minLat", minLat)
+                .param("maxLat", maxLat)
+                .param("minLng", minLng)
+                .param("maxLng", maxLng)
+                .param("lim", limit)
+                .param("ofs", offset)
                 .query(PinMapper)
                 .list();
     }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,6 +19,7 @@ public class PinRequestDto {
     private String placeName;
     private String address;
     private Long pinSkinId;
+    private List<String> hashtags;
 
     public Pin toDomain(Long userId) {
         return Pin.builder()

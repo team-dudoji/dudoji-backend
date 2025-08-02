@@ -4,6 +4,7 @@ import com.dudoji.spring.models.domain.Pin;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class PinResponseDto {
@@ -22,6 +23,7 @@ public class PinResponseDto {
     private String placeName;
     private String address;
     private Long pinSkinId;
+    private List<String> hashtags;
 
     public enum Who {
         MINE,

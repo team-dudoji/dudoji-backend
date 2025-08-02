@@ -1,20 +1,31 @@
 package com.dudoji.spring.dto.landmark;
 
+import java.util.List;
 import com.dudoji.spring.config.LandmarkConfig;
 import com.dudoji.spring.models.domain.Landmark;
 
-public record LandmarkResponseDto(
-        long landmarkId,
-        double lat,
-        double lng,
-        String placeName,
-        String address,
-        String content,
-        String mapImageUrl,
-        String detailImageUrl,
-        double radius,
-        boolean isDetected
-) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
+public class LandmarkResponseDto{
+	private long    landmarkId;
+	private double  lat;
+	private double  lng;
+	private String  placeName;
+	private String  address;
+	private String  content;
+	private String  mapImageUrl;
+	private String  detailImageUrl;
+	private double  radius;
+	private boolean isDetected;
+	private List<String> hashtags;
+
+
     public LandmarkResponseDto(Landmark landmark) {
         this(
             landmark.getLandmarkId(),
@@ -26,6 +37,8 @@ public record LandmarkResponseDto(
             landmark.getMapImageUrl(),
             landmark.getDetailImageUrl(),
             landmark.isDetected() ? LandmarkConfig.LANDMARK_DETECTED_RADIUS : LandmarkConfig.LANDMARK_UNDETECTED_RADIUS,
-            landmark.isDetected());
-        }
+            landmark.isDetected(),
+            List.of() // 기본값 null
+        );
+	}
 }

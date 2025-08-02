@@ -25,7 +25,7 @@ public class PinController {
     public ResponseEntity<PinResponseDto> savePin(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody PinRequestDto pinRequestDto) {
-        PinResponseDto pinResponseDto = pinService.createPin(pinRequestDto.toDomain(principalDetails.getUid()));
+        PinResponseDto pinResponseDto = pinService.createPin(pinRequestDto, principalDetails.getUid());
         return ResponseEntity.status(HttpStatus.CREATED).body(pinResponseDto);
     }
 
