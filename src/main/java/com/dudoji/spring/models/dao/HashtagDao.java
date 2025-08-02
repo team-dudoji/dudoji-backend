@@ -1,8 +1,10 @@
 package com.dudoji.spring.models.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -46,6 +48,18 @@ public class HashtagDao {
 		SELECT pinId, content FROM PinHashTag ph
 		JOIN Hashtag h ON ph.tagId = h.tagId
 		WHERE pinId IN (:pinIds)
+		""";
+
+	private final static String GET_HASHTAG_COUNT_BY_PIN_IDS = """
+		SELECT
+			h.content AS content,
+			COUNT(*) AS cnt
+			FROM PinHashTag ph
+			JOIN Hashtag h ON ph.tagId = h.tagId
+			WHERE pinId IN (:pinIds)
+			GROUP BY h.content
+			ORDER BY cnt DESC
+			LIMIT 5
 		""";
 
 	public long insertOrGetHashtag(String content, Long pinId) {
@@ -93,6 +107,9 @@ public class HashtagDao {
 	}
 
 	public List<HashtagDto> getHashtagByPinIds(List<Long> pinIds) {
+		if (pinIds == null || pinIds.isEmpty()) {
+			return List.of();
+		}
 		return jdbcClient.sql(GET_HASHTAG_BY_PIN_IDS)
 			.param("pinIds", pinIds)
 			.query((rs, ronNum) ->
@@ -102,5 +119,16 @@ public class HashtagDao {
 				)
 			)
 			.list();
+	}
+
+	public Map<String, Integer> getHashtagCountByPinIds(List<Long> pinIds) {
+		if (pinIds == null || pinIds.isEmpty()) {
+			return Map.of();
+		}
+		return jdbcClient.sql(GET_HASHTAG_COUNT_BY_PIN_IDS)
+			.param("pinIds", pinIds)
+			.query((rs, ronNum) -> Map.entry(rs.getString("content"), rs.getInt("cnt")))
+			.stream()
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 }

@@ -4,30 +4,41 @@ import com.dudoji.spring.dto.landmark.LandmarkDetectionDto;
 import com.dudoji.spring.dto.landmark.LandmarkRequestDto;
 import com.dudoji.spring.dto.landmark.LandmarkResponseDto;
 import com.dudoji.spring.dto.mapsection.RevealCirclesRequestDto;
+import com.dudoji.spring.models.dao.HashtagDao;
 import com.dudoji.spring.models.dao.LandmarkDao;
+import com.dudoji.spring.models.dao.PinDao;
 import com.dudoji.spring.models.domain.Landmark;
+import com.dudoji.spring.models.domain.Pin;
 import com.dudoji.spring.util.BitmapUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
+@Transactional
 public class LandmarkService {
 
     public static final int MAX_LANDMARK_SIZE = 10;
+    public static final int LANDMARK_PIN_RADIUS = 3000;
 
     @Autowired
     private LandmarkDao landmarkDao;
 
+    @Autowired
+    private HashtagDao hashtagDao;
+
+    @Autowired
+    private PinDao pinDao;
+
     public List<LandmarkResponseDto> getLandmarks(long userId) {
-        return landmarkDao.getLandmarks(userId)
-                .stream()
-                .map(LandmarkResponseDto::new)
-                .toList();
+        return getLandmarkWithHashtag(landmarkDao.getLandmarks(userId));
     }
 
     public void saveLandmark(LandmarkRequestDto landmarkRequestDto) {
@@ -67,19 +78,36 @@ public class LandmarkService {
         double radius = revealCircleDto.getRadius();
 
         double deltaLat = Math.toDegrees(radius / BitmapUtil.EARTH_RADIUS);
-        double deltaLng = Math.toDegrees(radius / BitmapUtil.EARTH_RADIUS * Math.cos(Math.toRadians(revealCircleDto.getLat())));
-
-		return landmarkDao.getLandmarksCircleRadius(userId, lat, lng, deltaLat, deltaLng)
-			.stream()
-			.map(LandmarkResponseDto::new)
-			.toList();
+        double deltaLng = Math.toDegrees(radius / BitmapUtil.EARTH_RADIUS * Math.cos(Math.toRadians(lat)));
+		return getLandmarkWithHashtag(landmarkDao.getLandmarksCircleRadius(userId, lat, lng, deltaLat, deltaLng));
     }
 
     public List<LandmarkResponseDto> getLandmarksByKeyword(String keyword) {
-        return landmarkDao.getLandmarksByKeyword(keyword)
-            .stream()
-            .limit(MAX_LANDMARK_SIZE)
-            .map(LandmarkResponseDto::new)
-            .toList();
+        return getLandmarkWithHashtag(landmarkDao.getLandmarksByKeyword(keyword));
+        // TODO: 맥스 사이즈가 왜 있지?
+    }
+
+    public List<LandmarkResponseDto> getLandmarkWithHashtag(List<Landmark> landmarkResponseDtoList) {
+		// near Pin List
+		return landmarkResponseDtoList
+			.stream()
+			.map(LandmarkResponseDto::new)
+			.peek(dto -> {
+				double landmarkLat = dto.getLat();
+				double landmarkLng = dto.getLng();
+
+				double dLat = Math.toDegrees(LANDMARK_PIN_RADIUS / BitmapUtil.EARTH_RADIUS);
+				double dLng = Math.toDegrees(LANDMARK_PIN_RADIUS / BitmapUtil.EARTH_RADIUS * Math.cos(Math.toRadians(landmarkLat)));
+
+				Map<String, Integer> tags = hashtagDao.getHashtagCountByPinIds(
+					// near Pin List
+					pinDao.getClosePins(landmarkLat - dLat, landmarkLng - dLng, landmarkLat + dLat, landmarkLng + dLng, Integer.MAX_VALUE, 0)
+						.stream()
+						.map(Pin::getPinId)
+						.toList()
+				);
+				dto.setHashtags(new ArrayList<>(tags.keySet()));
+			})
+			.toList();
     }
 }
