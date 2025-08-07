@@ -3,6 +3,7 @@ package com.dudoji.spring.dto.user;
 import com.dudoji.spring.models.domain.User;
 
 public record UserProfileDto(
+        long userId,
         String name,
         String profileImageUrl,
         String email,
@@ -16,6 +17,7 @@ public record UserProfileDto(
             int followerCount,
             int followingCount) {
         this(
+                user.getId(),
                 user.getName(),
                 user.getProfileImageUrl(),
                 user.getEmail(),
