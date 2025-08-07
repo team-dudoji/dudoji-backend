@@ -15,13 +15,13 @@ public class UserDao {
     private JdbcClient jdbcClient;
 
     private static final String GET_USER_BY_ID =
-            "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage "
+            "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage, coin "
                 + "from \"User\" where id=?";
     private static final String GET_USER_BY_NAME =
-            "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage "
+            "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage, coin "
                 + "FROM \"User\" WHERE name=?";
     private static final String GET_USER_BY_EMAIL =
-            "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage "
+            "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage, coin "
                 + "FROM \"User\" WHERE email=?";
     private static final String REMOVE_USER_BY_ID =
             "delete from \"User\" where id=?";
@@ -36,8 +36,13 @@ public class UserDao {
     private static final String GET_PROFILE_IMAGE_BY_ID =
             "SELECT profileImage FROM \"User\" WHERE id=?";
     private static final String GET_USERS_BY_EMAIL_LIKE =
-        "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage " +
+        "SELECT id, name, email, password, role, provider, providerId, createdAt, profileImage, coin " +
             "FROM \"User\" WHERE email LIKE '%' || ? || '%'";
+    private static final String UPDATE_COIN = """
+            UPDATE \"User\" 
+            SET coin = :coin
+            WHERE id = :userId;
+            """;
 
 
     private static final RowMapper<User> UserMapper = (rs, rowNum) -> new User(
@@ -49,8 +54,16 @@ public class UserDao {
         rs.getDate("createdAt"),
         rs.getString("provider"),
         rs.getString("providerId"),
-        rs.getString("profileImage")
+        rs.getString("profileImage"),
+        rs.getInt("coin")
     );
+
+    public void setUpdateCoin(long uid, int newCoin) {
+        jdbcClient.sql(UPDATE_COIN)
+                .param("userId", uid)
+                .param("coin", newCoin)
+                .update();
+    }
 
     public User getUserById(long uid) {
         return jdbcClient.sql(GET_USER_BY_ID)

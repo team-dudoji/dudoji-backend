@@ -29,6 +29,15 @@ public class UserProfileController {
         );
     }
 
+    @GetMapping("/mine/coin")
+    public ResponseEntity<Integer> getUserCoin(
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        return ResponseEntity.ok(
+                userInfoService.getCoin(principalDetails.getUid())
+        );
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileDto> getUserProfile(
             @PathVariable("userId") Long userId

@@ -270,3 +270,5 @@ ALTER TABLE Landmark
     RENAME COLUMN imageUrl TO mapImageUrl;
 
 ALTER TABLE Landmark ADD COLUMN detailImageUrl VARCHAR;
+
+ALTER TABLE "User" ADD COLUMN coin INT DEFAULT 0;
