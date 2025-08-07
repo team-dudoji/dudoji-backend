@@ -45,4 +45,8 @@ public class UserInfoService {
                 followDao.getNumOfFollowingByUserId(uid)
         );
     }
+
+    public int getCoin(long uid) {
+        return userDao.getUserById(uid).getCoin();
+    }
 }

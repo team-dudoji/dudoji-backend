@@ -40,13 +40,13 @@ public class UserAgentFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
 			String userAgent = request.getHeader("User-Agent");
-			log.info("[UserAgentFilter] value: {}", userAgent);
-			log.info("[UserAgentFilter] excludeUrls: {}", excludeUrls);
+			log.trace("[UserAgentFilter] value: {}", userAgent);
+			log.trace("[UserAgentFilter] excludeUrls: {}", excludeUrls);
 
 			// 어드민 페이지로 접속하는 애들은 두도지 요청이 아니어도 됨.
 			// 두도지 아니어도.
 			if (userAgent != null && userAgent.contains("Dudoji")) {
-				log.info("[UserAgentFilter] starting do filter");
+				log.trace("[UserAgentFilter] starting do filter");
 				filterChain.doFilter(request, response);
 				return;
 			}

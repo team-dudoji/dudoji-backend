@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -125,7 +122,12 @@ public class PinService {
             .stream()
             .map(UserSimpleDto::id).collect(Collectors.toSet());
 
-        Set<Long> likedSet = likesDao.getLikedSet(userId, pinIds);
+        Set<Long> likedSet;
+        if (!pinIds.isEmpty()) {
+            likedSet = likesDao.getLikedSet(userId, pinIds);
+        } else {
+            likedSet = Collections.emptySet();
+        }
 
         Map<Long, List<String>> hashtagsMap = hashtagDao.getHashtagByPinIds(pinIds)
             .stream()

@@ -9,7 +9,8 @@ public record UserProfileDto(
         String email,
         int pinCount,
         int followerCount,
-        int followingCount
+        int followingCount,
+        int coin
 ) {
     public UserProfileDto(
             User user,
@@ -23,7 +24,8 @@ public record UserProfileDto(
                 user.getEmail(),
                 pinCount,
                 followerCount,
-                followingCount
+                followingCount,
+                user.getCoin()
         );
     }
 }
