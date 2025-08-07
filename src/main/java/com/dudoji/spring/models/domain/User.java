@@ -28,6 +28,9 @@ public class User {
     }
 
     public void useCoin(int usedCoin) {
+        if (usedCoin <= 0) {
+            throw new IllegalArgumentException("usedCoin must be positive");
+        }
         if (!checkEnoughCoin(usedCoin)) {
             throw new IllegalArgumentException("Not Enough Coins");
         }
