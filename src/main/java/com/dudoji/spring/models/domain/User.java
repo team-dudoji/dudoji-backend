@@ -32,7 +32,9 @@ public class User {
             throw new IllegalArgumentException("usedCoin must be positive");
         }
         if (!checkEnoughCoin(usedCoin)) {
-            throw new IllegalArgumentException("Not Enough Coins");
+            throw new IllegalArgumentException(
+                String.format("Not Enough Coins: required=%d, available=%d", usedCoin, coin)
+            );
         }
 
         coin -= usedCoin;
