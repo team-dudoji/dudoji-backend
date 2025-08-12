@@ -21,4 +21,22 @@ public class User {
     private String provider;
     private String providerId;
     private String profileImageUrl;
+    private Integer coin;
+
+    public boolean checkEnoughCoin(int requiredCoin) {
+        return coin >= requiredCoin;
+    }
+
+    public void useCoin(int usedCoin) {
+        if (usedCoin <= 0) {
+            throw new IllegalArgumentException("usedCoin must be positive");
+        }
+        if (!checkEnoughCoin(usedCoin)) {
+            throw new IllegalArgumentException(
+                String.format("Not Enough Coins: required=%d, available=%d", usedCoin, coin)
+            );
+        }
+
+        coin -= usedCoin;
+    }
 }
