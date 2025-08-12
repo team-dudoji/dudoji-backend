@@ -1,0 +1,55 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title layout:title="NPC Skins Management">NPC Skins Management</title>
+</head>
+<body>
+<section layout:fragment="content">
+<h1>NPC Skins Management</h1>
+<div>
+    <button type="button" onclick="openModal('add')">Add NPC Skin</button>
+</div>
+<div>
+    <h2>NPC Skins List</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Image</th>
+            <th>Region ID</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="npc-skin-table-body">
+        <!-- NPC Skin data will be populated here by JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Add/Update NPC Skin -->
+<div id="modal">
+    <h4 id="modal-title"></h4>
+    <form id="infoForm">
+        <input type="hidden" name="npcSkinId">
+        <label>Image:
+            <input type="file" id="modal-imageFile" accept="image/*" onchange="previewImage(event)">
+        </label><br>
+        <input type="hidden" name="imageUrl" id="modal-imageUrl">
+        <img id="modal-imagePreview" src="#" alt="Image Preview" style="max-width:100px; max-height:100px; margin-top:10px; border:1px solid #ddd; display:none;"><br><br>
+
+        <label>Region ID:
+            <input type="number" name="regionId" required>
+        </label><br><br>
+
+        <button type="submit">Submit</button>
+        <button type="button" onclick="closeModal()">Close</button>
+    </form>
+</div>
+</section>
+</body>
+<section layout:fragment="underScripts">
+    <script src="/admin/js/npc-skins-management.js"></script>
+</section>
+
+</html>
