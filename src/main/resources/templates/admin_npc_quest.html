@@ -1,0 +1,87 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title layout:title="NPC Quest Management">NPC Quest Management</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <h1>NPC Quest Management</h1>
+    <h2 th:text="'NPC: ' + ${npc.name}">NPC Name</h2>
+
+    <div>
+        <button type="button" onclick="openQuestModal()">Add Quest to NPC</button>
+        <button type="button" onclick="openCreateQuestModal()">Create New Quest</button>
+        <button type="button" onclick="openDependencyModal()">Manage Quest Dependency</button>
+    </div>
+
+    <div>
+        <h2>Assigned Quests</h2>
+        <table border="1">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Checker</th>
+                <th>Goal Value</th>
+                <th>Unit</th>
+                <th>Quest Type</th>
+                <th>Parent Id</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="quest-table-body"></tbody>
+        </table>
+    </div>
+
+    <!-- Add Quest Modal -->
+    <div id="questModal" style="display:none;">
+        <h4>Add Quest to NPC</h4>
+        <form id="questForm">
+            <label>Available Quests:
+                <select name="questId" required></select>
+            </label><br><br>
+            <button type="submit">Add</button>
+            <button type="button" onclick="closeQuestModal()">Close</button>
+        </form>
+    </div>
+
+    <!-- Create Quest Modal -->
+    <div id="createQuestModal" style="display:none;">
+        <h4>Create New Quest</h4>
+        <form id="createQuestForm">
+            <label>Title: <input type="text" name="title" required></label><br><br>
+            <label>Checker: <input type="text" name="checker" required></label><br><br>
+            <label>Goal Value: <input type="number" name="goalValue" required></label><br><br>
+            <label>Unit: <select name="unit" id="createQuestUnit" required></select></label><br><br>
+            <label>Quest Type: <select name="questType" id="createQuestType" required></select></label><br><br>
+            <button type="submit">Create</button>
+            <button type="button" onclick="closeCreateQuestModal()">Close</button>
+        </form>
+    </div>
+
+    <!-- Dependency Modal -->
+    <div id="dependencyModal" style="display:none;">
+        <h4>Manage Quest Dependencies</h4>
+        <form id="dependencyForm">
+            <label>Parent Quest:
+                <select id="parentQuestSelect" name="parentQuestId"><option value="">None</option></select>
+            </label><br><br>
+            <label>Child Quest:
+                <select id="childQuestSelect" name="childQuestId"><option value="">None</option></select>
+            </label><br><br>
+            <button type="button" onclick="addDependency()">Add Dependency</button>
+            <button type="button" onclick="removeDependency()">Remove Dependency</button>
+            <button type="button" onclick="closeDependencyModal()">Close</button>
+        </form>
+        <h3>Existing Dependencies:</h3>
+        <ul id="existingDependenciesList"></ul>
+    </div>
+
+</section>
+</body>
+<section layout:fragment="underScripts">
+    <script th:inline="javascript">const npcId = [[${npc.npcId}]];</script>
+    <script src="/admin/js/npc-quest-management.js"></script>
+</section>
+</html>

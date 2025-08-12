@@ -2,10 +2,10 @@ package com.dudoji.spring.service.mission;
 
 import com.dudoji.spring.dto.mission.AchievementDto;
 import com.dudoji.spring.dto.mission.QuestDto;
-import com.dudoji.spring.models.dao.MissionDao;
+import com.dudoji.spring.models.dao.quest.MissionDao;
 import com.dudoji.spring.models.dao.PinDao;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

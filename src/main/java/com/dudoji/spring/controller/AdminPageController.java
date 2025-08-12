@@ -2,6 +2,7 @@ package com.dudoji.spring.controller;
 
 import com.dudoji.spring.service.ItemService;
 import com.dudoji.spring.service.LandmarkService;
+import com.dudoji.spring.service.NpcService;
 import com.dudoji.spring.service.skin.CharacterSkinService;
 import com.dudoji.spring.service.skin.PinSkinService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/admin")
@@ -22,6 +24,7 @@ public class AdminPageController {
     private final CharacterSkinService characterSkinService;
     private final LandmarkService landmarkService;
     private final ItemService itemService;
+    private final NpcService npcService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -67,5 +70,30 @@ public class AdminPageController {
         model.addAttribute("items", itemService.getAllItem());
         model.addAttribute("uploadDir", uploadDir);
         return "admin_items";
+    }
+
+    @GetMapping("/npcs")
+    public String getAdminNpcPage(
+        Model model
+    ) {
+        return "admin_npcs";
+    }
+
+    @GetMapping("/npc-quest")
+    public String getAdminNpcQuestPage(
+        @RequestParam("npcId") long npcId,
+        Model model
+    ) {
+        model.addAttribute("npc", npcService.getNpcById(npcId));
+        return "admin_npc_quest";
+    }
+
+    @GetMapping("/npc-skins")
+    public String getAdminNpcSkinsPage(
+        Model model
+    ) {
+        model.addAttribute("npcSkins", npcService.getAllNpcSkins());
+        model.addAttribute("uploadDir", uploadDir);
+        return "admin_npc_skins";
     }
 }

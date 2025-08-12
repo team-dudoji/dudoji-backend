@@ -1,0 +1,82 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title layout:title="NPCs Management">NPCs Management</title>
+</head>
+<body>
+<section layout:fragment="content">
+<h1>NPCs Management</h1>
+<div>
+    <button type="button" onclick="openModal('add')">Add NPC</button>
+</div>
+<div>
+    <h2>NPCs List</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Description</th>
+            <th>Script</th>
+            <th>Image</th>
+            <th>Npc Skin Id</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="npc-table-body">
+        <!-- NPC data will be populated here by JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Add/Update NPC -->
+<div id="modal">
+    <h4 id="modal-title"></h4>
+    <form id="infoForm">
+        <input type="hidden" name="npcId">
+        <label>Name:
+            <input type="text" name="name" required>
+        </label><br><br>
+
+        <label>Latitude:
+            <input type="number" name="lat" required step="any">
+        </label><br><br>
+
+        <label>Longitude:
+            <input type="number" name="lng" required step="any">
+        </label><br><br>
+
+        <label>Description:
+            <textarea name="npcDescription" rows="3"></textarea>
+        </label><br><br>
+
+        <label>Script:
+            <textarea name="npcScript" rows="3"></textarea>
+        </label><br><br>
+
+        <label>Image:
+            <input type="file" id="modal-imageFile" accept="image/*" onchange="previewImage(event)">
+        </label><br>
+        <input type="hidden" name="imageUrl" id="modal-imageUrl">
+        <img id="modal-imagePreview" src="#" alt="Image Preview" style="max-width:100px; max-height:100px; margin-top:10px; border:1px solid #ddd; display:none;"><br><br>
+
+        <label>NPC Skin:
+            <select name="npcSkinId" id="modal-npcSkinId" required>
+                <!-- Options will be populated by JavaScript -->
+            </select>
+        </label><br><br>
+
+        <button type="submit">Submit</button>
+        <button type="button" onclick="closeModal()">Close</button>
+    </form>
+</div>
+    </section>
+</body>
+<section layout:fragment="underScripts">
+    <script src="/admin/js/npcs-management.js"></script>
+</section>
+
+</html>

@@ -271,4 +271,53 @@ ALTER TABLE Landmark
 
 ALTER TABLE Landmark ADD COLUMN detailImageUrl VARCHAR;
 
+CREATE TABLE Region (
+                        regionId BIGSERIAL PRIMARY KEY,
+                        name VARCHAR(20)
+);
+
+CREATE TABLE NpcSkin (
+                         npcSkinId BIGSERIAL PRIMARY KEY,
+                         imageUrl VARCHAR(255) UNIQUE,
+                         regionId BIGINT REFERENCES Region(regionId)
+);
+
+CREATE TABLE Npc (
+                     npcId BIGSERIAL PRIMARY KEY,
+                     lat DOUBLE PRECISION,
+                     lng DOUBLE PRECISION,
+                     npcSkinId BIGINT REFERENCES NpcSkin(npcSkinId),
+                     name VARCHAR(10),
+                    npcScript VARCHAR,
+                    description VARCHAR,
+                    imageUrl VARCHAR
+);
+
+CREATE TABLE NpcQuest (
+                          npcId BIGINT REFERENCES Npc(npcId) ON DELETE CASCADE,
+                          questId BIGINT REFERENCES Quest(questId) ON DELETE CASCADE
+);
+
+CREATE TYPE quest_progress as enum ('PROGRESS', 'COMPLETED');
+
+CREATE TABLE UserNpcQuestStatus (
+                                    userId BIGINT NOT NULL REFERENCES "User"(id) ON DELETE CASCADE ,
+                                    questId BIGINT NOT NULL REFERENCES Quest(questId) ON DELETE CASCADE ,
+                                    status  quest_progress default 'PROGRESS',
+                                    startedAt TIMESTAMP NOT NULL,
+                                    completedAt TIMESTAMP
+);
+
+CREATE TABLE QuestDependency (
+                                 parentQuestId BIGINT NOT NULL,
+                                 childQuestId BIGINT NOT NULL,
+                                 PRIMARY KEY (parentQuestId, childQuestId),
+                                 FOREIGN KEY (parentQuestId) REFERENCES Quest(questId) ON DELETE CASCADE,
+                                 FOREIGN KEY (childQuestId) REFERENCES Quest(questId) ON DELETE CASCADE
+);
+
+ALTER TYPE quest_type ADD VALUE 'NPC_MAIN';
+ALTER TYPE quest_type ADD VALUE 'NPC_SUB';
+ALTER TYPE quest_type ADD VALUE 'NPC_EMERGENCY';
+
 ALTER TABLE "User" ADD COLUMN coin INT DEFAULT 0;
