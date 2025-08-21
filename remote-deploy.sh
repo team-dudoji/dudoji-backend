@@ -1,0 +1,29 @@
+#!/bin/bash
+set -e
+
+# build
+./gradlew clean build
+
+PROJECT_ROOT=$(pwd)
+BUILD_PATH=$(ls $PROJECT_ROOT/build/libs/*.jar)
+JAR_NAME=$(basename $BUILD_PATH)
+
+# Copy To Server
+scp $BUILD_PATH $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
+
+# Run Application
+ssh $DEPLOY_USER@$DEPLOY_SERVER << EOF
+
+export DATABASE_PW=$DATABASE_PW
+export DATABASE_URL=$DATABASE_URL
+export DATABASE_USER=$DATABASE_USER
+export JWT_SECRET=$JWT_SECRET
+export SLACK_WEBHOOK_URL=$SLACK_WEBHOOK_URL
+export IMAGE_FILE_PATH=$IMAGE_FILE_PATH
+export PORT=$PORT
+export DEPLOY_SERVER=$DEPLOY_SERVER
+export KAKAO_CLIENT_ID=$KAKAO_CLIENT_ID
+export KAKAO_REDIRECTION_URI=$KAKAO_REDIRECTION_URI
+
+sudo systemctl restart dudoji-server.service
+EOF
