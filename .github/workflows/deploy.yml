@@ -39,9 +39,9 @@ jobs:
           DATABASE_USER: ${{ secrets.DATABASE_USER }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          KAKAO_REDIRECTION_URI: ${{ KAKAO_REDIRECTION_URI }}
-          KAKAO_CLIENT_ID: ${{ KAKAO_CLIENT_ID }}
-          IMAGE_FILE_PATH: ${{ IMAGE_FILE_PATH }}
+          KAKAO_REDIRECTION_URI: ${{ secrets.KAKAO_REDIRECTION_URI }}
+          KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+          IMAGE_FILE_PATH: ${{ secrets.IMAGE_FILE_PATH }}
           DEPLOY_SERVER: ${{ secrets.SERVER_HOST }}
           DEPLOY_USER: ${{ secrets.SERVER_USER }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
