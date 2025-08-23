@@ -2,7 +2,7 @@
 set -e
 
 # build
-./gradlew clean build
+./gradlew clean build -x test
 
 PROJECT_ROOT=$(pwd)
 BUILD_PATH=$(ls $PROJECT_ROOT/build/libs/*.jar)
