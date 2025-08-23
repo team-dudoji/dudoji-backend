@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:36073}
+  port: 36071
   url:  ${DEPLOY_SERVER}
 spring:
   profiles:
