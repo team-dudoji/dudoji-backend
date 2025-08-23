@@ -11,7 +11,7 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+
 *.war
 *.nar
 *.ear
@@ -27,5 +27,6 @@ replay_pid*
 /build
 build/reports/problems/problems-report.html
 .idea/compiler.xml
-.idea/compiler.xml
 src/main/resources/application.yml
+
+!gradle/wrapper/gradle-wrapper.jar
