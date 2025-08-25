@@ -8,6 +8,7 @@ public record NpcResponseDto (
 	String name,
 	String npcScript,
 	String npcDescription,
-	String imageUrl
+	String imageUrl,
+	String questName
 ) {
 }
