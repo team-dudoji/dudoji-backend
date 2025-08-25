@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dudoji.spring.dto.mission.QuestRequestDto;
 import com.dudoji.spring.dto.npc.NpcDto;
+import com.dudoji.spring.dto.npc.NpcMetaDto;
 import com.dudoji.spring.dto.npc.NpcQuestDto;
 import com.dudoji.spring.dto.npc.NpcQuestSimpleDto;
 import com.dudoji.spring.dto.npc.NpcRequestDto;
@@ -180,5 +181,14 @@ public class NpcController {
 	@PreAuthorize("hasRole('admin')")
 	public ResponseEntity<List<NpcSkin>> getAllNpcSkins() {
 		return ResponseEntity.ok(npcService.getAllNpcSkins());
+	}
+
+
+	@GetMapping("/api/user/npcs/meta")
+	@PreAuthorize("hasRole('admin')")
+	public ResponseEntity<List<NpcMetaDto>> getNpcMetaData(
+		@AuthenticationPrincipal PrincipalDetails principalDetails
+	) {
+		return ResponseEntity.ok(npcService.getAllNpcMetaData(principalDetails.getUid()));
 	}
 }
