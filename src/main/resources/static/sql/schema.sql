@@ -213,8 +213,8 @@ ALTER TABLE landmarkDetection RENAME COLUMN user_id TO userId;
 ALTER TABLE landmarkDetection RENAME COLUMN detected_at TO detectedAt;
 
 -- landmark
-ALTER TABLE landmark RENAME COLUMN place_name TO placeName;
-ALTER TABLE landmark RENAME COLUMN image_url TO imageUrl;
+-- ALTER TABLE landmark RENAME COLUMN place_name TO placeName;
+-- ALTER TABLE landmark RENAME COLUMN image_url TO imageUrl;
 
 -- User
 ALTER TABLE "User" RENAME COLUMN provider_id TO providerId;
@@ -304,7 +304,7 @@ CREATE TABLE UserNpcQuestStatus (
                                     userId BIGINT NOT NULL REFERENCES "User"(id) ON DELETE CASCADE ,
                                     questId BIGINT NOT NULL REFERENCES Quest(questId) ON DELETE CASCADE ,
                                     status  quest_progress default 'PROGRESS',
-                                    startedAt TIMESTAMP NOT NULL,
+                                    startedAt TIMESTAMP NOT NULL default now(),
                                     completedAt TIMESTAMP
 );
 
@@ -321,3 +321,6 @@ ALTER TYPE quest_type ADD VALUE 'NPC_SUB';
 ALTER TYPE quest_type ADD VALUE 'NPC_EMERGENCY';
 
 ALTER TABLE "User" ADD COLUMN coin INT DEFAULT 0;
+
+ALTER TABLE Npc ADD COLUMN questName VARCHAR;
+ALTER TABLE NpcQUest ADD UNIQUE (npcId, questId);

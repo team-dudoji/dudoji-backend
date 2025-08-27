@@ -19,7 +19,7 @@ INSERT INTO public."User" (
       (108, '테스트9', '9@9',   NULL, 'user'::user_role, NULL, NULL, DEFAULT, NULL),
       (109, '테스트10','10@10', NULL, 'user'::user_role, NULL, NULL, DEFAULT, NULL);
 
-INSERT INTO Landmark(landmarkId, lat, lng, placeName, content, imageUrl, address)
+INSERT INTO Landmark(landmarkId, lat, lng, placeName, content, mapImageUrl, address)
 VALUES
     (1, 0, 0, 'test', 'test', 'test', 'test');
 
@@ -33,3 +33,7 @@ INSERT INTO Quest(title, checker, goalValue, unit, questType) VALUES
     ('핀을 꽂아보자!', 'DailyPinQuest', 5, 'COUNT', 'DAILY'),
     ('새로운 랜드마크를 방문하자!', 'NewLandmarkQuest', 5, 'DISTANCE', 'LANDMARK'),
     ('모든 랜드마크를 방문하자!', 'LandmarkCountQuest', 5, 'COUNT', 'LANDMARK');
+
+INSERT INTO Region(regionId, name) VALUES
+    (1, '부산광역시'),
+    (2, '서울특별시');
