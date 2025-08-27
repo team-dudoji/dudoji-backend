@@ -28,6 +28,7 @@ async function loadNpcs() {
             <td>${npc.npcScript}</td>
             <td><img src="${npc.imageUrl}" style="height:64px"/></td>
             <td>${npc.npcSkinId}</td>
+            <td>${npc.questName}</td>
             <td>
                 <button type="button" onclick='openModal("update", ${JSON.stringify(npc)})'>Update</button>
                 <button type="button" onclick="deleteNpc(${npc.npcId})">Delete</button>
