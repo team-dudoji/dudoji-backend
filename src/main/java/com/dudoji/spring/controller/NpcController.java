@@ -183,9 +183,10 @@ public class NpcController {
 		return ResponseEntity.ok(npcService.getAllNpcSkins());
 	}
 
-
+	/*
+		meta data
+	 */
 	@GetMapping("/api/user/npcs/meta")
-	@PreAuthorize("hasRole('admin')")
 	public ResponseEntity<List<NpcMetaDto>> getNpcMetaData(
 		@AuthenticationPrincipal PrincipalDetails principalDetails
 	) {
