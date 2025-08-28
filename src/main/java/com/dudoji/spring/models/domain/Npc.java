@@ -17,6 +17,7 @@ public class Npc {
 	private String npcScript;
 	private String description;
 	private String imageUrl;
+	private String questName;
 
 	public Npc(NpcRequestDto dto) {
 		this.npcId = dto.npcId();
@@ -27,6 +28,7 @@ public class Npc {
 		this.npcScript = dto.npcScript();
 		this.description = dto.npcDescription();
 		this.imageUrl = dto.imageUrl();
+		this.questName = dto.questName();
 	}
 
 	public NpcResponseDto toNpcResponseDto() {
@@ -38,7 +40,8 @@ public class Npc {
 			name,
 			npcScript,
 			description,
-			imageUrl
+			imageUrl,
+			questName
 		);
 	}
 }

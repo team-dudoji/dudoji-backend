@@ -16,6 +16,7 @@ import org.springframework.web.cors.PreFlightRequestHandler;
 import com.dudoji.spring.dto.mission.QuestDetailDto;
 import com.dudoji.spring.dto.mission.QuestRequestDto;
 import com.dudoji.spring.dto.npc.NpcDto;
+import com.dudoji.spring.dto.npc.NpcMetaDto;
 import com.dudoji.spring.dto.npc.NpcQuestDto;
 import com.dudoji.spring.dto.npc.NpcQuestSimpleDto;
 import com.dudoji.spring.dto.npc.NpcQuestStatusDto;
@@ -301,5 +302,14 @@ public class NpcService {
 	 */
 	public boolean deleteNpcSkin(long skinId) {
 		return npcSkinDao.deleteNpcSkin(skinId);
+	}
+
+	/**
+	 * 유저의 정보를 통해 Npc 메타 데이터를 넘겨 받습니다.
+	 * @param userId 해당하는 유저 아이디
+	 * @return NpcMetaDto 의 리스트
+	 */
+	public List<NpcMetaDto> getAllNpcMetaData(long userId) {
+		return npcDao.getNpcMetaData(userId);
 	}
 }
