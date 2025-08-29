@@ -58,6 +58,7 @@ app:
         - /api/admin/**
         - /admin/**
         - /user/loginForm
+        - /user/joinForm
         - /
 logging:
   webhook-url: ${SLACK_WEBHOOK_URL}
