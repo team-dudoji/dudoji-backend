@@ -16,12 +16,12 @@ public class FollowService {
     @Autowired
     private UserDao userDao;
 
-    public List<UserSimpleDto> getFollowingById(long userId) {
-        return followDao.getFollowingListByUser(userId);
+    public List<UserSimpleDto> getFollowingById(long userId, int lim, int ofs) {
+        return followDao.getFollowingListByUser(userId, lim, ofs);
     }
 
-    public List<UserSimpleDto> getFollowerById(long userId) {
-        return followDao.getFollowerListByUser(userId);
+    public List<UserSimpleDto> getFollowerById(long userId, int lim, int ofs) {
+        return followDao.getFollowerListByUser(userId, lim, ofs);
     }
 
     public boolean createFollowing(long userId, long followeeId) {

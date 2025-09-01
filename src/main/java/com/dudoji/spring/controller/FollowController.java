@@ -24,19 +24,23 @@ public class FollowController {
 
     @GetMapping("")
     public ResponseEntity<List<UserSimpleDto>> getFollowing(
-            @AuthenticationPrincipal PrincipalDetails principalDetails
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(defaultValue = "10") int lim,
+            @RequestParam(defaultValue = "0") int ofs
     ) {
         return ResponseEntity.ok(
-                followService.getFollowingById(principalDetails.getUid())
+                followService.getFollowingById(principalDetails.getUid(), lim, ofs)
         );
     }
 
-    @GetMapping("/follwer")
+    @GetMapping("/follower")
     public ResponseEntity<List<UserSimpleDto>> getFollowers(
-            @AuthenticationPrincipal PrincipalDetails principalDetails
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(defaultValue = "10") int lim,
+            @RequestParam(defaultValue = "0") int ofs
     ) {
         return ResponseEntity.ok(
-                followService.getFollowerById(principalDetails.getUid())
+                followService.getFollowerById(principalDetails.getUid(), lim, ofs)
         );
     }
 

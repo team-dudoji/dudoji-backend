@@ -3,29 +3,56 @@ package com.dudoji.spring.models.dao;
 import com.dudoji.spring.dto.user.UserSimpleDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
 @Repository("FollowDao")
 public class FollowDao {
 
-    private static final String GET_FOLLOWING_LIST_BY_ID = """
-          SELECT "User".id as userId, name, email, profileImage
-          FROM "User" JOIN follow ON "User".id = follow.followeeId
-          WHERE followerId = :userId;
-          """;
+    private static final String GET_FOLLOWING_LIST_BY_ID = """ 
+        SELECT u.id        AS userId,
+                 u.name,
+                 u.email,
+                 u.profileImage,
+                 f1.createdAt AS followingAt,   -- 내가 팔로잉한 시각
+                 f2.createdAt AS followedAt     -- 상대가 날 팔로잉한 시각 (없으면 NULL)
+          FROM "User" u
+          JOIN follow f1
+            ON u.id = f1.followeeId            -- 내가 팔로우하는 사람들
+           AND f1.followerId = :userId
+          LEFT JOIN follow f2
+            ON f2.followerId = u.id            -- 상대가 나를 팔로우하는 경우
+           AND f2.followeeId = :userId
+          LIMIT :lim OFFSET :ofs;
+        """;
     private static final String CREATE_FOLLOWING_BY_ID = "INSERT INTO follow (followerId, followeeId) VALUES (?, ?)";
+    private static final String CREATE_FOLLOWING_WITH_SELECTING_DAY = "INSERT INTO follow (followerId, followeeId, createdAt) VALUES (?, ?, ?)";
     private static final String DELETE_FOLLOWING_BY_ID = "DELETE FROM follow WHERE followerId = ? AND followeeId = ?";
     private static final String IS_FOLLOWING = "SELECT 1 FROM follow WHERE followerId = ? AND followeeId = ?";
 
     private static final String GET_FOLLOWER_LIST_BY_ID = """
-            SELECT "User".id as userId, name, email, profileImage
-            FROM "User" JOIN follow ON "User".id = follow.followerId
-            WHERE followeeId = :userId;
-            """;
+        SELECT u.id        AS userId,
+                   u.name,
+                   u.email,
+                   u.profileImage,
+                   f1.createdAt AS followedAt,    -- 그 사람이 나를 팔로우한 시각
+                   f2.createdAt AS followingAt    -- 내가 그 사람을 팔로우한 시각 (없으면 NULL)
+            FROM "User" u
+            JOIN follow f1
+              ON u.id = f1.followerId             -- 나를 팔로우하는 사람
+             AND f1.followeeId = :userId
+            LEFT JOIN follow f2
+              ON f2.followerId = :userId          -- 내가 그 사람을 팔로우하는 경우
+             AND f2.followeeId = u.id
+            LIMIT :lim OFFSET :ofs;
+        """;
+
 
     private static final String GET_NUM_OF_FOLLOWING = """
             SELECT count(1)
@@ -51,30 +78,53 @@ public class FollowDao {
     private static final String CREATE_FRIEND_REQUEST_BY_SENDER_RECEIVER = "INSERT INTO friend_request (senderId, receiverId) VALUES (?, ?)";
     private static final String DELETE_FRIEND_REQUEST_BY_SENDER_RECEIVER = "DELETE friend_request WHERE senderId = ? AND receiverId = ? AND status = CAST('PENDING' AS friend_request_status)";
 
+    private final RowMapper<UserSimpleDto> UserSimpleDtoMapper = (rs, rowNum) -> {
+        Date followedAtSql = rs.getDate("followedAt");
+        Date followingAtSql = rs.getDate("followingAt");
+        LocalDate followedAt = followedAtSql != null ? followedAtSql.toLocalDate() : null;
+        LocalDate followingAt = followingAtSql != null ? followingAtSql.toLocalDate() : null;
+
+        return new UserSimpleDto(
+            rs.getLong("userId"),
+            rs.getString("name"),
+            rs.getString("email"),
+            rs.getString("profileImage"),
+            followingAt,
+            followedAt
+        );
+    };
+
     @Autowired
     private JdbcClient jdbcClient;
 
+    /**
+     * 백만 단위로 한 번에 받아오는 함수
+     * @param userId user Id
+     * @return
+     */
     public List<UserSimpleDto> getFollowingListByUser(long userId) {
+        return getFollowingListByUser(userId, 1_000_000, 0);
+    }
+
+    public List<UserSimpleDto> getFollowingListByUser(long userId, int lim, int ofs) {
         return jdbcClient.sql(GET_FOLLOWING_LIST_BY_ID)
                 .param("userId", userId)
-                .query((rs, numOfRows) -> new UserSimpleDto(
-                        rs.getLong("userId"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("profileImage")
-                ))
+                .param("lim", lim)
+                .param("ofs", ofs)
+                .query(UserSimpleDtoMapper)
                 .list();
     }
 
     public List<UserSimpleDto> getFollowerListByUser(long userId) {
+        return getFollowerListByUser(userId, 1_000_000, 0);
+    }
+
+    public List<UserSimpleDto> getFollowerListByUser(long userId, int lim, int ofs) {
         return jdbcClient.sql(GET_FOLLOWER_LIST_BY_ID)
                 .param("userId", userId)
-                .query((rs, numOfRows) -> new UserSimpleDto(
-                        rs.getLong("userId"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("profileImage")
-                ))
+                .param("lim", lim)
+                .param("ofs", ofs)
+                .query(UserSimpleDtoMapper)
                 .list();
     }
 
@@ -91,6 +141,21 @@ public class FollowDao {
                 .param(userId)
                 .param(followeeId)
                 .update() > 0;
+    }
+
+    /**
+     * 테스트를 위한 함수입니다. 날짜를 정해서 팔로잉 관계를 만듭니다.
+     * @param userId 팔로우 하는 유저의 아이디
+     * @param followeeId 팔로우 당하는 유저의 아이디
+     * @param createdAt 만든 날짜
+     * @return 진행 결과
+     */
+    public boolean createFollowingWithSelectingDay(long userId, long followeeId, LocalDate createdAt) {
+        return jdbcClient.sql(CREATE_FOLLOWING_WITH_SELECTING_DAY)
+            .param(userId)
+            .param(followeeId)
+            .param(createdAt)
+            .update() > 0;
     }
 
     public boolean deleteFollowingByUser(long userId, long followeeId) {
