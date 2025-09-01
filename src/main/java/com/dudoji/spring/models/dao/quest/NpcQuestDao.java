@@ -74,6 +74,14 @@ public class NpcQuestDao {
 		WHERE childQuestId IN (:questIds)
 		""";
 
+	private static final String UPDATE_QUEST_AS_PROGRESS = """
+		INSERT INTO UserNpcQuestStatus (userId, questId, status) VALUES (:userId, :questId, :status::quest_progress)	
+		""";
+
+	private static final String UPDATE_QUEST_AS_COMPLETED = """
+		UPDATE UserNpcQuestStatus SET status = 'COMPLETED'::quest_progress WHERE questId = :questId AND userId = :userId
+		""";
+
 	private final RowMapper<NpcQuestStatusDto> npcQuestStatusDtoRowMapper = (rs, rowNum) -> {
 		String rawStatus = rs.getString("status");
 		QuestStatus status = (rawStatus == null || rawStatus.isBlank()) ? QuestStatus.NOT_ASSIGNED : QuestStatus.valueOf(rawStatus);
@@ -211,5 +219,32 @@ public class NpcQuestDao {
 				Map.Entry::getKey,
 				Map.Entry::getValue
 			));
+	}
+
+	/**
+	 * 해당 퀘스트를 진행 상태로 UserNpcQuestStatus 에 업데이트 합니다. 퀘스트 수락의 역할을 합니다.
+	 * @param userId user Id
+	 * @param questId quest Id
+	 * @return 쿼리문 성공 여부
+	 */
+	public boolean setQuestAsProgress(long userId, long questId) {
+		return jdbcClient.sql(UPDATE_QUEST_AS_PROGRESS)
+			.param("userId", userId)
+			.param("questId", questId)
+			.param("status", "PROGRESS")
+			.update() > 0;
+	}
+
+	/**
+	 * 진행 중인 퀘스트를 완료로 표시합니다.
+	 * @param userId user Id
+	 * @param questId quest Id
+	 * @return SQLException if there is no quest in progress, or true.
+	 */
+	public boolean setQuestAsCompleted(long userId, long questId) {
+		return jdbcClient.sql(UPDATE_QUEST_AS_COMPLETED)
+			.param("userId", userId)
+			.param("questId", questId)
+			.update() > 0;
 	}
 }

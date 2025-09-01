@@ -22,7 +22,8 @@ public class NpcDto {
 			name,
 			null,
 			null,
-			null // 얘네는 값이 없음
+			null, // 얘네는 값이 없음
+			null
 		);
 	}
 

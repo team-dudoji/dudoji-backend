@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.dudoji.spring.dto.npc.NpcDto;
+import com.dudoji.spring.dto.npc.NpcMetaDto;
 import com.dudoji.spring.models.domain.Npc;
 
 @Repository("NpcDao")
@@ -18,8 +19,8 @@ public class NpcDao {
 	private JdbcClient jdbcClient;
 
 	private static final String INSERT_NPC = """
-		INSERT INTO Npc (lat, lng, npcSkinId, name, npcScript, description, imageUrl) VALUES
-		(:lat, :lng, :npcSkinId, :name, :npcScript, :description, :imageUrl)
+		INSERT INTO Npc (lat, lng, npcSkinId, name, npcScript, description, imageUrl, questName) VALUES
+		(:lat, :lng, :npcSkinId, :name, :npcScript, :description, :imageUrl, :questName)
 		RETURNING npcId
 		""";
 
@@ -46,11 +47,48 @@ public class NpcDao {
 				npcScript = :npcScript,
 				description = :description,
 				imageUrl = :imageUrl
+		    	questName = :questName
 		WHERE npcId = :npcId;
 		""";
 
 	private static final String DELETE_NPC = """
 		DELETE FROM Npc WHERE npcId = :npcId;
+		""";
+
+	private static final String GET_NPC_META_DATA = """
+		WITH completed AS (
+			SELECT qs.questId
+			FROM UserNpcQuestStatus qs
+			WHERE qs.userId = :userId
+				AND qs.status = 'COMPLETED'::quest_progress
+		),
+		
+		npcClearedCounts AS (
+		  SELECT nq.npcId, COUNT(*) AS numOfClearedQuests
+		  FROM NpcQuest nq
+		  JOIN completed c USING (questId)
+		  GROUP BY nq.npcId
+		),
+		
+		npcQuestCounts AS (
+			SELECT nq.npcId, COUNT(*) AS numOfQuests
+			FROM NpcQuest nq
+			GROUP BY nq.npcId
+		)
+		
+		SELECT
+			ns.npcSkinId,
+			ns.regionId,
+			r.name       AS regionName,
+			n.questName,
+			nt.numOfQuests AS numOfQuests,
+			nc.numOfClearedQuests AS numOfClearedQuests
+		FROM Npc n
+		JOIN NpcSkin ns ON ns.npcSkinId = n.npcSkinId
+		JOIN Region r ON r.regionId = ns.regionId
+		JOIN npcQuestCounts nt ON nt.npcId = n.npcId
+		INNER JOIN npcClearedCounts nc ON nc.npcId = n.npcId
+		ORDER BY ns.regionId, ns.npcSkinId
 		""";
 
 	private final RowMapper<Npc> npcRowMapper = (rs, rowNum) -> {
@@ -62,7 +100,18 @@ public class NpcDao {
 			rs.getString("name"),
 			rs.getString("npcScript"),
 			rs.getString("description"),
-			rs.getString("imageUrl")
+			rs.getString("imageUrl"),
+			rs.getString("questName")
+		);
+	};
+
+	private final RowMapper<NpcMetaDto> npcMetaDtoRowMapper = (rs, rowNum) -> {
+		return new NpcMetaDto(
+			rs.getLong("npcSkinId"),
+			rs.getString("regionName"),     // locationName <- regionName 매핑
+			rs.getString("questName"),
+			rs.getInt("numOfQuests"),
+			rs.getInt("numOfClearedQuests")
 		);
 	};
 
@@ -80,6 +129,7 @@ public class NpcDao {
 			.param("npcScript", npc.getNpcScript())
 			.param("description", npc.getDescription())
 			.param("imageUrl", npc.getImageUrl())
+			.param("questName", npc.getQuestName())
 			.query(Long.class)
 			.single();
 	}
@@ -138,6 +188,7 @@ public class NpcDao {
 			.param("npcScript", npc.getNpcScript())
 			.param("description", npc.getDescription())
 			.param("imageUrl", npc.getImageUrl())
+			.param("questName", npc.getQuestName())
 			.param("npcId", npc.getNpcId())
 			.update() > 0;
 	}
@@ -151,5 +202,12 @@ public class NpcDao {
 		return jdbcClient.sql(DELETE_NPC)
 			.param("npcId", npcId)
 			.update() > 0;
+	}
+
+	public List<NpcMetaDto> getNpcMetaData(long userId) {
+		return jdbcClient.sql(GET_NPC_META_DATA)
+			.param("userId", userId)
+			.query(npcMetaDtoRowMapper)
+			.list();
 	}
 }
