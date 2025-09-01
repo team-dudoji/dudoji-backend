@@ -29,7 +29,7 @@ public class FollowDao {
           LEFT JOIN follow f2
             ON f2.followerId = u.id            -- 상대가 나를 팔로우하는 경우
            AND f2.followeeId = :userId
-          LIMIT :lim OFFSET :ofs;
+          LIMIT :limit OFFSET :offset;
         """;
     private static final String CREATE_FOLLOWING_BY_ID = "INSERT INTO follow (followerId, followeeId) VALUES (?, ?)";
     private static final String CREATE_FOLLOWING_WITH_SELECTING_DAY = "INSERT INTO follow (followerId, followeeId, createdAt) VALUES (?, ?, ?)";
@@ -50,7 +50,7 @@ public class FollowDao {
             LEFT JOIN follow f2
               ON f2.followerId = :userId          -- 내가 그 사람을 팔로우하는 경우
              AND f2.followeeId = u.id
-            LIMIT :lim OFFSET :ofs;
+            LIMIT :limit OFFSET :offset;
         """;
 
 
@@ -106,11 +106,11 @@ public class FollowDao {
         return getFollowingListByUser(userId, 1_000_000, 0);
     }
 
-    public List<UserSimpleDto> getFollowingListByUser(long userId, int lim, int ofs) {
+    public List<UserSimpleDto> getFollowingListByUser(long userId, int limit, int offset) {
         return jdbcClient.sql(GET_FOLLOWING_LIST_BY_ID)
                 .param("userId", userId)
-                .param("lim", lim)
-                .param("ofs", ofs)
+                .param("limit", limit)
+                .param("offset", offset)
                 .query(UserSimpleDtoMapper)
                 .list();
     }
@@ -119,11 +119,11 @@ public class FollowDao {
         return getFollowerListByUser(userId, 1_000_000, 0);
     }
 
-    public List<UserSimpleDto> getFollowerListByUser(long userId, int lim, int ofs) {
+    public List<UserSimpleDto> getFollowerListByUser(long userId, int limit, int offset) {
         return jdbcClient.sql(GET_FOLLOWER_LIST_BY_ID)
                 .param("userId", userId)
-                .param("lim", lim)
-                .param("ofs", ofs)
+                .param("limit", limit)
+                .param("offset", offset)
                 .query(UserSimpleDtoMapper)
                 .list();
     }
