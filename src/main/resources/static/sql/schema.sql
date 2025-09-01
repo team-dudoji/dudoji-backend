@@ -271,6 +271,18 @@ ALTER TABLE Landmark
 
 ALTER TABLE Landmark ADD COLUMN detailImageUrl VARCHAR;
 
+CREATE TABLE Hashtag (
+                         tagId BIGSERIAL,
+                         content VARCHAR,
+                         PRIMARY KEY (tagId)
+);
+CREATE TABLE PinHashtag (
+                            pinId BIGINT,
+                            tagId BIGINT,
+                            foreign key (pinId) references Pin(id),
+                            foreign key (tagId) references Hashtag(tagId)
+);
+
 CREATE TABLE Region (
                         regionId BIGSERIAL PRIMARY KEY,
                         name VARCHAR(20)
