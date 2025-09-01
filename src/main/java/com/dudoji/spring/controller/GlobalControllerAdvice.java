@@ -1,5 +1,7 @@
 package com.dudoji.spring.controller;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +28,6 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public void handleException(Exception e) {
-        log.debug("[Error] {} {}",e.getMessage(), e.getStackTrace().toString());
+        log.debug("[Error] {} {}",e.getMessage(), Arrays.toString(e.getStackTrace()));
     }
 }
