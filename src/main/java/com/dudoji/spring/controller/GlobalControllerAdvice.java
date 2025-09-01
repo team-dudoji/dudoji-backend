@@ -28,6 +28,6 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public void handleException(Exception e) {
-        log.debug("[Error] {} {}",e.getMessage(), Arrays.toString(e.getStackTrace()));
+        log.error("[Error] {}", e.getMessage(), e);
     }
 }
