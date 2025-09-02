@@ -192,4 +192,23 @@ public class NpcController {
 	) {
 		return ResponseEntity.ok(npcService.getAllNpcMetaData(principalDetails.getUid()));
 	}
+
+	/*
+		Quest Accept & Complete
+	 */
+	@PostMapping("/api/user/npcs/accept/{questId}")
+	public ResponseEntity<Boolean> setQuestAsProgress(
+		@AuthenticationPrincipal PrincipalDetails principalDetails,
+		@PathVariable long questId
+	) {
+		return ResponseEntity.ok(npcService.setQuestAsProgress(principalDetails.getUid(), questId));
+	}
+
+	@PostMapping("/api/user/npcs/complete/{questId}")
+	public ResponseEntity<Boolean> setQuestAsCompleted(
+		@AuthenticationPrincipal PrincipalDetails principalDetails,
+		@PathVariable long questId
+	) {
+		return ResponseEntity.ok(npcService.setQuestAsCompleted(principalDetails.getUid(), questId));
+	}
 }

@@ -1,5 +1,6 @@
 package com.dudoji.spring.models.dao.quest;
 
+import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.Date;
 import java.util.HashMap;
@@ -86,12 +87,15 @@ public class NpcQuestDao {
 		String rawStatus = rs.getString("status");
 		QuestStatus status = (rawStatus == null || rawStatus.isBlank()) ? QuestStatus.NOT_ASSIGNED : QuestStatus.valueOf(rawStatus);
 
+		LocalDate startedAt = rs.getDate("startedAt") == null ? null : rs.getDate("startedAt").toLocalDate();
+		LocalDate completedAt = rs.getDate("completedAt") == null ? null : rs.getDate("completedAt").toLocalDate();
+
 		return new NpcQuestStatusDto(
 			rs.getLong("userId"),
 			rs.getLong("questId"),
 			status,
-			rs.getDate("startedAt").toLocalDate(),
-			rs.getDate("completedAt").toLocalDate()
+			startedAt,
+			completedAt
 		);
 	};
 
