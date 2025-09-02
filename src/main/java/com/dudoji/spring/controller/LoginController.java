@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/admin")
 public class LoginController {
 
     @GetMapping("/loginForm")

@@ -42,9 +42,9 @@ public class WebSecurityConfig extends WebMvcAutoConfiguration {
                         .requestMatchers(
                                 AntPathRequestMatcher.antMatcher("/auth/login/kakao/**"),
                                 AntPathRequestMatcher.antMatcher("/oauth2/**"),
-                                AntPathRequestMatcher.antMatcher("/user/loginForm"),
-                                AntPathRequestMatcher.antMatcher("/user/joinForm"),
-                                AntPathRequestMatcher.antMatcher("/user/join"),
+                                AntPathRequestMatcher.antMatcher("/admin/loginForm"),
+                                AntPathRequestMatcher.antMatcher("/admin/joinForm"),
+                                AntPathRequestMatcher.antMatcher("/admin/join"),
                                 AntPathRequestMatcher.antMatcher("/login")
                         ).permitAll()
 //                        .requestMatchers("/api1/**").hasRole("user")
