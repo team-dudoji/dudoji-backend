@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice
 public class GlobalControllerAdvice {
 
-    @Value("${server.port}")
+    @Value("${server.https-port}")
     private int port;
 
     @Value("${server.url}")

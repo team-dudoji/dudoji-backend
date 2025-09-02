@@ -1,6 +1,7 @@
 server:
   port: 36071
-  url:  ${DEPLOY_SERVER}
+  https-port: 36073
+  url:  ${DEPLOY_SERVER:http://localhost}
 spring:
   profiles:
     active: local

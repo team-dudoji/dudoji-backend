@@ -59,10 +59,10 @@ public class WebSecurityConfig extends WebMvcAutoConfiguration {
                 // For Login Part
                 .formLogin((formLogin) ->
                         formLogin
-                                .loginPage("/user/loginForm")
+                                .loginPage("/admin/loginForm")
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/")
-                                .failureUrl("/user/loginForm?error=true")
+                                .failureUrl("/admin/loginForm?error=true")
                                 .permitAll()
                 )
                 .oauth2Login(oauth2Login -> oauth2Login
