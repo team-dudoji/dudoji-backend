@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -89,8 +90,8 @@ public class FollowDao {
             rs.getString("name"),
             rs.getString("email"),
             rs.getString("profileImage"),
-            followingAt,
-            followedAt
+            rs.getObject("followedAt", LocalDateTime.class),
+            rs.getObject("followingAt", LocalDateTime.class)
         );
     };
 
