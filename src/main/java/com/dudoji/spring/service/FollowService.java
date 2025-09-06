@@ -58,6 +58,14 @@ public class FollowService {
 
         return followDao.getUsers(userId, offset, limit, sort, keyword, type);
     }
+
+    public int countFollowers(long userId) {
+        return followDao.getNumOfFollowerByUserId(userId);
+    }
+
+    public int countFollowing(long userId) {
+        return followDao.getNumOfFollowingByUserId(userId);
+    }
     /**
      * &#064;Deprecated
      * When Using Secret Account, Can be reactivated.
