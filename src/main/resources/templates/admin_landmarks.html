@@ -30,15 +30,15 @@
         </thead>
         <tbody>
         <tr th:each="landmark : ${landmarks}">
-            <td th:text="${landmark.landmarkId()}"></td>
-            <td th:text="${landmark.placeName()}"></td>
+            <td th:text="${landmark.landmarkId}"></td>
+            <td th:text="${landmark.placeName}"></td>
             <td th:text="${landmark.lat} + ', ' + ${landmark.lng}"></td>
-            <td><img th:src="@{${landmark.mapImageUrl()}}" style="height:64px"/></td>
-            <td><img th:src="@{${landmark.detailImageUrl()}}" style="height:64px"/></td>
-            <td th:text="${landmark.content()}"></td>
-            <td th:text="${landmark.address()}"></td>
+            <td><img th:src="@{${landmark.mapImageUrl}}" style="height:64px"/></td>
+            <td><img th:src="@{${landmark.detailImageUrl}}" style="height:64px"/></td>
+            <td th:text="${landmark.content}"></td>
+            <td th:text="${landmark.address}"></td>
             <td>
-                <button type="button" th:onclick="deleteLandmark([[${landmark.landmarkId()}]])">Delete</button>
+                <button type="button" th:onclick="deleteLandmark([[${landmark.landmarkId}]])">Delete</button>
                 <button type="button" th:onclick="openModal('update', [[${landmark}]])">Update</button>
             </td>
         </tr>

@@ -81,6 +81,7 @@ function sendPinSkinData(url, method) {
         },
         body: JSON.stringify(data)
     }).then(() => {
+        console.log(url);
         location.reload();
     });
 }
