@@ -2,6 +2,7 @@ package com.dudoji.spring.controller;
 
 import com.dudoji.spring.dto.user.UserProfileDto;
 import com.dudoji.spring.models.domain.PrincipalDetails;
+import com.dudoji.spring.service.FollowService;
 import com.dudoji.spring.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,8 @@ public class UserProfileController {
 
     @Autowired
     private UserInfoService userInfoService;
+	@Autowired
+	private FollowService followService;
 
     @GetMapping("/mine")
     public ResponseEntity<UserProfileDto> getUserProfile(
@@ -98,4 +101,18 @@ public class UserProfileController {
                 userInfoService.getUserProfileById(userId)
         );
     }
+
+    @GetMapping("/mine/follower-num")
+    public ResponseEntity<Integer> getFollowerNum(
+        @AuthenticationPrincipal PrincipalDetails principal
+    ) {
+        return ResponseEntity.ok(followService.countFollowers(principal.getUid()));
+    }
+    @GetMapping("/mine/following-num")
+    public ResponseEntity<Integer> getFollowingNum(
+        @AuthenticationPrincipal PrincipalDetails principal
+    ) {
+        return ResponseEntity.ok(followService.countFollowing(principal.getUid()));
+    }
+
 }

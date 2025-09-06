@@ -1,5 +1,6 @@
 package com.dudoji.spring.controller;
 
+import com.dudoji.spring.dto.skin.PinSkinDto;
 import com.dudoji.spring.service.ItemService;
 import com.dudoji.spring.service.LandmarkService;
 import com.dudoji.spring.service.NpcService;
@@ -7,6 +8,10 @@ import com.dudoji.spring.service.skin.CharacterSkinService;
 import com.dudoji.spring.service.skin.PinSkinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,11 +36,14 @@ public class AdminPageController {
 
     @GetMapping("/pin-skins")
     public String getAdminPinSkinPage(
-            Model model
+        @PageableDefault(size = 20, sort = "skinId", direction = Sort.Direction.ASC) Pageable pageable,
+        Model model
     ) {
+        Page<PinSkinDto> pinSkinDtoPage = pinSkinService.getPinSkinsPage(-1, pageable);
         model.addAttribute("pinSkins",
-                pinSkinService.getPinSkins(-1)
+            pinSkinDtoPage.getContent()
         );
+        model.addAttribute("page", pinSkinDtoPage);
         model.addAttribute("uploadDir", uploadDir);
         return "admin_pinskins";
     }

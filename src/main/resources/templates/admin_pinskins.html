@@ -43,6 +43,16 @@
         </tbody>
     </table>
 </div>
+<div class="pager">
+    <a th:if="${page.hasPrevious()}"
+       th:href="@{|?userId=${userId}&page=${page.number-1}&size=${page.size}|}">Prev</a>
+
+    <span th:text="${page.number+1}"></span> /
+    <span th:text="${page.totalPages}"></span>
+
+    <a th:if="${page.hasNext()}"
+       th:href="@{|?userId=${userId}&page=${page.number+1}&size=${page.size}|}">Next</a>
+</div>
 
 <!-- Modal for Add/Update Product -->
 <div id="modal">
