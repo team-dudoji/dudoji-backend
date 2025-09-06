@@ -98,4 +98,8 @@ public class UserProfileController {
                 userInfoService.getUserProfileById(userId)
         );
     }
+
+    @GetMapping("/mine/follower-num")
+    @GetMapping("/mine/following-num")
+
 }

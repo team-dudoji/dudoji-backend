@@ -6,6 +6,9 @@ import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.service.skin.PinSkinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,18 +29,28 @@ public class PinSkinController {
     // Get all PinSkin contain whether purchase
     @GetMapping("/api/user/pin-skins")
     public ResponseEntity<List<PinSkinDto>> getPinSkins(
-            @AuthenticationPrincipal PrincipalDetails principalDetails
+        @AuthenticationPrincipal PrincipalDetails principalDetails,
+        @PageableDefault(size = 10, sort = "skinId", direction = Sort.Direction.ASC)Pageable pageable
     ) {
-        List<PinSkinDto> result = pinSkinService.getPinSkins(principalDetails.getUid());
+        List<PinSkinDto> result = pinSkinService.getPinSkins(principalDetails.getUid(), pageable);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/api/user/pin-skins/mine")
     public ResponseEntity<List<PinSkinDto>> getMinePinSkins(
-            @AuthenticationPrincipal PrincipalDetails principalDetails
+        @AuthenticationPrincipal PrincipalDetails principalDetails,
+        @PageableDefault(size = 10, sort = "skinId", direction = Sort.Direction.ASC)Pageable pageable
     ) {
-        List<PinSkinDto> result = pinSkinService.getPurchasedPinSkins(principalDetails.getUid());
+        List<PinSkinDto> result = pinSkinService.getPurchasedPinSkins(principalDetails.getUid(), pageable);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/user/pin-skins/{skinId}")
+    public ResponseEntity<PinSkinDto> getPinSkin(
+        @AuthenticationPrincipal PrincipalDetails principalDetails,
+        @PathVariable Long skinId
+    ) {
+        return ResponseEntity.ok(pinSkinService.getPinSkinById(principalDetails.getUid(), skinId));
     }
 
     @PostMapping("/api/user/pin-skins/{skinId}")
