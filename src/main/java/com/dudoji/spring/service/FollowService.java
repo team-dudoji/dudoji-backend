@@ -1,10 +1,14 @@
 package com.dudoji.spring.service;
 
+import com.dudoji.spring.dto.pin.PinResponseDto;
 import com.dudoji.spring.dto.user.UserSimpleDto;
 import com.dudoji.spring.models.dao.FollowDao;
 import com.dudoji.spring.models.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -16,12 +20,12 @@ public class FollowService {
     @Autowired
     private UserDao userDao;
 
-    public List<UserSimpleDto> getFollowingById(long userId, int limit, int offset) {
-        return followDao.getFollowingListByUser(userId, limit, offset);
+    public List<UserSimpleDto> getFollowingById(long userId, int page, int size) {
+        return followDao.getFollowingListByUser(userId, page, size);
     }
 
-    public List<UserSimpleDto> getFollowerById(long userId, int limit, int offset) {
-        return followDao.getFollowerListByUser(userId, limit, offset);
+    public List<UserSimpleDto> getFollowerById(long userId, int page, int size) {
+        return followDao.getFollowerListByUser(userId, page, size);
     }
 
     public boolean createFollowing(long userId, long followeeId) {
@@ -39,7 +43,21 @@ public class FollowService {
                 .toList();
     }
 
+    public List<UserSimpleDto> getUsers (
+        long userId,
+        String type,
+        String keyword,
+        Pageable pageable
+    ) {
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
 
+        int offset = Math.max(0, page) * Math.max(1, size);
+        int limit = size;
+        Sort sort = pageable.getSort();
+
+        return followDao.getUsers(userId, offset, limit, sort, keyword, type);
+    }
     /**
      * &#064;Deprecated
      * When Using Secret Account, Can be reactivated.
