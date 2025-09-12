@@ -3,12 +3,11 @@ package com.dudoji.spring.service;
 import java.time.LocalDate;
 import java.util.List;
 
-import jakarta.annotation.PostConstruct;
-
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dudoji.spring.dto.festival.FestivalResponseDto;
 import com.dudoji.spring.models.dao.FestivalRepository;
 import com.dudoji.spring.models.domain.Festival;
 
@@ -59,5 +58,22 @@ public class FestivalService {
         }
 
         festivalRepository.save(festival);
+    }
+
+    public List<FestivalResponseDto> getTodayFestival() {
+        LocalDate localDate = LocalDate.now();
+        List<Festival> festivals = festivalRepository.findAllByDateAndAddress(localDate, "부산");
+        return festivals
+                .stream()
+                .map(FestivalResponseDto::new)
+                .toList();
+    }
+
+    public List<FestivalResponseDto> getFestivalByDate(LocalDate date) {
+        List<Festival> festivals = festivalRepository.findAllByDateAndAddress(date, "부산");
+        return festivals
+                .stream()
+                .map(FestivalResponseDto::new)
+                .toList();
     }
 }
