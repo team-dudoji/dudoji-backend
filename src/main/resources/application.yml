@@ -12,6 +12,10 @@ spring:
       pool:
         queue-capacity: 100
         max-size: 8
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   sql:
     init:
       mode: never
@@ -64,3 +68,7 @@ app:
 logging:
   webhook-url: ${SLACK_WEBHOOK_URL}
   channel: dudoji-server-log
+open-api:
+  festival:
+    end-point: http://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api
+    key: ${FESTIVAL_API_KEY}
