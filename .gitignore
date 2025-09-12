@@ -26,6 +26,7 @@ replay_pid*
 .env
 /build
 build/reports/problems/problems-report.html
-.idea/compiler.xml
+
+.idea
 
 !gradle/wrapper/gradle-wrapper.jar
