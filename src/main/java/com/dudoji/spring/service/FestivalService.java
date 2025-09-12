@@ -22,10 +22,12 @@ public class FestivalService {
 
     private final int CRAWLING_BATCH_SIZE = 50;
 
+    private static final long DAILY_UPDATE_INTERVAL_MS = 24 * 60 * 60 * 1000;
+
     private final FestivalRepository festivalRepository;
     private final FestivalApiClient festivalApiClient;
 
-    @Scheduled(fixedRate = 60000 * 60 * 24)
+    @Scheduled(fixedRate = DAILY_UPDATE_INTERVAL_MS)
     public void updateFestival() {
         LocalDate lastUpdateDate = festivalRepository.findMaxDateReferenceDate();
         LocalDate today = LocalDate.now();
