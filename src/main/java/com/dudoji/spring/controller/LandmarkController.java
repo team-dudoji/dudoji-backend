@@ -27,7 +27,7 @@ public class LandmarkController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
         return ResponseEntity.ok(
-                landmarkService.getLandmarks(principalDetails.getUid())
+                landmarkService.getLandmarks(1)
         );
     }
 
