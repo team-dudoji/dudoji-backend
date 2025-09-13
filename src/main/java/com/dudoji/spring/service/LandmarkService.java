@@ -55,6 +55,13 @@ public class LandmarkService {
         );
     }
 
+    public List<LandmarkResponseDto> getRecommendedLandmarks(Long userId) {
+        return getLandmarks(userId).stream().filter(
+                landmarkResponseDto ->
+                        landmarkResponseDto.getFestivalInfo() != null
+        ).toList();
+    }
+
     public void saveLandmarkDetection(LandmarkDetectionDto landmarkDetectionDto, long userId){
         landmarkDao.setDetect(userId, landmarkDetectionDto.landmarkId());
     }

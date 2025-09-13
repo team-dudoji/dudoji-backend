@@ -1,5 +1,6 @@
 package com.dudoji.spring.controller;
 
+import com.dudoji.spring.dto.festival.FestivalResponseDto;
 import com.dudoji.spring.dto.landmark.LandmarkRequestDto;
 import com.dudoji.spring.dto.landmark.LandmarkResponseDto;
 import com.dudoji.spring.dto.mapsection.RevealCirclesRequestDto;
@@ -27,6 +28,16 @@ public class LandmarkController {
     ){
         return ResponseEntity.ok(
                 landmarkService.getLandmarks(principalDetails.getUid())
+        );
+    }
+
+    @ResponseBody
+    @GetMapping("/api/user/landmarks/recommended")
+    public ResponseEntity<List<LandmarkResponseDto>> getRecommendedLandmarks(
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ){
+        return ResponseEntity.ok(
+                landmarkService.getRecommendedLandmarks(principalDetails.getUid())
         );
     }
 
