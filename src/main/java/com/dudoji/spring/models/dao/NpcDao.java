@@ -87,7 +87,7 @@ public class NpcDao {
 		JOIN NpcSkin ns ON ns.npcSkinId = n.npcSkinId
 		JOIN Region r ON r.regionId = ns.regionId
 		JOIN npcQuestCounts nt ON nt.npcId = n.npcId
-		INNER JOIN npcClearedCounts nc ON nc.npcId = n.npcId
+		LEFT JOIN npcClearedCounts nc ON nc.npcId = n.npcId
 		ORDER BY ns.regionId, ns.npcSkinId
 		""";
 
@@ -204,7 +204,7 @@ public class NpcDao {
 			.update() > 0;
 	}
 
-	public List<NpcMetaDto> getNpcMetaData(long userId) {
+	public List<NpcMetaDto>  getNpcMetaData(long userId) {
 		return jdbcClient.sql(GET_NPC_META_DATA)
 			.param("userId", userId)
 			.query(npcMetaDtoRowMapper)
