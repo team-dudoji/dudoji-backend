@@ -5,6 +5,8 @@ public record NpcMetaDto(
 	String locationName,
 	String questName,
 	int numOfQuests,
-	int numOfClearedQuests
+	int numOfClearedQuests,
+    double lat,
+    double lng
 ) {
 }

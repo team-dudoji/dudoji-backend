@@ -82,7 +82,9 @@ public class NpcDao {
 			r.name       AS regionName,
 			n.questName,
 			nt.numOfQuests AS numOfQuests,
-			nc.numOfClearedQuests AS numOfClearedQuests
+			nc.numOfClearedQuests AS numOfClearedQuests,
+          lat,
+          lng
 		FROM Npc n
 		JOIN NpcSkin ns ON ns.npcSkinId = n.npcSkinId
 		JOIN Region r ON r.regionId = ns.regionId
@@ -111,7 +113,9 @@ public class NpcDao {
 			rs.getString("regionName"),     // locationName <- regionName 매핑
 			rs.getString("questName"),
 			rs.getInt("numOfQuests"),
-			rs.getInt("numOfClearedQuests")
+			rs.getInt("numOfClearedQuests"),
+            rs.getDouble("lat"),
+            rs.getDouble("lng")
 		);
 	};
 
