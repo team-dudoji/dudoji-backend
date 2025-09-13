@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j // For logging
 @Controller// Spring MVC Controller
 @RequiredArgsConstructor // Make field constructor
-@RequestMapping("/user") // For User Join
+@RequestMapping("/admin") // For User Join
 public class JoinController {
 
     private final UserDao userDao;

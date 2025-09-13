@@ -1,6 +1,7 @@
 server:
   port: 36071
-  url:  ${DEPLOY_SERVER}
+  https-port: 36073
+  url:  ${DEPLOY_SERVER:http://localhost}
 spring:
   profiles:
     active: local
@@ -11,6 +12,14 @@ spring:
       pool:
         queue-capacity: 100
         max-size: 8
+  jpa:
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: true
   sql:
     init:
       mode: never
@@ -63,3 +72,7 @@ app:
 logging:
   webhook-url: ${SLACK_WEBHOOK_URL}
   channel: dudoji-server-log
+open-api:
+  festival:
+    end-point: http://api.data.go.kr/openapi/tn_pubr_public_cltur_fstvl_api
+    key: ${FESTIVAL_API_KEY}

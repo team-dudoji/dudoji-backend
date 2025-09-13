@@ -42,9 +42,9 @@ public class WebSecurityConfig extends WebMvcAutoConfiguration {
                         .requestMatchers(
                                 AntPathRequestMatcher.antMatcher("/auth/login/kakao/**"),
                                 AntPathRequestMatcher.antMatcher("/oauth2/**"),
-                                AntPathRequestMatcher.antMatcher("/user/loginForm"),
-                                AntPathRequestMatcher.antMatcher("/user/joinForm"),
-                                AntPathRequestMatcher.antMatcher("/user/join"),
+                                AntPathRequestMatcher.antMatcher("/admin/loginForm"),
+                                AntPathRequestMatcher.antMatcher("/admin/joinForm"),
+                                AntPathRequestMatcher.antMatcher("/admin/join"),
                                 AntPathRequestMatcher.antMatcher("/login")
                         ).permitAll()
 //                        .requestMatchers("/api1/**").hasRole("user")
@@ -59,10 +59,10 @@ public class WebSecurityConfig extends WebMvcAutoConfiguration {
                 // For Login Part
                 .formLogin((formLogin) ->
                         formLogin
-                                .loginPage("/user/loginForm")
+                                .loginPage("/admin/loginForm")
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/")
-                                .failureUrl("/user/loginForm?error=true")
+                                .failureUrl("/admin/loginForm?error=true")
                                 .permitAll()
                 )
                 .oauth2Login(oauth2Login -> oauth2Login

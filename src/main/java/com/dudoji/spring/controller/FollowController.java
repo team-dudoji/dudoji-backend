@@ -5,6 +5,9 @@ import com.dudoji.spring.models.domain.PrincipalDetails;
 import com.dudoji.spring.service.FollowService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,20 +26,37 @@ public class FollowController {
     private FollowService followService;
 
     @GetMapping("")
-    public ResponseEntity<List<UserSimpleDto>> getFollowing(
-            @AuthenticationPrincipal PrincipalDetails principalDetails
+    public ResponseEntity<List<UserSimpleDto>> getUsers(
+        @AuthenticationPrincipal PrincipalDetails principalDetails,
+        @RequestParam(value = "type", defaultValue = "FOLLOWING") String type,
+        @RequestParam(value = "keyword", defaultValue = "") String keyword,
+        @PageableDefault(size = 10, sort = "followingAt", direction = Sort.Direction.ASC)Pageable pageable
     ) {
-        return ResponseEntity.ok(
-                followService.getFollowingById(principalDetails.getUid())
-        );
+        List<UserSimpleDto> result = followService.getUsers(principalDetails.getUid(), type, keyword, pageable);
+        return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/follwer")
-    public ResponseEntity<List<UserSimpleDto>> getFollowers(
-            @AuthenticationPrincipal PrincipalDetails principalDetails
+/*
+    @GetMapping("")
+    public ResponseEntity<List<UserSimpleDto>> getFollowing(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "0") int offset
     ) {
         return ResponseEntity.ok(
-                followService.getFollowerById(principalDetails.getUid())
+                followService.getFollowingById(principalDetails.getUid(), limit, offset)
+        );
+    }
+*/
+
+    @GetMapping("/follower")
+    public ResponseEntity<List<UserSimpleDto>> getFollowers(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "0") int offset
+    ) {
+        return ResponseEntity.ok(
+                followService.getFollowerById(principalDetails.getUid(), limit, offset)
         );
     }
 

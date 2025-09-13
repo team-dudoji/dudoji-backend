@@ -244,26 +244,26 @@ ALTER TABLE Pin
     ADD CONSTRAINT fk_pin_skin FOREIGN KEY (skinId) REFERENCES PinSkins(skinId);
 
 CREATE TABLE Item (
-                      itemId BIGSERIAL PRIMARY KEY,
-                      name VARCHAR NOT NULL UNIQUE,
-                      content VARCHAR,
-                      imageUrl VARCHAR NOT NULL,
-                      price BIGINT
+    itemId BIGSERIAL PRIMARY KEY,
+    name VARCHAR NOT NULL UNIQUE,
+    content VARCHAR,
+    imageUrl VARCHAR NOT NULL,
+    price BIGINT
 );
 
 CREATE TABLE Inventory (
-                           userId BIGINT NOT NULL REFERENCES "User"(id),
-                           itemId BIGINT NOT NULL REFERENCES Item(itemId),
-                           quantity BIGSERIAL NOT NULL CHECK (quantity >= 0),
-                           PRIMARY KEY (userId, itemId),
-                           CONSTRAINT fk_inventory_user
-                               FOREIGN KEY (userId)
-                                   REFERENCES "User"(id)
-                                   ON DELETE CASCADE,
-                           CONSTRAINT fk_inventory_item
-                               FOREIGN KEY (itemId)
-                                   REFERENCES Item(itemId)
-                                   ON DELETE CASCADE
+    userId BIGINT NOT NULL REFERENCES "User"(id),
+    itemId BIGINT NOT NULL REFERENCES Item(itemId),
+    quantity BIGSERIAL NOT NULL CHECK (quantity >= 0),
+    PRIMARY KEY (userId, itemId),
+    CONSTRAINT fk_inventory_user
+    FOREIGN KEY (userId)
+       REFERENCES "User"(id)
+       ON DELETE CASCADE,
+    CONSTRAINT fk_inventory_item
+    FOREIGN KEY (itemId)
+       REFERENCES Item(itemId)
+       ON DELETE CASCADE
 );
 
 ALTER TABLE Landmark
@@ -284,48 +284,48 @@ CREATE TABLE PinHashtag (
 );
 
 CREATE TABLE Region (
-                        regionId BIGSERIAL PRIMARY KEY,
-                        name VARCHAR(20)
+    regionId BIGSERIAL PRIMARY KEY,
+    name VARCHAR(20)
 );
 
 CREATE TABLE NpcSkin (
-                         npcSkinId BIGSERIAL PRIMARY KEY,
-                         imageUrl VARCHAR(255) UNIQUE,
-                         regionId BIGINT REFERENCES Region(regionId)
+    npcSkinId BIGSERIAL PRIMARY KEY,
+    imageUrl VARCHAR(255) UNIQUE,
+    regionId BIGINT REFERENCES Region(regionId)
 );
 
 CREATE TABLE Npc (
-                     npcId BIGSERIAL PRIMARY KEY,
-                     lat DOUBLE PRECISION,
-                     lng DOUBLE PRECISION,
-                     npcSkinId BIGINT REFERENCES NpcSkin(npcSkinId),
-                     name VARCHAR(10),
-                    npcScript VARCHAR,
-                    description VARCHAR,
-                    imageUrl VARCHAR
+    npcId BIGSERIAL PRIMARY KEY,
+    lat DOUBLE PRECISION,
+    lng DOUBLE PRECISION,
+    npcSkinId BIGINT REFERENCES NpcSkin(npcSkinId),
+    name VARCHAR(10),
+    npcScript VARCHAR,
+    description VARCHAR,
+    imageUrl VARCHAR
 );
 
 CREATE TABLE NpcQuest (
-                          npcId BIGINT REFERENCES Npc(npcId) ON DELETE CASCADE,
-                          questId BIGINT REFERENCES Quest(questId) ON DELETE CASCADE
+    npcId BIGINT REFERENCES Npc(npcId) ON DELETE CASCADE,
+    questId BIGINT REFERENCES Quest(questId) ON DELETE CASCADE
 );
 
 CREATE TYPE quest_progress as enum ('PROGRESS', 'COMPLETED');
 
 CREATE TABLE UserNpcQuestStatus (
-                                    userId BIGINT NOT NULL REFERENCES "User"(id) ON DELETE CASCADE ,
-                                    questId BIGINT NOT NULL REFERENCES Quest(questId) ON DELETE CASCADE ,
-                                    status  quest_progress default 'PROGRESS',
-                                    startedAt TIMESTAMP NOT NULL default now(),
-                                    completedAt TIMESTAMP
+    userId BIGINT NOT NULL REFERENCES "User"(id) ON DELETE CASCADE ,
+    questId BIGINT NOT NULL REFERENCES Quest(questId) ON DELETE CASCADE ,
+    status  quest_progress default 'PROGRESS',
+    startedAt TIMESTAMP NOT NULL default now(),
+    completedAt TIMESTAMP
 );
 
 CREATE TABLE QuestDependency (
-                                 parentQuestId BIGINT NOT NULL,
-                                 childQuestId BIGINT NOT NULL,
-                                 PRIMARY KEY (parentQuestId, childQuestId),
-                                 FOREIGN KEY (parentQuestId) REFERENCES Quest(questId) ON DELETE CASCADE,
-                                 FOREIGN KEY (childQuestId) REFERENCES Quest(questId) ON DELETE CASCADE
+    parentQuestId BIGINT NOT NULL,
+    childQuestId BIGINT NOT NULL,
+    PRIMARY KEY (parentQuestId, childQuestId),
+    FOREIGN KEY (parentQuestId) REFERENCES Quest(questId) ON DELETE CASCADE,
+    FOREIGN KEY (childQuestId) REFERENCES Quest(questId) ON DELETE CASCADE
 );
 
 ALTER TYPE quest_type ADD VALUE 'NPC_MAIN';
@@ -339,3 +339,38 @@ ALTER TABLE NpcQUest ADD UNIQUE (npcId, questId);
 
 ALTER TABLE follow RENAME COLUMN createat TO createdAt;
 ALTER TABLE UserNpcQuestStatus ALTER COLUMN startedAt SET DEFAULT now();
+
+CREATE TABLE festival (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE , -- 축제 이름
+    location VARCHAR(255), -- 개최 장소
+    startDate DATE,
+    endDate DATE,
+    description VARCHAR(255), -- 축제 내용
+    organizerName VARCHAR(255), -- 주관 기관명
+    hostName VARCHAR(255), -- 주최 기관명
+    sponsorName VARCHAR(255), -- 후원기관명
+    phoneNumber VARCHAR(31), -- 전화번호
+    websiteUrl VARCHAR(255), -- 홈페이지 주소
+    relatedInfo VARCHAR(255), -- 관련 정보
+    addressRoad VARCHAR(255), -- 도로명 주소
+    addressJibun VARCHAR(255), -- 지번 주소
+    lat DOUBLE PRECISION,
+    lng DOUBLE PRECISION,
+    dataReferenceDate DATE, -- 데이터 기준 일자
+    providerCode INT, -- 제공 기관 코드
+    providerName VARCHAR(255) -- 제공기관명
+);
+
+ALTER TABLE festival
+    ALTER COLUMN providercode TYPE VARCHAR(50)
+        USING providercode::VARCHAR;
+
+CREATE INDEX idx_festival_lat ON festival(lat);
+CREATE INDEX idx_festival_lng ON festival(lng);
+CREATE INDEX idx_festival_start_date ON festival(startDate);
+
+ALTER TABLE festival
+    DROP CONSTRAINT festival_name_key;
+ALTER TABLE festival
+    ADD CONSTRAINT uq_festival_name_reference_date UNIQUE (name, dataReferenceDate);

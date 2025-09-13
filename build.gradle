@@ -34,6 +34,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // For pageable
+    implementation 'org.springframework.data:spring-data-commons'
 
     //Spring Security Test
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -46,6 +48,7 @@ dependencies {
 
     // For DBConnection
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // 25.06.27 Update
     // Testcontainers 버전 정렬(BOM)
