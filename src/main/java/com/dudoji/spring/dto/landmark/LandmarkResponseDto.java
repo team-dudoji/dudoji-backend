@@ -2,6 +2,7 @@ package com.dudoji.spring.dto.landmark;
 
 import java.util.List;
 import com.dudoji.spring.config.LandmarkConfig;
+import com.dudoji.spring.dto.festival.FestivalResponseDto;
 import com.dudoji.spring.models.domain.Landmark;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class LandmarkResponseDto{
 	private double  radius;
 	private boolean isDetected;
 	private List<String> hashtags;
+    private FestivalResponseDto festivalInfo;
 
 
     public LandmarkResponseDto(Landmark landmark) {
@@ -38,7 +40,8 @@ public class LandmarkResponseDto{
             landmark.getDetailImageUrl(),
             landmark.isDetected() ? LandmarkConfig.LANDMARK_DETECTED_RADIUS : LandmarkConfig.LANDMARK_UNDETECTED_RADIUS,
             landmark.isDetected(),
-            List.of() // 기본값 null
+            List.of(), // 기본값 null
+            FestivalResponseDto.from(landmark.getFestival())
         );
 	}
 }

@@ -40,6 +40,7 @@ public class Festival {
     private LocalDate dataReferenceDate;
     private String providerCode;
     private String providerName;
+    private Long landmarkId;
 
     public Festival(
             String name,
@@ -60,6 +61,6 @@ public class Festival {
             LocalDate dataReferenceDate,
             String providerCode,
             String providerName) {
-        this(null, name, location, startDate, endDate, description, organizerName, hostName, sponsorName, phoneNumber, websiteUrl, relatedInfo, addressRoad, addressJibun, lat, lng, dataReferenceDate, providerCode, providerName);
+        this(null, name, location, startDate, endDate, description, organizerName, hostName, sponsorName, phoneNumber, websiteUrl, relatedInfo, addressRoad, addressJibun, lat, lng, dataReferenceDate, providerCode, providerName, null);
     }
 }

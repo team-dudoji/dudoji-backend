@@ -18,4 +18,9 @@ public record FestivalResponseDto(
                 festival.getEndDate()
         );
     }
+
+    public static FestivalResponseDto from(Festival festival) {
+        if (festival == null) return null;
+        return new FestivalResponseDto(festival);
+    }
 }
