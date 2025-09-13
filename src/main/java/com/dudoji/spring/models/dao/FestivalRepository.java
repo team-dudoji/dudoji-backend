@@ -15,6 +15,13 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     Optional<Festival> findByName(String name);
     boolean existsByNameAndDataReferenceDate(String name, LocalDate dateReferenceDate);
 
+    @Query("""
+SELECT f FROM Festival f
+WHERE f.startDate <= :date AND :date <= f.endDate
+AND f.landmarkId = :landmark
+""")
+    List<Festival> findFirstByLandmarkIdAndDate(@Param("landmark") Long landmarkId, @Param("date") LocalDate date);
+
     @Query("SELECT MAX(f.dataReferenceDate) FROM Festival f")
     LocalDate findMaxDateReferenceDate();
 

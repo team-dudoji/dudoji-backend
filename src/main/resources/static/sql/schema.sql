@@ -374,3 +374,9 @@ ALTER TABLE festival
     DROP CONSTRAINT festival_name_key;
 ALTER TABLE festival
     ADD CONSTRAINT uq_festival_name_reference_date UNIQUE (name, dataReferenceDate);
+
+ALTER TABLE usernpcqueststatus
+ADD CONSTRAINT uq_quest_status_user_quest UNIQUE (questId, userId);
+
+ALTER TABLE festival
+ADD COLUMN landmarkId BIGINT REFERENCES landmark(landmarkId);

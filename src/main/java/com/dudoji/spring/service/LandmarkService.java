@@ -4,6 +4,7 @@ import com.dudoji.spring.dto.landmark.LandmarkDetectionDto;
 import com.dudoji.spring.dto.landmark.LandmarkRequestDto;
 import com.dudoji.spring.dto.landmark.LandmarkResponseDto;
 import com.dudoji.spring.dto.mapsection.RevealCirclesRequestDto;
+import com.dudoji.spring.models.dao.FestivalRepository;
 import com.dudoji.spring.models.dao.HashtagDao;
 import com.dudoji.spring.models.dao.LandmarkDao;
 import com.dudoji.spring.models.dao.PinDao;
@@ -11,34 +12,35 @@ import com.dudoji.spring.models.domain.Landmark;
 import com.dudoji.spring.models.domain.Pin;
 import com.dudoji.spring.util.BitmapUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class LandmarkService {
 
     public static final int MAX_LANDMARK_SIZE = 10;
     public static final int LANDMARK_PIN_RADIUS = 3000;
 
-    @Autowired
-    private LandmarkDao landmarkDao;
-
-    @Autowired
-    private HashtagDao hashtagDao;
-
-    @Autowired
-    private PinDao pinDao;
+    private final LandmarkDao landmarkDao;
+    private final HashtagDao hashtagDao;
+    private final PinDao pinDao;
+    private final FestivalRepository festivalRepository;
 
     public List<LandmarkResponseDto> getLandmarks(long userId) {
-        return getLandmarkWithHashtag(landmarkDao.getLandmarks(userId));
+        return getLandmarkWithHashtag(injectFestivalToLandmark(landmarkDao.getLandmarks(userId)));
     }
 
     public void saveLandmark(LandmarkRequestDto landmarkRequestDto) {
@@ -79,12 +81,27 @@ public class LandmarkService {
 
         double deltaLat = Math.toDegrees(radius / BitmapUtil.EARTH_RADIUS);
         double deltaLng = Math.toDegrees(radius / BitmapUtil.EARTH_RADIUS * Math.cos(Math.toRadians(lat)));
-		return getLandmarkWithHashtag(landmarkDao.getLandmarksCircleRadius(userId, lat, lng, deltaLat, deltaLng));
+		return getLandmarkWithHashtag(
+                injectFestivalToLandmark(landmarkDao.getLandmarksCircleRadius(userId, lat, lng, deltaLat, deltaLng)));
     }
 
     public List<LandmarkResponseDto> getLandmarksByKeyword(String keyword) {
-        return getLandmarkWithHashtag(landmarkDao.getLandmarksByKeyword(keyword));
+        return getLandmarkWithHashtag(injectFestivalToLandmark(landmarkDao.getLandmarksByKeyword(keyword)));
         // TODO: 맥스 사이즈가 왜 있지?
+    }
+
+    public List<Landmark> injectFestivalToLandmark(List<Landmark> landmarks) {
+        LocalDate today = LocalDate.of(2025, 9, 27);
+        landmarks.forEach(
+                landmark -> {
+                    var festival = festivalRepository.findFirstByLandmarkIdAndDate(landmark.getLandmarkId(), today);
+                    if (!festival.isEmpty()) {
+                        landmark.setFestival(festival.getFirst());
+                    }
+                }
+
+        );
+        return landmarks;
     }
 
     public List<LandmarkResponseDto> getLandmarkWithHashtag(List<Landmark> landmarkResponseDtoList) {
