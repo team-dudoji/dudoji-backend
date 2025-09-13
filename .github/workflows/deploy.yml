@@ -41,4 +41,5 @@ jobs:
           DEPLOY_SERVER: ${{ secrets.SERVER_HOST }}
           DEPLOY_USER: ${{ secrets.SERVER_USER }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          FESTIVAL_API_KEY: ${{ secrets.FESTIVAL_API_KEY }}
         run: bash remote-deploy.sh
