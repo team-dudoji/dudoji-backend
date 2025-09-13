@@ -113,9 +113,6 @@ public class NpcService {
 			.collect(Collectors.toMap(NpcQuestStatusDto::questId, Function.identity()));
 
 		Map<Long, Long> questDependency = npcQuestDao.getQuestDependencies(questIds);
-		for (long key : questDependency.keySet()) {
-			log.info("key: {}, value: {}", key, questDependency.get(key));
-		}
 
 		List<QuestDetailDto> questDetailDto = quests.stream()
 			.filter(quest -> { // 보여주지 않을 퀘스트 거르기
@@ -311,5 +308,25 @@ public class NpcService {
 	 */
 	public List<NpcMetaDto> getAllNpcMetaData(long userId) {
 		return npcDao.getNpcMetaData(userId);
+	}
+
+	/**
+	 * 해당 퀘스트를 진행 중으로 설정합니다. 퀘스트를 수락하는 기능을 합니다.
+	 * @param userId user Id
+	 * @param questId quest Id
+	 * @return 해당 쿼리의 성공 여부
+	 */
+	public boolean setQuestAsProgress(long userId, long questId) {
+		return npcQuestDao.setQuestAsProgress(userId, questId);
+	}
+
+	/**
+	 * 진행 중인 퀘스트를 성공으로 바꿉니다.
+	 * @param userId user Id
+	 * @param questId quest Id
+	 * @return 성공 여부를 나타냅니다. 주어진 퀘스트가 진행 중이 아닐 때는 에러가 발생합니다.
+	 */
+	public boolean setQuestAsCompleted(long userId, long questId) {
+		return npcQuestDao.setQuestAsCompleted(userId, questId);
 	}
 }
