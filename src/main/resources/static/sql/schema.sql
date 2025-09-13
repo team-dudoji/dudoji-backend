@@ -271,6 +271,18 @@ ALTER TABLE Landmark
 
 ALTER TABLE Landmark ADD COLUMN detailImageUrl VARCHAR;
 
+CREATE TABLE Hashtag (
+                         tagId BIGSERIAL,
+                         content VARCHAR,
+                         PRIMARY KEY (tagId)
+);
+CREATE TABLE PinHashtag (
+                            pinId BIGINT,
+                            tagId BIGINT,
+                            foreign key (pinId) references Pin(id),
+                            foreign key (tagId) references Hashtag(tagId)
+);
+
 CREATE TABLE Region (
     regionId BIGSERIAL PRIMARY KEY,
     name VARCHAR(20)
@@ -325,7 +337,8 @@ ALTER TABLE "User" ADD COLUMN coin INT DEFAULT 0;
 ALTER TABLE Npc ADD COLUMN questName VARCHAR;
 ALTER TABLE NpcQUest ADD UNIQUE (npcId, questId);
 
-ALTER TABLE follow RENAME COLUMN createAt TO createdAt;
+ALTER TABLE follow RENAME COLUMN createat TO createdAt;
+ALTER TABLE UserNpcQuestStatus ALTER COLUMN startedAt SET DEFAULT now();
 
 CREATE TABLE festival (
     id BIGSERIAL PRIMARY KEY,
